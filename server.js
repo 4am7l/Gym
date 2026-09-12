@@ -1,5 +1,5 @@
 const express = require('express');
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 
 const app = express();
@@ -8,70 +8,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// الاتصال عبر Supabase Pooler (IPv4 Compatible - Port 6543)
-const pool = new Pool({
-  user: 'postgres.cufcarfhygveznaufruv',
-  host: 'aws-0-eu-central-1.pooler.supabase.com',
-  database: 'postgres',
-  password: '6hC?Qt8mASzsJd+',
-  port: 6543,
-  ssl: { rejectUnauthorized: false }
-});
+// بيانات الاتصال السريعة والمباشرة الخاصة بـ Supabase
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://cufcarfhygveznaufruv.supabase.co";
+const SUPABASE_KEY = process.env.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1ZmNhcmZoeWd2ZXpuYXVmcnV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMjMzMjYsImV4cCI6MjEwNDc5OTMyNn0.pKG14BWQeEdsmdUFR39wt5CTEo_SFIn1QsWtgMgnsxA";
 
-async function initDatabase() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS members (
-        id SERIAL PRIMARY KEY,
-        full_name VARCHAR(255) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
-        notes TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS membership_plans (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        price NUMERIC(10, 2) NOT NULL,
-        duration_days INTEGER NOT NULL,
-        active INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS subscriptions (
-        id SERIAL PRIMARY KEY,
-        member_id INTEGER REFERENCES members(id) ON DELETE CASCADE,
-        plan_id INTEGER REFERENCES membership_plans(id) ON DELETE CASCADE,
-        price NUMERIC(10, 2) NOT NULL,
-        start_date DATE NOT NULL,
-        end_date DATE NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    const plansCount = await pool.query('SELECT COUNT(*) FROM membership_plans');
-    if (parseInt(plansCount.rows[0].count) === 0) {
-      await pool.query(`
-        INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES
-        ('كمال أجسام / جيم', 'اشتراك صالة الأجهزة والحديد كاملة', 15.00, 30, 1),
-        ('تايكوندو', 'حصص تايكوندو وتدريب قتال', 20.00, 30, 1),
-        ('ملاكمة', 'تدريب ملاكمة مع مدرب وحلبة', 20.00, 30, 1);
-      `);
-      console.log('Default membership plans seeded in Supabase.');
-    }
-
-    console.log('Connected to Supabase PostgreSQL Database.');
-  } catch (err) {
-    console.error('Database connection error:', err.message);
-  }
-}
-
-initDatabase();
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
@@ -88,40 +29,53 @@ function calculateStatus(endDateStr) {
   return 'Active';
 }
 
-// APIs
+// ================= API ENDPOINTS ================= //
+
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
-    const query = `
-      SELECT 
-        s.id, s.start_date, s.end_date, s.price,
-        m.full_name as member_name, m.phone,
-        p.name as plan_name
-      FROM subscriptions s
-      JOIN members m ON s.member_id = m.id
-      JOIN membership_plans p ON s.plan_id = p.id
-      ORDER BY s.id DESC
-    `;
-    const { rows } = await pool.query(query);
+    const { data: subscriptions, error: subErr } = await supabase
+      .from('subscriptions')
+      .select(`
+        id, start_date, end_date, price,
+        members ( full_name, phone ),
+        membership_plans ( name )
+      `)
+      .order('id', { ascending: false });
+
+    if (subErr) throw subErr;
 
     let totalActive = 0, totalExpiring = 0, totalExpired = 0;
 
-    const subscriptionsWithStatus = rows.map((sub) => {
+    const subscriptionsWithStatus = (subscriptions || []).map((sub) => {
       const status = calculateStatus(sub.end_date);
       if (status === 'Active') totalActive++;
       if (status === 'Expiring Soon') totalExpiring++;
       if (status === 'Expired') totalExpired++;
-      return { ...sub, status };
+      return {
+        id: sub.id,
+        start_date: sub.start_date,
+        end_date: sub.end_date,
+        price: sub.price,
+        member_name: sub.members?.full_name || 'غير معروف',
+        phone: sub.members?.phone || '',
+        plan_name: sub.membership_plans?.name || 'غير معروف',
+        status
+      };
     });
 
-    const recentMembers = await pool.query('SELECT * FROM members ORDER BY id DESC LIMIT 5');
+    const { data: recentMembers } = await supabase
+      .from('members')
+      .select('*')
+      .order('id', { ascending: false })
+      .limit(5);
 
     res.json({
-      totalMembers: recentMembers.rows.length,
+      totalMembers: recentMembers ? recentMembers.length : 0,
       totalActive,
       totalExpiring,
       totalExpired,
-      totalSubscriptions: rows.length,
-      recentMembers: recentMembers.rows,
+      totalSubscriptions: subscriptions ? subscriptions.length : 0,
+      recentMembers: recentMembers || [],
       recentSubscriptions: subscriptionsWithStatus.slice(0, 5)
     });
   } catch (err) {
@@ -131,8 +85,13 @@ app.get('/api/dashboard/stats', async (req, res) => {
 
 app.get('/api/plans', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM membership_plans ORDER BY id ASC');
-    res.json(rows);
+    const { data, error } = await supabase
+      .from('membership_plans')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) throw error;
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -141,10 +100,13 @@ app.get('/api/plans', async (req, res) => {
 app.post('/api/plans', async (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
   try {
-    const query = 'INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0];
-    const { rows } = await pool.query(query, values);
-    res.json(rows[0]);
+    const { data, error } = await supabase
+      .from('membership_plans')
+      .insert([{ name, description: description || '', price: parseFloat(price), duration_days: parseInt(duration_days), active: active ? 1 : 0 }])
+      .select();
+
+    if (error) throw error;
+    res.json(data[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -153,8 +115,12 @@ app.post('/api/plans', async (req, res) => {
 app.put('/api/plans/:id', async (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
   try {
-    const query = 'UPDATE membership_plans SET name=$1, description=$2, price=$3, duration_days=$4, active=$5 WHERE id=$6';
-    await pool.query(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0, req.params.id]);
+    const { error } = await supabase
+      .from('membership_plans')
+      .update({ name, description: description || '', price: parseFloat(price), duration_days: parseInt(duration_days), active: active ? 1 : 0 })
+      .eq('id', req.params.id);
+
+    if (error) throw error;
     res.json({ updated: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -163,7 +129,8 @@ app.put('/api/plans/:id', async (req, res) => {
 
 app.delete('/api/plans/:id', async (req, res) => {
   try {
-    await pool.query('DELETE FROM membership_plans WHERE id = $1', [req.params.id]);
+    const { error } = await supabase.from('membership_plans').delete().eq('id', req.params.id);
+    if (error) throw error;
     res.json({ deleted: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -172,30 +139,33 @@ app.delete('/api/plans/:id', async (req, res) => {
 
 app.get('/api/members', async (req, res) => {
   try {
-    const query = `
-      SELECT 
-        m.*,
-        s.id as subscription_id,
-        TO_CHAR(s.start_date, 'YYYY-MM-DD') as start_date,
-        TO_CHAR(s.end_date, 'YYYY-MM-DD') as end_date,
-        s.price as subscription_price,
-        p.name as plan_name,
-        p.id as plan_id
-      FROM members m
-      LEFT JOIN subscriptions s ON s.id = (
-        SELECT id FROM subscriptions WHERE member_id = m.id ORDER BY id DESC LIMIT 1
-      )
-      LEFT JOIN membership_plans p ON s.plan_id = p.id
-      ORDER BY m.id DESC
-    `;
-    const { rows } = await pool.query(query);
+    const { data: members, error: memErr } = await supabase
+      .from('members')
+      .select('*')
+      .order('id', { ascending: false });
 
-    const members = rows.map((row) => ({
-      ...row,
-      status: row.end_date ? calculateStatus(row.end_date) : 'No Subscription'
-    }));
+    if (memErr) throw memErr;
 
-    res.json(members);
+    const { data: subscriptions } = await supabase
+      .from('subscriptions')
+      .select('*, membership_plans(name)')
+      .order('id', { ascending: false });
+
+    const formattedMembers = (members || []).map(m => {
+      const lastSub = (subscriptions || []).find(s => s.member_id === m.id);
+      return {
+        ...m,
+        subscription_id: lastSub ? lastSub.id : null,
+        start_date: lastSub ? lastSub.start_date : null,
+        end_date: lastSub ? lastSub.end_date : null,
+        subscription_price: lastSub ? lastSub.price : null,
+        plan_name: lastSub?.membership_plans?.name || null,
+        plan_id: lastSub ? lastSub.plan_id : null,
+        status: lastSub ? calculateStatus(lastSub.end_date) : 'No Subscription'
+      };
+    });
+
+    res.json(formattedMembers);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -203,28 +173,28 @@ app.get('/api/members', async (req, res) => {
 
 app.get('/api/members/:id', async (req, res) => {
   try {
-    const member = await pool.query('SELECT * FROM members WHERE id = $1', [req.params.id]);
-    if (member.rows.length === 0) return res.status(404).json({ error: 'Member not found' });
+    const { data: member, error: memErr } = await supabase
+      .from('members')
+      .select('*')
+      .eq('id', req.params.id)
+      .single();
 
-    const subQuery = `
-      SELECT s.id, s.member_id, s.plan_id, s.price, 
-             TO_CHAR(s.start_date, 'YYYY-MM-DD') as start_date, 
-             TO_CHAR(s.end_date, 'YYYY-MM-DD') as end_date, 
-             p.name as plan_name 
-      FROM subscriptions s
-      JOIN membership_plans p ON s.plan_id = p.id
-      WHERE s.member_id = $1
-      ORDER BY s.id DESC
-    `;
-    const subscriptions = await pool.query(subQuery, [req.params.id]);
+    if (memErr || !member) return res.status(404).json({ error: 'Member not found' });
 
-    const history = subscriptions.rows.map((sub) => ({
+    const { data: subscriptions } = await supabase
+      .from('subscriptions')
+      .select('*, membership_plans(name)')
+      .eq('member_id', req.params.id)
+      .order('id', { ascending: false });
+
+    const history = (subscriptions || []).map(sub => ({
       ...sub,
+      plan_name: sub.membership_plans?.name || '',
       status: calculateStatus(sub.end_date)
     }));
 
     res.json({
-      ...member.rows[0],
+      ...member,
       currentSubscription: history[0] || null,
       history
     });
@@ -236,22 +206,34 @@ app.get('/api/members/:id', async (req, res) => {
 app.post('/api/members', async (req, res) => {
   const { full_name, phone, notes, plan_id, start_date } = req.body;
   try {
-    const memberRes = await pool.query('INSERT INTO members (full_name, phone, notes) VALUES ($1, $2, $3) RETURNING *', [full_name, phone, notes || '']);
-    const newMember = memberRes.rows[0];
+    const { data: newMember, error: memErr } = await supabase
+      .from('members')
+      .insert([{ full_name, phone, notes: notes || '' }])
+      .select()
+      .single();
+
+    if (memErr) throw memErr;
 
     if (plan_id && start_date) {
-      const planRes = await pool.query('SELECT * FROM membership_plans WHERE id = $1', [plan_id]);
-      if (planRes.rows.length > 0) {
-        const plan = planRes.rows[0];
+      const { data: plan } = await supabase
+        .from('membership_plans')
+        .select('*')
+        .eq('id', plan_id)
+        .single();
+
+      if (plan) {
         const start = new Date(start_date);
         const end = new Date(start);
         end.setDate(end.getDate() + plan.duration_days);
         const endDateStr = end.toISOString().split('T')[0];
 
-        await pool.query(
-          'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES ($1, $2, $3, $4, $5)',
-          [newMember.id, plan.id, plan.price, start_date, endDateStr]
-        );
+        await supabase.from('subscriptions').insert([{
+          member_id: newMember.id,
+          plan_id: plan.id,
+          price: plan.price,
+          start_date,
+          end_date: endDateStr
+        }]);
       }
     }
     res.json(newMember);
@@ -263,7 +245,12 @@ app.post('/api/members', async (req, res) => {
 app.put('/api/members/:id', async (req, res) => {
   const { full_name, phone, notes } = req.body;
   try {
-    await pool.query('UPDATE members SET full_name=$1, phone=$2, notes=$3 WHERE id=$4', [full_name, phone, notes || '', req.params.id]);
+    const { error } = await supabase
+      .from('members')
+      .update({ full_name, phone, notes: notes || '' })
+      .eq('id', req.params.id);
+
+    if (error) throw error;
     res.json({ updated: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -272,7 +259,8 @@ app.put('/api/members/:id', async (req, res) => {
 
 app.delete('/api/members/:id', async (req, res) => {
   try {
-    await pool.query('DELETE FROM members WHERE id = $1', [req.params.id]);
+    const { error } = await supabase.from('members').delete().eq('id', req.params.id);
+    if (error) throw error;
     res.json({ deleted: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -282,21 +270,33 @@ app.delete('/api/members/:id', async (req, res) => {
 app.post('/api/subscriptions', async (req, res) => {
   const { member_id, plan_id, start_date } = req.body;
   try {
-    const planRes = await pool.query('SELECT * FROM membership_plans WHERE id = $1', [plan_id]);
-    if (planRes.rows.length === 0) return res.status(404).json({ error: 'Plan not found' });
+    const { data: plan, error: planErr } = await supabase
+      .from('membership_plans')
+      .select('*')
+      .eq('id', plan_id)
+      .single();
 
-    const plan = planRes.rows[0];
+    if (planErr || !plan) return res.status(404).json({ error: 'Plan not found' });
+
     const start = new Date(start_date);
     const end = new Date(start);
     end.setDate(end.getDate() + plan.duration_days);
     const endDateStr = end.toISOString().split('T')[0];
 
-    const { rows } = await pool.query(
-      'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [member_id, plan_id, plan.price, start_date, endDateStr]
-    );
+    const { data: newSub, error: subErr } = await supabase
+      .from('subscriptions')
+      .insert([{
+        member_id: parseInt(member_id),
+        plan_id: parseInt(plan_id),
+        price: plan.price,
+        start_date,
+        end_date: endDateStr
+      }])
+      .select()
+      .single();
 
-    res.json(rows[0]);
+    if (subErr) throw subErr;
+    res.json(newSub);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
