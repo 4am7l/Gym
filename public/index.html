@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IRON CORE — Gym Management System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>IRON CORE — نظام إدارة الجيم والاشتراكات</title>
+  <!-- خط tajawal من جوجل وتأثيرات الأيقونات -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     :root {
+      /* Theme Variables: Dark Default */
       --bg-primary: #0b0f17;
       --bg-secondary: #111827;
       --bg-card: #1f2937;
@@ -26,11 +28,24 @@
       --sidebar-width: 260px;
     }
 
+    [data-theme="light"] {
+      --bg-primary: #f3f4f6;
+      --bg-secondary: #ffffff;
+      --bg-card: #f9fafb;
+      --bg-hover: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --accent-red-glow: rgba(239, 68, 68, 0.15);
+      --accent-yellow-glow: rgba(245, 158, 11, 0.15);
+      --accent-green-glow: rgba(16, 185, 129, 0.15);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Tajawal', sans-serif;
     }
 
     body {
@@ -39,18 +54,20 @@
       display: flex;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
+    /* Sidebar Layout RTL */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-secondary);
-      border-right: 1px solid var(--border-color);
+      border-left: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       position: fixed;
       top: 0;
       bottom: 0;
-      left: 0;
+      right: 0;
       z-index: 100;
       transition: all 0.3s ease;
     }
@@ -62,7 +79,7 @@
       gap: 12px;
       font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       color: var(--accent-red);
       border-bottom: 1px solid var(--border-color);
     }
@@ -83,7 +100,7 @@
       color: var(--text-muted);
       border-radius: 8px;
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s ease;
       text-decoration: none;
     }
@@ -94,16 +111,17 @@
     }
 
     .nav-item.active {
-      border-left: 4px solid var(--accent-red);
-      background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%);
+      border-right: 4px solid var(--accent-red);
+      background: linear-gradient(270deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%);
     }
 
     .main-wrapper {
-      margin-left: var(--sidebar-width);
+      margin-right: var(--sidebar-width);
       flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
+      transition: margin-right 0.3s ease;
     }
 
     header {
@@ -119,6 +137,12 @@
       z-index: 90;
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
     .header-title {
       font-size: 1.3rem;
       font-weight: 700;
@@ -126,13 +150,34 @@
 
     .quick-actions {
       display: flex;
+      align-items: center;
       gap: 12px;
     }
 
+    .theme-toggle-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Buttons */
     .btn {
       padding: 10px 18px;
       border-radius: 8px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
       border: none;
@@ -251,7 +296,7 @@
       background: var(--bg-secondary);
       border-radius: 12px;
       border: 1px solid var(--border-color);
-      overflow: hidden;
+      overflow-x: auto;
       margin-top: 20px;
     }
 
@@ -291,19 +336,19 @@
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      text-align: left;
+      text-align: right;
     }
 
     .data-table th, .data-table td {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
     }
 
     .data-table th {
       background: var(--bg-card);
       color: var(--text-muted);
-      font-size: 0.8rem;
-      text-transform: uppercase;
+      font-size: 0.85rem;
       letter-spacing: 0.5px;
     }
 
@@ -320,7 +365,6 @@
       border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 700;
-      text-transform: uppercase;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -364,7 +408,7 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      width: 100%;
+      width: 90%;
       max-width: 550px;
       padding: 28px;
       transform: scale(0.95);
@@ -412,7 +456,7 @@
     .toast-container {
       position: fixed;
       bottom: 24px;
-      right: 24px;
+      left: 24px;
       z-index: 2000;
       display: flex;
       flex-direction: column;
@@ -421,7 +465,7 @@
 
     .toast {
       background: var(--bg-card);
-      border-left: 4px solid var(--accent-blue);
+      border-right: 4px solid var(--accent-blue);
       color: var(--text-main);
       padding: 14px 20px;
       border-radius: 8px;
@@ -433,76 +477,110 @@
     }
 
     @keyframes toastIn {
-      from { opacity: 0; transform: translateX(50px); }
+      from { opacity: 0; transform: translateX(-50px); }
       to { opacity: 1; transform: translateX(0); }
     }
 
+    /* Responsive Mobile & Tablet Design */
     @media (max-width: 768px) {
-      .sidebar { width: 70px; }
-      .brand span, .nav-item span { display: none; }
-      .main-wrapper { margin-left: 70px; }
-      .table-toolbar { flex-direction: column; align-items: stretch; }
-      .search-filter-box { max-width: 100%; flex-direction: column; }
+      .sidebar { 
+        width: 70px; 
+      }
+      .brand span, .nav-item span { 
+        display: none; 
+      }
+      .main-wrapper { 
+        margin-right: 70px; 
+      }
+      header {
+        padding: 0 16px;
+      }
+      .quick-actions span {
+        display: none;
+      }
+      .table-toolbar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .search-filter-box { 
+        max-width: 100%; 
+        flex-direction: column; 
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
+  <!-- القائمة الجانبية -->
   <aside class="sidebar">
     <div class="brand">
       <i class="fa-solid fa-dumbbell fa-lg"></i>
-      <span>IRON CORE</span>
+      <span>آيرون كور</span>
     </div>
     <ul class="nav-links">
       <li class="nav-item active" onclick="switchTab('dashboard')">
         <i class="fa-solid fa-chart-pie"></i>
-        <span>Dashboard</span>
+        <span>لوحة التحكم</span>
       </li>
       <li class="nav-item" onclick="switchTab('members')">
         <i class="fa-solid fa-users"></i>
-        <span>All Members</span>
+        <span>جميع الأعضاء</span>
       </li>
       <li class="nav-item" onclick="switchTab('active-members')">
         <i class="fa-solid fa-user-check"></i>
-        <span>Active Members</span>
+        <span>الاشتراكات الفعالة</span>
       </li>
       <li class="nav-item" onclick="switchTab('expiring-members')">
         <i class="fa-solid fa-user-clock"></i>
-        <span>Expiring Soon</span>
+        <span>تنتهي قريباً</span>
       </li>
       <li class="nav-item" onclick="switchTab('expired-members')">
         <i class="fa-solid fa-user-xmark"></i>
-        <span>Expired</span>
+        <span>الاشتراكات المنتهية</span>
       </li>
       <li class="nav-item" onclick="switchTab('plans')">
         <i class="fa-solid fa-layer-group"></i>
-        <span>Membership Plans</span>
+        <span>خطط الاشتراك</span>
       </li>
     </ul>
   </aside>
 
+  <!-- المحتوى الرئيسي -->
   <div class="main-wrapper">
     <header>
-      <div class="header-title" id="page-title">Dashboard Overview</div>
+      <div class="header-left">
+        <div class="header-title" id="page-title">لوحة التحكم العامة</div>
+      </div>
+      
       <div class="quick-actions">
+        <!-- زر تبديل الثيم -->
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغيير الثيم">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+
         <button class="btn btn-secondary" onclick="openSubscriptionModal()">
-          <i class="fa-solid fa-plus"></i> Add Subscription
+          <i class="fa-solid fa-plus"></i>
+          <span>إضافة اشتراك</span>
         </button>
         <button class="btn btn-primary" onclick="openMemberModal()">
-          <i class="fa-solid fa-user-plus"></i> Add Member
+          <i class="fa-solid fa-user-plus"></i>
+          <span>إضافة مشترك</span>
         </button>
       </div>
     </header>
 
     <div class="content">
       
-      <!-- DASHBOARD VIEW -->
+      <!-- قسم لوحة التحكم -->
       <section id="dashboard" class="page-section active">
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-info">
-              <h4>Active Members</h4>
+              <h4>الأعضاء النشطين</h4>
               <div class="stat-value" id="stat-active">-</div>
             </div>
             <div class="stat-icon" style="background: var(--accent-green-glow); color: var(--accent-green);">
@@ -511,7 +589,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-info">
-              <h4>Expiring Soon</h4>
+              <h4>تنتهي قريباً (خلال 5 أيام)</h4>
               <div class="stat-value" id="stat-expiring">-</div>
             </div>
             <div class="stat-icon" style="background: var(--accent-yellow-glow); color: var(--accent-yellow);">
@@ -520,7 +598,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-info">
-              <h4>Expired Subscriptions</h4>
+              <h4>الاشتراكات المنتهية</h4>
               <div class="stat-value" id="stat-expired">-</div>
             </div>
             <div class="stat-icon" style="background: var(--accent-red-glow); color: var(--accent-red);">
@@ -529,7 +607,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-info">
-              <h4>Total Subscriptions</h4>
+              <h4>إجمالي الاشتراكات</h4>
               <div class="stat-value" id="stat-total">-</div>
             </div>
             <div class="stat-icon" style="background: rgba(59, 130, 246, 0.25); color: var(--accent-blue);">
@@ -538,82 +616,82 @@
           </div>
         </div>
 
-        <h3 style="margin-bottom: 12px;">Recent Subscriptions</h3>
+        <h3 style="margin-bottom: 12px;">أحدث الاشتراكات المسجلة</h3>
         <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Member</th>
-                <th>Plan</th>
-                <th>Price</th>
-                <th>Expires</th>
-                <th>Status</th>
+                <th>اسم المشترك</th>
+                <th>نوع الاشتراك</th>
+                <th>السعر</th>
+                <th>تاريخ الانتهاء</th>
+                <th>الحالة</th>
               </tr>
             </thead>
             <tbody id="dashboard-recent-tbody">
-              <!-- Dynamically Populated -->
+              <!-- يتم تعبئته أوتوماتيكياً -->
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- MEMBERS VIEW -->
+      <!-- قسم إدارة الأعضاء -->
       <section id="members" class="page-section">
         <div class="table-container">
           <div class="table-toolbar">
             <div class="search-filter-box">
-              <input type="text" id="member-search" placeholder="Search member name or phone..." oninput="renderMembersTable()">
+              <input type="text" id="member-search" placeholder="ابحث باسم المشترك أو رقم الهاتف..." oninput="renderMembersTable()">
               <select id="plan-filter" onchange="renderMembersTable()">
-                <option value="">All Membership Plans</option>
+                <option value="">جميع الخطط والرياضات</option>
               </select>
               <select id="status-filter" onchange="renderMembersTable()">
-                <option value="">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Expiring Soon">Expiring Soon</option>
-                <option value="Expired">Expired</option>
+                <option value="">جميع الحالات</option>
+                <option value="Active">فعّال</option>
+                <option value="Expiring Soon">ينتهي قريباً</option>
+                <option value="Expired">منتهي</option>
               </select>
             </div>
           </div>
           <table class="data-table">
             <thead>
               <tr>
-                <th>Member Name</th>
-                <th>Phone</th>
-                <th>Plan</th>
-                <th>Start Date</th>
-                <th>Expiration Date</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>اسم المشترك</th>
+                <th>رقم الهاتف</th>
+                <th>نوع الاشتراك</th>
+                <th>تاريخ البداية</th>
+                <th>تاريخ الانتهاء</th>
+                <th>السعر</th>
+                <th>الحالة</th>
+                <th>خيارات</th>
               </tr>
             </thead>
             <tbody id="members-tbody">
-              <!-- Dynamically Populated -->
+              <!-- يتم تعبئته أوتوماتيكياً -->
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- PLANS VIEW -->
+      <!-- قسم خطط الاشتراكات -->
       <section id="plans" class="page-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3>Configured Plans</h3>
-          <button class="btn btn-primary" onclick="openPlanModal()"><i class="fa-solid fa-plus"></i> New Plan</button>
+          <h3>الخطط والرياضات المتاحة</h3>
+          <button class="btn btn-primary" onclick="openPlanModal()"><i class="fa-solid fa-plus"></i> إضافة خطة جديدة</button>
         </div>
         <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Plan Name</th>
-                <th>Description</th>
-                <th>Duration (Days)</th>
-                <th>Price (JOD)</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>اسم الاشتراك / الرياضة</th>
+                <th>الوصف</th>
+                <th>المدة (بالأيام)</th>
+                <th>السعر (دينار أردني)</th>
+                <th>الحالة</th>
+                <th>خيارات</th>
               </tr>
             </thead>
             <tbody id="plans-tbody">
-              <!-- Dynamically Populated -->
+              <!-- يتم تعبئته أوتوماتيكياً -->
             </tbody>
           </table>
         </div>
@@ -622,132 +700,138 @@
     </div>
   </div>
 
-  <!-- Add/Edit Member Modal -->
+  <!-- النوافذ المنبثقة (Modals) -->
+
+  <!-- نافذة إضافة / تعديل مشترك -->
   <div class="modal-overlay" id="member-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title" id="member-modal-title">Add New Member</h3>
+        <h3 class="modal-title" id="member-modal-title">تسجيل مشترك جديد</h3>
         <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('member-modal')"></i>
       </div>
       <form id="member-form" onsubmit="handleMemberSubmit(event)">
         <input type="hidden" id="member-id">
         <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="member-name" required placeholder="e.g. Ahmad Khaled">
+          <label>الاسم الكامل *</label>
+          <input type="text" id="member-name" required placeholder="مثال: أحمد خالد">
         </div>
         <div class="form-group">
-          <label>Phone Number *</label>
-          <input type="text" id="member-phone" required placeholder="e.g. 0791234567">
+          <label>رقم الهاتف *</label>
+          <input type="text" id="member-phone" required placeholder="مثال: 0791234567">
         </div>
         <div class="form-group" id="initial-plan-group">
-          <label>Initial Membership Plan</label>
+          <label>خطة الاشتراك الأولى</label>
           <select id="member-plan" onchange="calculateMemberExpiration()">
-            <option value="">Select Plan...</option>
+            <option value="">اختر الاشتراك...</option>
           </select>
         </div>
         <div class="form-row" id="initial-date-group">
           <div class="form-group" style="flex: 1;">
-            <label>Start Date</label>
+            <label>تاريخ البدء</label>
             <input type="date" id="member-start-date" onchange="calculateMemberExpiration()">
           </div>
           <div class="form-group" style="flex: 1;">
-            <label>Calculated Expiration</label>
+            <label>تاريخ الانتهاء المحسوب</label>
             <input type="date" id="member-end-date" readonly style="opacity: 0.7;">
           </div>
         </div>
         <div class="form-group">
-          <label>Notes</label>
-          <textarea id="member-notes" rows="2" placeholder="Optional notes..."></textarea>
+          <label>ملاحظات إضافية</label>
+          <textarea id="member-notes" rows="2" placeholder="أي ملاحظات أو تفاصيل خاصة..."></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Save Member</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">حفظ المشترك</button>
       </form>
     </div>
   </div>
 
-  <!-- Add Subscription Modal -->
+  <!-- نافذة إضافة / تجديد اشتراك -->
   <div class="modal-overlay" id="subscription-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title">Add / Renew Subscription</h3>
+        <h3 class="modal-title">إضافة / تجديد اشتراك</h3>
         <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('subscription-modal')"></i>
       </div>
       <form id="subscription-form" onsubmit="handleSubscriptionSubmit(event)">
         <div class="form-group">
-          <label>Select Member *</label>
+          <label>اختر المشترك *</label>
           <select id="sub-member-id" required></select>
         </div>
         <div class="form-group">
-          <label>Membership Plan *</label>
-          <select id="sub-plan-id" required onchange="calculateSubExpiration()">
-          </select>
+          <label>خطة الاشتراك / الرياضة *</label>
+          <select id="sub-plan-id" required onchange="calculateSubExpiration()"></select>
         </div>
         <div class="form-row">
           <div class="form-group" style="flex: 1;">
-            <label>Start Date *</label>
+            <label>تاريخ البدء *</label>
             <input type="date" id="sub-start-date" required onchange="calculateSubExpiration()">
           </div>
           <div class="form-group" style="flex: 1;">
-            <label>Expiration Date</label>
+            <label>تاريخ الانتهاء</label>
             <input type="date" id="sub-end-date" readonly style="opacity: 0.7;">
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Subscription</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">تأكيد وإضافة الاشتراك</button>
       </form>
     </div>
   </div>
 
-  <!-- Member Details & History Modal -->
+  <!-- نافذة التفاصيل والسجل للمشترك -->
   <div class="modal-overlay" id="details-modal">
     <div class="modal" style="max-width: 650px;">
       <div class="modal-header">
-        <h3 class="modal-title">Member Profile</h3>
+        <h3 class="modal-title">ملف المشترك</h3>
         <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('details-modal')"></i>
       </div>
-      <div id="details-content">
-      </div>
+      <div id="details-content"></div>
     </div>
   </div>
 
-  <!-- Add/Edit Membership Plan Modal -->
+  <!-- نافذة إضافة / تعديل خطة اشتراك -->
   <div class="modal-overlay" id="plan-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title" id="plan-modal-title">Add Membership Plan</h3>
+        <h3 class="modal-title" id="plan-modal-title">إضافة خطة اشتراك جديدة</h3>
         <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('plan-modal')"></i>
       </div>
       <form id="plan-form" onsubmit="handlePlanSubmit(event)">
         <input type="hidden" id="plan-id">
         <div class="form-group">
-          <label>Plan Name *</label>
-          <input type="text" id="plan-name" required placeholder="e.g. Boxing / Taekwondo">
+          <label>اسم الخطة / الرياضة *</label>
+          <input type="text" id="plan-name" required placeholder="مثال: تايكوندو / ملاكمة / كمال أسام">
         </div>
         <div class="form-group">
-          <label>Description</label>
-          <input type="text" id="plan-desc" placeholder="Brief details about the plan">
+          <label>الوصف</label>
+          <input type="text" id="plan-desc" placeholder="وصف مختصر لمميزات الاشتراك">
         </div>
         <div class="form-row">
           <div class="form-group" style="flex: 1;">
-            <label>Price (JOD) *</label>
+            <label>السعر (بالدينار الأردني JOD) *</label>
             <input type="number" step="0.01" id="plan-price" required placeholder="20">
           </div>
           <div class="form-group" style="flex: 1;">
-            <label>Duration (Days) *</label>
+            <label>المدة (بالأيام) *</label>
             <input type="number" id="plan-duration" required placeholder="30">
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Save Plan</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">حفظ الخطة</button>
       </form>
     </div>
   </div>
 
+  <!-- حاوية التنبيهات -->
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- منطق التطبيق (JavaScript) -->
   <script>
     let membersData = [];
     let plansData = [];
     let currentTab = 'dashboard';
 
     document.addEventListener('DOMContentLoaded', () => {
+      // تطبيق الثيم المحفوظ
+      const savedTheme = localStorage.getItem('gym_theme') || 'dark';
+      setTheme(savedTheme);
+
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('member-start-date').value = today;
       document.getElementById('sub-start-date').value = today;
@@ -755,12 +839,31 @@
       loadAllData();
     });
 
+    // Dark / Light Theme Logic
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    }
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+      }
+      localStorage.setItem('gym_theme', theme);
+    }
+
     async function loadAllData() {
       await fetchPlans();
       await fetchMembers();
       await fetchDashboardStats();
     }
 
+    // التنقل بين الصفحات
     function switchTab(tabId) {
       currentTab = tabId;
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -770,14 +873,14 @@
       if (targetNav) targetNav.classList.add('active');
 
       const titleMap = {
-        'dashboard': 'Dashboard Overview',
-        'members': 'All Members',
-        'active-members': 'Active Subscriptions',
-        'expiring-members': 'Expiring Soon',
-        'expired-members': 'Expired Subscriptions',
-        'plans': 'Membership Plans Configuration'
+        'dashboard': 'لوحة التحكم العامة',
+        'members': 'سجل الأعضاء الكامل',
+        'active-members': 'الاشتراكات الفعّالة حالياً',
+        'expiring-members': 'اشتراكات تنتهي قريباً',
+        'expired-members': 'الاشتراكات المنتهية',
+        'plans': 'إدارة خطط الاشتراكات والرياضات'
       };
-      document.getElementById('page-title').innerText = titleMap[tabId] || 'Gym Management';
+      document.getElementById('page-title').innerText = titleMap[tabId] || 'نظام إدارة الجيم';
 
       if (tabId === 'plans') {
         document.getElementById('plans').classList.add('active');
@@ -796,13 +899,14 @@
       }
     }
 
+    // جلب البيانات
     async function fetchPlans() {
       try {
         const res = await fetch('/api/plans');
         plansData = await res.json();
         populatePlanDropdowns();
       } catch (err) {
-        showToast('Error loading membership plans', 'error');
+        showToast('خطأ في تحميل خطط الاشتراكات', 'error');
       }
     }
 
@@ -813,7 +917,7 @@
         renderMembersTable();
         populateMemberDropdown();
       } catch (err) {
-        showToast('Error loading members', 'error');
+        showToast('خطأ في تحميل قائمة الأعضاء', 'error');
       }
     }
 
@@ -830,7 +934,7 @@
         const recentTbody = document.getElementById('dashboard-recent-tbody');
         recentTbody.innerHTML = '';
         if (!data.recentSubscriptions || data.recentSubscriptions.length === 0) {
-          recentTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No recent subscriptions recorded</td></tr>`;
+          recentTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">لا يوجد اشتراكات حديثة مسجلة</td></tr>`;
           return;
         }
 
@@ -846,10 +950,11 @@
           `;
         });
       } catch (err) {
-        showToast('Error loading stats', 'error');
+        showToast('خطأ في تحميل الإحصائيات', 'error');
       }
     }
 
+    // عرض الجداول
     function renderMembersTable() {
       const tbody = document.getElementById('members-tbody');
       const searchVal = document.getElementById('member-search').value.toLowerCase();
@@ -865,7 +970,7 @@
 
       tbody.innerHTML = '';
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted);">No members found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted);">لم يتم العثور على أي مشتركين</td></tr>`;
         return;
       }
 
@@ -874,15 +979,15 @@
           <tr>
             <td><strong>${m.full_name}</strong></td>
             <td>${m.phone}</td>
-            <td>${m.plan_name || '<span style="color:var(--text-muted)">None</span>'}</td>
+            <td>${m.plan_name || '<span style="color:var(--text-muted)">بدون اشتراك</span>'}</td>
             <td>${m.start_date || '-'}</td>
             <td>${m.end_date || '-'}</td>
             <td>${m.subscription_price ? m.subscription_price + ' JOD' : '-'}</td>
             <td>${getStatusBadge(m.status)}</td>
             <td>
-              <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="viewMemberDetails(${m.id})"><i class="fa-solid fa-eye"></i></button>
-              <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="editMember(${m.id})"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn btn-danger" style="padding: 4px 8px;" onclick="deleteMember(${m.id})"><i class="fa-solid fa-trash"></i></button>
+              <button class="btn btn-secondary" style="padding: 4px 8px;" title="عرض الملف والتاريخ" onclick="viewMemberDetails(${m.id})"><i class="fa-solid fa-eye"></i></button>
+              <button class="btn btn-secondary" style="padding: 4px 8px;" title="تعديل البيانات" onclick="editMember(${m.id})"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-danger" style="padding: 4px 8px;" title="حذف" onclick="deleteMember(${m.id})"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
         `;
@@ -893,7 +998,7 @@
       const tbody = document.getElementById('plans-tbody');
       tbody.innerHTML = '';
       if (plansData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No membership plans found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">لا يوجد خطط اشتراك مضافة</td></tr>`;
         return;
       }
       plansData.forEach(p => {
@@ -901,9 +1006,9 @@
           <tr>
             <td><strong>${p.name}</strong></td>
             <td>${p.description || '-'}</td>
-            <td>${p.duration_days} Days</td>
+            <td>${p.duration_days} يوم</td>
             <td><strong>${p.price} JOD</strong></td>
-            <td><span class="badge ${p.active ? 'badge-active' : 'badge-expired'}">${p.active ? 'Active' : 'Disabled'}</span></td>
+            <td><span class="badge ${p.active ? 'badge-active' : 'badge-expired'}">${p.active ? 'مفعلة' : 'معطلة'}</span></td>
             <td>
               <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="editPlan(${p.id})"><i class="fa-solid fa-pen"></i></button>
               <button class="btn btn-danger" style="padding: 4px 8px;" onclick="deletePlan(${p.id})"><i class="fa-solid fa-trash"></i></button>
@@ -914,10 +1019,10 @@
     }
 
     function getStatusBadge(status) {
-      if (status === 'Active') return `<span class="badge badge-active"><i class="fa-solid fa-check"></i> Active</span>`;
-      if (status === 'Expiring Soon') return `<span class="badge badge-expiring"><i class="fa-solid fa-clock"></i> Expiring Soon</span>`;
-      if (status === 'Expired') return `<span class="badge badge-expired"><i class="fa-solid fa-xmark"></i> Expired</span>`;
-      return `<span class="badge" style="background:var(--bg-hover); color:var(--text-muted)">None</span>`;
+      if (status === 'Active') return `<span class="badge badge-active"><i class="fa-solid fa-check"></i> فعّال</span>`;
+      if (status === 'Expiring Soon') return `<span class="badge badge-expiring"><i class="fa-solid fa-clock"></i> ينتهي قريباً</span>`;
+      if (status === 'Expired') return `<span class="badge badge-expired"><i class="fa-solid fa-xmark"></i> منتهي</span>`;
+      return `<span class="badge" style="background:var(--bg-hover); color:var(--text-muted)">بدون اشتراك</span>`;
     }
 
     function populatePlanDropdowns() {
@@ -925,11 +1030,11 @@
       const subPlanSelect = document.getElementById('sub-plan-id');
       const filterPlanSelect = document.getElementById('plan-filter');
 
-      let optionsHTML = '<option value="">Select Plan...</option>';
-      let filterHTML = '<option value="">All Membership Plans</option>';
+      let optionsHTML = '<option value="">اختر الاشتراك...</option>';
+      let filterHTML = '<option value="">جميع الخطط والرياضات</option>';
 
       plansData.filter(p => p.active).forEach(p => {
-        optionsHTML += `<option value="${p.id}" data-days="${p.duration_days}">${p.name} (${p.price} JOD / ${p.duration_days} days)</option>`;
+        optionsHTML += `<option value="${p.id}" data-days="${p.duration_days}">${p.name} (${p.price} JOD / ${p.duration_days} يوم)</option>`;
         filterHTML += `<option value="${p.id}">${p.name}</option>`;
       });
 
@@ -940,7 +1045,7 @@
 
     function populateMemberDropdown() {
       const select = document.getElementById('sub-member-id');
-      select.innerHTML = '<option value="">Select Member...</option>';
+      select.innerHTML = '<option value="">اختر المشترك...</option>';
       membersData.forEach(m => {
         select.innerHTML += `<option value="${m.id}">${m.full_name} (${m.phone})</option>`;
       });
@@ -991,7 +1096,7 @@
     function openMemberModal() {
       document.getElementById('member-form').reset();
       document.getElementById('member-id').value = '';
-      document.getElementById('member-modal-title').innerText = 'Add New Member';
+      document.getElementById('member-modal-title').innerText = 'تسجيل مشترك جديد';
       document.getElementById('initial-plan-group').style.display = 'block';
       document.getElementById('initial-date-group').style.display = 'flex';
       document.getElementById('member-start-date').value = new Date().toISOString().split('T')[0];
@@ -1021,11 +1126,11 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        showToast(id ? 'Member updated successfully' : 'Member registered successfully');
+        showToast(id ? 'تم تحديث بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح');
         closeModal('member-modal');
         loadAllData();
       } catch (err) {
-        showToast(err.message || 'Failed to save member', 'error');
+        showToast(err.message || 'فشل حفظ بيانات المشترك', 'error');
       }
     }
 
@@ -1036,7 +1141,7 @@
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
       document.getElementById('member-notes').value = m.notes || '';
-      document.getElementById('member-modal-title').innerText = 'Edit Member Details';
+      document.getElementById('member-modal-title').innerText = 'تعديل بيانات المشترك';
       
       document.getElementById('initial-plan-group').style.display = 'none';
       document.getElementById('initial-date-group').style.display = 'none';
@@ -1044,13 +1149,13 @@
     }
 
     async function deleteMember(id) {
-      if (!confirm('Are you sure you want to delete this member? All subscription records will be removed.')) return;
+      if (!confirm('هل أنت تأكد من رغبتك في حذف هذا المشترك؟ سيتم حذف كافة سجلات اشتراكاته أيضاً.')) return;
       try {
         await fetch(`/api/members/${id}`, { method: 'DELETE' });
-        showToast('Member deleted successfully');
+        showToast('تم حذف المشترك بنجاح');
         loadAllData();
       } catch (err) {
-        showToast('Failed to delete member', 'error');
+        showToast('فشل حذف المشترك', 'error');
       }
     }
 
@@ -1080,12 +1185,12 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        showToast('Subscription created successfully');
+        showToast('تم إضافة / تجديد الاشتراك بنجاح');
         closeModal('subscription-modal');
         closeModal('details-modal');
         loadAllData();
       } catch (err) {
-        showToast(err.message || 'Failed to create subscription', 'error');
+        showToast(err.message || 'فشل إضافة الاشتراك', 'error');
       }
     }
 
@@ -1100,27 +1205,27 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <h2>${data.full_name}</h2>
               <button class="btn btn-primary" onclick="openSubscriptionModal(${data.id})">
-                <i class="fa-solid fa-rotate-right"></i> Renew Subscription
+                <i class="fa-solid fa-rotate-right"></i> تجديد الاشتراك
               </button>
             </div>
             <p style="color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> ${data.phone}</p>
-            ${data.notes ? `<p style="margin-top:8px; font-size:0.9rem;"><strong>Notes:</strong> ${data.notes}</p>` : ''}
+            ${data.notes ? `<p style="margin-top:8px; font-size:0.9rem;"><strong>ملاحظات:</strong> ${data.notes}</p>` : ''}
           </div>
 
-          <h4 style="margin-bottom:10px;">Subscription History</h4>
+          <h4 style="margin-bottom:10px;">سجل الاشتراكات السابقة والحالية</h4>
           <div style="max-height: 250px; overflow-y: auto;">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Plan</th>
-                  <th>Start</th>
-                  <th>Expiration</th>
-                  <th>Price</th>
-                  <th>Status</th>
+                  <th>الخطة / الرياضة</th>
+                  <th>تاريخ البداية</th>
+                  <th>تاريخ الانتهاء</th>
+                  <th>السعر</th>
+                  <th>الحالة</th>
                 </tr>
               </thead>
               <tbody>
-                ${!data.history || data.history.length === 0 ? '<tr><td colspan="5">No subscription history</td></tr>' : 
+                ${!data.history || data.history.length === 0 ? '<tr><td colspan="5" style="text-align:center;">لا يوجد سجل اشتراكات سابق</td></tr>' : 
                   data.history.map(s => `
                     <tr>
                       <td>${s.plan_name}</td>
@@ -1137,14 +1242,14 @@
         `;
         openModal('details-modal');
       } catch (err) {
-        showToast('Error retrieving member details', 'error');
+        showToast('خطأ في جلب بيانات ملف المشترك', 'error');
       }
     }
 
     function openPlanModal() {
       document.getElementById('plan-form').reset();
       document.getElementById('plan-id').value = '';
-      document.getElementById('plan-modal-title').innerText = 'Add Membership Plan';
+      document.getElementById('plan-modal-title').innerText = 'إضافة خطة اشتراك جديدة';
       openModal('plan-modal');
     }
 
@@ -1156,7 +1261,7 @@
       document.getElementById('plan-desc').value = p.description || '';
       document.getElementById('plan-price').value = p.price;
       document.getElementById('plan-duration').value = p.duration_days;
-      document.getElementById('plan-modal-title').innerText = 'Edit Membership Plan';
+      document.getElementById('plan-modal-title').innerText = 'تعديل خطة الاشتراك';
       openModal('plan-modal');
     }
 
@@ -1183,25 +1288,25 @@
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || 'Failed to save plan');
+          throw new Error(data.error || 'فشل حفظ الخطة');
         }
 
-        showToast(id ? 'Plan updated successfully' : 'Plan created successfully');
+        showToast(id ? 'تم تعديل الخطة بنجاح' : 'تم إضافة الخطة بنجاح');
         closeModal('plan-modal');
         loadAllData();
       } catch (err) {
-        showToast(err.message || 'Failed to save plan', 'error');
+        showToast(err.message || 'فشل حفظ الخطة', 'error');
       }
     }
 
     async function deletePlan(id) {
-      if (!confirm('Are you sure you want to delete this membership plan?')) return;
+      if (!confirm('هل أنت تأكد من رغبتك في حذف خطة الاشتراك هذه؟')) return;
       try {
         await fetch(`/api/plans/${id}`, { method: 'DELETE' });
-        showToast('Plan deleted successfully');
+        showToast('تم حذف الخطة بنجاح');
         loadAllData();
       } catch (err) {
-        showToast('Failed to delete plan', 'error');
+        showToast('فشل حذف الخطة', 'error');
       }
     }
 
@@ -1209,7 +1314,7 @@
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = 'toast';
-      if (type === 'error') toast.style.borderLeftColor = 'var(--accent-red)';
+      if (type === 'error') toast.style.borderRightColor = 'var(--accent-red)';
       toast.innerHTML = `
         <i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'}" style="color:${type === 'error' ? 'var(--accent-red)' : 'var(--accent-green)'}"></i>
         <span>${message}</span>
@@ -1217,7 +1322,7 @@
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateX(50px)';
+        toast.style.transform = 'translateX(-50px)';
         toast.style.transition = 'all 0.3s ease';
         setTimeout(() => toast.remove(), 300);
       }, 3000);
