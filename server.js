@@ -8,13 +8,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// إعداد الاتصال بقاعدة بيانات Supabase 
+// الاتصال عبر Supabase Pooler (IPv4 Compatible - Port 6543)
 const pool = new Pool({
-  user: 'postgres',
-  host: 'db.cufcarfhygveznaufruv.supabase.co',
+  user: 'postgres.cufcarfhygveznaufruv',
+  host: 'aws-0-eu-central-1.pooler.supabase.com',
   database: 'postgres',
   password: '6hC?Qt8mASzsJd+',
-  port: 5432,
+  port: 6543,
   ssl: { rejectUnauthorized: false }
 });
 
