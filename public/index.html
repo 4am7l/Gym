@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>نظام أيرون كور جيم الاحترافي</title>
+  <title>نظام إدارة أيرون كور جيم</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,16 +12,15 @@
 
   <style>
     :root {
-      --bg-dark: #090a0f;
-      --panel-glass: rgba(18, 20, 29, 0.75);
-      --card-glass: rgba(255, 255, 255, 0.04);
-      --card-glass-hover: rgba(255, 255, 255, 0.08);
-      --border-glass: rgba(255, 255, 255, 0.1);
+      --bg-main: #090a0f;
+      --panel-bg: rgba(18, 20, 29, 0.75);
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-hover: rgba(255, 255, 255, 0.08);
+      --border-color: rgba(255, 255, 255, 0.1);
       --border-glow: rgba(99, 102, 241, 0.4);
       
       --text-bright: #ffffff;
       --text-sub: #94a3b8;
-      --text-dim: #64748b;
       
       --primary: #6366f1;
       --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
@@ -29,9 +28,27 @@
       --accent-amber: #fbbf24;
       --accent-red: #f87171;
       
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+
+      --select-bg: #1e293b;
+      --select-opt-bg: #0f172a;
+    }
+
+    body.light-mode {
+      --bg-main: #f1f5f9;
+      --panel-bg: rgba(255, 255, 255, 0.85);
+      --card-bg: rgba(0, 0, 0, 0.03);
+      --card-hover: rgba(0, 0, 0, 0.06);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-glow: rgba(99, 102, 241, 0.3);
+      
+      --text-bright: #0f172a;
+      --text-sub: #64748b;
+      
+      --select-bg: #ffffff;
+      --select-opt-bg: #f8fafc;
     }
 
     * {
@@ -39,19 +56,16 @@
       margin: 0;
       padding: 0;
       font-family: 'Tajawal', sans-serif;
-      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
     body {
-      background: var(--bg-dark);
+      background: var(--bg-main);
       color: var(--text-bright);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
     }
 
     .app-viewport {
@@ -66,16 +80,16 @@
     }
 
     header.main-header {
-      background: var(--panel-glass);
+      background: var(--panel-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 20px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
     .brand-section { display: flex; align-items: center; gap: 16px; }
@@ -93,21 +107,35 @@
       box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
     }
 
-    .brand-title h1 {
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-title h1 { font-size: 1.5rem; font-weight: 900; }
+    .brand-title p { font-size: 0.85rem; color: var(--text-sub); }
+
+    .header-controls { display: flex; align-items: center; gap: 12px; }
+
+    /* زر الثيم العصري */
+    .theme-toggle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    .brand-title p { font-size: 0.85rem; color: var(--text-sub); }
+    .theme-toggle-btn i { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .theme-toggle-btn:hover i { transform: rotate(360deg) scale(1.15); }
 
     .btn-liquid {
       background: var(--primary-gradient);
       border: 1px solid var(--border-glow);
-      color: var(--text-bright);
+      color: white;
       padding: 12px 24px;
       border-radius: var(--radius-md);
       font-weight: 700;
@@ -116,13 +144,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: all 0.3s ease;
       box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-    }
-
-    .btn-liquid:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
     }
 
     .dashboard-layout {
@@ -132,9 +154,9 @@
     }
 
     aside.sidebar {
-      background: var(--panel-glass);
+      background: var(--panel-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 24px 16px;
       display: flex;
@@ -153,10 +175,9 @@
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    .nav-link:hover { background: var(--card-glass-hover); color: var(--text-bright); }
+    .nav-link:hover { background: var(--card-hover); color: var(--text-bright); }
     .nav-link.active {
       background: var(--primary-gradient);
       color: white;
@@ -172,18 +193,15 @@
     }
 
     .glass-card {
-      background: var(--panel-glass);
+      background: var(--panel-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 22px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: all 0.3s ease;
     }
-
-    .glass-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
 
     .card-icon {
       width: 42px;
@@ -200,9 +218,9 @@
     .card-label { font-size: 0.9rem; color: var(--text-sub); font-weight: 600; }
 
     .data-panel {
-      background: var(--panel-glass);
+      background: var(--panel-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 28px;
       display: flex;
@@ -213,137 +231,131 @@
     .panel-header { display: flex; justify-content: space-between; align-items: center; }
     .panel-header h2 { font-size: 1.25rem; font-weight: 800; }
 
-    .search-input-wrapper { position: relative; width: 320px; }
-
-    .search-input-wrapper input {
-      width: 100%;
-      padding: 12px 20px 12px 44px;
+    /* تبويبات الفلترة المخصصة للأعضاء */
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      background: var(--card-bg);
+      padding: 6px;
       border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-glass);
-      color: white;
-      font-size: 0.95rem;
-      outline: none;
+      border: 1px solid var(--border-color);
     }
 
-    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-sub);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
 
-    /* شبكة بطاقات الأعضاء المفصلة (Detailed Member Cards) */
-    .members-detailed-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* البطاقات الطولية الكبيرة الأفقية (Horizontal Full Cards) */
+    .horizontal-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .horizontal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 20px;
     }
 
-    .detailed-card {
-      background: var(--card-glass);
-      border: 1px solid var(--border-glass);
-      border-radius: var(--radius-lg);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .detailed-card:hover {
-      background: var(--card-glass-hover);
+    .horizontal-card:hover {
+      background: var(--card-hover);
       border-color: var(--border-glow);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
     }
 
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .member-main-name { font-size: 1.2rem; font-weight: 800; color: white; }
-    .member-phone-number { font-size: 0.88rem; color: var(--text-sub); margin-top: 4px; }
-
-    .subscription-details-box {
-      background: rgba(15, 23, 42, 0.6);
-      border-radius: var(--radius-md);
-      padding: 14px;
+    .member-info-col {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      border: 1px solid rgba(255,255,255,0.05);
+      gap: 4px;
+      min-width: 200px;
     }
 
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-    }
+    .member-name-txt { font-size: 1.15rem; font-weight: 800; }
+    .member-phone-txt { font-size: 0.88rem; color: var(--text-sub); }
 
-    .detail-label { color: var(--text-sub); }
-    .detail-val { font-weight: 700; color: var(--text-bright); }
-
-    .card-actions-bar {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding-top: 12px;
-    }
-
-    .action-icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-glass);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-bright);
+    .sub-info-col {
       display: flex;
       align-items: center;
+      gap: 30px;
+      flex: 1;
       justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
     }
 
-    .action-icon-btn:hover { background: var(--primary); border-color: var(--primary); }
+    .info-sub-item { display: flex; flex-direction: column; gap: 2px; }
+    .info-sub-item .lbl { font-size: 0.75rem; color: var(--text-sub); }
+    .info-sub-item .val { font-size: 0.92rem; font-weight: 700; }
 
     .badge-curved {
       padding: 6px 14px;
       border-radius: 30px;
       font-size: 0.8rem;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .badge-curved.Active { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
     .badge-curved.Expiring { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
     .badge-curved.Expired { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
-    .badge-curved.NoSub { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
 
-    /* حل مشكلة ألوان القوائم المنسدلة (Dropdown Options Styling) */
+    .card-actions-row { display: flex; gap: 8px; }
+
+    .action-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .action-icon-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* ألوان الـ Select Options */
     .form-group-custom select {
-      background-color: #1e293b !important;
-      color: #ffffff !important;
+      background-color: var(--select-bg) !important;
+      color: var(--text-bright) !important;
       cursor: pointer;
     }
 
     .form-group-custom select option {
-      background-color: #0f172a !important;
-      color: #ffffff !important;
+      background-color: var(--select-opt-bg) !important;
+      color: var(--text-bright) !important;
       padding: 12px;
     }
 
     .form-group-custom select option:hover,
     .form-group-custom select option:focus,
-    .form-group-custom select option:active,
     .form-group-custom select option:checked {
-      background-color: #6366f1 !important;
+      background-color: var(--primary) !important;
       color: #ffffff !important;
     }
 
-    /* Modals */
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(16px);
       z-index: 1000;
       align-items: center;
@@ -354,7 +366,7 @@
     .modal-backdrop.active { display: flex; }
 
     .modal-glass-box {
-      background: #1e293b;
+      background: var(--panel-bg);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
       width: 100%;
@@ -363,7 +375,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
     }
 
     .modal-header-text { font-size: 1.3rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
@@ -374,9 +385,9 @@
     .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
       padding: 14px 18px;
       border-radius: var(--radius-md);
-      background: #0f172a;
-      border: 1px solid var(--border-glass);
-      color: white;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-bright);
       font-size: 0.95rem;
       outline: none;
     }
@@ -388,8 +399,8 @@
       .dashboard-layout { grid-template-columns: 1fr; }
       aside.sidebar { flex-direction: row; justify-content: space-around; }
       .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .search-input-wrapper { width: 100%; }
-      .members-detailed-grid { grid-template-columns: 1fr; }
+      .horizontal-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .sub-info-col { flex-wrap: wrap; justify-content: flex-start; gap: 16px; }
     }
   </style>
 </head>
@@ -405,9 +416,14 @@
           <p>نظام الإدارة الذكي - عمان (الأردن)</p>
         </div>
       </div>
-      <button class="btn-liquid" onclick="openMemberModal()">
-        <i class="fa-solid fa-user-plus"></i> إضافة مشترك جديد
-      </button>
+      <div class="header-controls">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغيير المود">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+        <button class="btn-liquid" onclick="openMemberModal()">
+          <i class="fa-solid fa-user-plus"></i> إضافة مشترك جديد
+        </button>
+      </div>
     </header>
 
     <div class="dashboard-layout">
@@ -458,23 +474,26 @@
 
           <div class="data-panel">
             <div class="panel-header">
-              <h2>سجل الاشتراك والنشاطات الحديثة</h2>
+              <h2>آخر الاشتراكات المضافة حديثاً</h2>
             </div>
-            <div class="members-detailed-grid" id="recent-subscriptions-list"></div>
+            <div class="horizontal-cards-list" id="recent-subscriptions-list"></div>
           </div>
         </section>
 
-        <!-- سجل الأعضاء التفصيلي -->
+        <!-- سجل الأعضاء التفصيلي بقوائم مفصّلة بطول كامل -->
         <section id="view-members" class="section-view">
           <div class="data-panel">
             <div class="panel-header">
-              <h2>سجل الأعضاء والاشتراكات التفصيلي</h2>
-              <div class="search-input-wrapper">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="member-search" placeholder="ابحث بالإسم أو رقم الهاتف..." oninput="filterMembers()">
+              <h2>سجل الأعضاء والاشتراكات</h2>
+              <div class="filter-tabs">
+                <button class="tab-btn active" onclick="filterMemberTab('all', this)">الكل</button>
+                <button class="tab-btn" onclick="filterMemberTab('Active', this)">🟢 نشطين</button>
+                <button class="tab-btn" onclick="filterMemberTab('Expiring Soon', this)">🟡 قربت تنتهي</button>
+                <button class="tab-btn" onclick="filterMemberTab('Expired', this)">🔴 منتهية</button>
               </div>
             </div>
-            <div class="members-detailed-grid" id="all-members-list"></div>
+
+            <div class="horizontal-cards-list" id="all-members-list"></div>
           </div>
         </section>
 
@@ -487,7 +506,7 @@
                 + إضافة خطة جديدة
               </button>
             </div>
-            <div class="members-detailed-grid" id="all-plans-list"></div>
+            <div class="horizontal-cards-list" id="all-plans-list"></div>
           </div>
         </section>
 
@@ -581,6 +600,16 @@
   <script>
     let globalMembers = [];
     let globalPlans = [];
+    let currentFilter = 'all';
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      document.getElementById('theme-icon').className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    if (localStorage.getItem('theme') === 'light') toggleTheme();
 
     function switchSection(viewId, element) {
       document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
@@ -610,20 +639,18 @@
         container.innerHTML = '';
         (data.recentSubscriptions || []).forEach(s => {
           container.innerHTML += `
-            <div class="detailed-card">
-              <div class="card-top">
-                <div>
-                  <div class="member-main-name">${s.member_name}</div>
-                  <div class="member-phone-number"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
-                </div>
-                <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
+            <div class="horizontal-card">
+              <div class="member-info-col">
+                <div class="member-name-txt">${s.member_name}</div>
+                <div class="member-phone-txt"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
               </div>
-              <div class="subscription-details-box">
-                <div class="detail-row"><span class="detail-label">الخطة:</span><span class="detail-val">${s.plan_name}</span></div>
-                <div class="detail-row"><span class="detail-label">السعر:</span><span class="detail-val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
-                <div class="detail-row"><span class="detail-label">بدأ في:</span><span class="detail-val">${s.start_date}</span></div>
-                <div class="detail-row"><span class="detail-label">ينتهي في:</span><span class="detail-val">${s.end_date}</span></div>
+              <div class="sub-info-col">
+                <div class="info-sub-item"><span class="lbl">الخطة</span><span class="val">${s.plan_name}</span></div>
+                <div class="info-sub-item"><span class="lbl">السعر</span><span class="val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
+                <div class="info-sub-item"><span class="lbl">بدأ في</span><span class="val">${s.start_date}</span></div>
+                <div class="info-sub-item"><span class="lbl">ينتهي في</span><span class="val">${s.end_date}</span></div>
               </div>
+              <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
             </div>
           `;
         });
@@ -634,35 +661,46 @@
       try {
         const res = await fetch('/api/members');
         globalMembers = await res.json();
-        renderMembers(globalMembers);
+        renderMembers();
       } catch (e) { console.error(e); }
     }
 
-    function renderMembers(list) {
+    function filterMemberTab(tab, btn) {
+      currentFilter = tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMembers();
+    }
+
+    function renderMembers() {
       const container = document.getElementById('all-members-list');
       container.innerHTML = '';
+
+      let list = globalMembers;
+      if (currentFilter !== 'all') {
+        list = globalMembers.filter(m => m.status === currentFilter);
+      }
+
       list.forEach(m => {
         const statusClass = m.status === 'Active' ? 'Active' : (m.status === 'Expiring Soon' ? 'Expiring' : (m.status === 'Expired' ? 'Expired' : 'NoSub'));
         const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'قريب الانتهاء' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
         
         container.innerHTML += `
-          <div class="detailed-card">
-            <div class="card-top">
-              <div>
-                <div class="member-main-name">${m.full_name}</div>
-                <div class="member-phone-number"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
-              </div>
-              <span class="badge-curved ${statusClass}">${statusText}</span>
+          <div class="horizontal-card">
+            <div class="member-info-col">
+              <div class="member-name-txt">${m.full_name}</div>
+              <div class="member-phone-txt"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
             </div>
             
-            <div class="subscription-details-box">
-              <div class="detail-row"><span class="detail-label">الخطة الحالية:</span><span class="detail-val">${m.plan_name || 'لا يوجد'}</span></div>
-              <div class="detail-row"><span class="detail-label">تاريخ البدء:</span><span class="detail-val">${m.start_date || 'غير محدد'}</span></div>
-              <div class="detail-row"><span class="detail-label">تاريخ الانتهاء:</span><span class="detail-val">${m.end_date || 'غير محدد'}</span></div>
-              <div class="detail-row"><span class="detail-label">الملاحظات:</span><span class="detail-val">${m.notes || 'لا يوجد'}</span></div>
+            <div class="sub-info-col">
+              <div class="info-sub-item"><span class="lbl">الخطة الحالية</span><span class="val">${m.plan_name || 'لا يوجد'}</span></div>
+              <div class="info-sub-item"><span class="lbl">تاريخ البدء</span><span class="val">${m.start_date || 'غير محدد'}</span></div>
+              <div class="info-sub-item"><span class="lbl">تاريخ الانتهاء</span><span class="val">${m.end_date || 'غير محدد'}</span></div>
             </div>
 
-            <div class="card-actions-bar">
+            <span class="badge-curved ${statusClass}">${statusText}</span>
+
+            <div class="card-actions-row">
               <button class="action-icon-btn" onclick="openRenewModal(${m.id})" title="تجديد الاشتراك"><i class="fa-solid fa-rotate-right"></i></button>
               <button class="action-icon-btn" onclick="editMember(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
               <button class="action-icon-btn" onclick="deleteMember(${m.id})" title="حذف"><i class="fa-solid fa-trash"></i></button>
@@ -670,12 +708,6 @@
           </div>
         `;
       });
-    }
-
-    function filterMembers() {
-      const q = document.getElementById('member-search').value.toLowerCase();
-      const filtered = globalMembers.filter(m => m.full_name.toLowerCase().includes(q) || m.phone.includes(q));
-      renderMembers(filtered);
     }
 
     async function loadPlans() {
@@ -692,15 +724,13 @@
 
         globalPlans.forEach(p => {
           container.innerHTML += `
-            <div class="detailed-card">
-              <div class="card-top">
-                <div>
-                  <div class="member-main-name">${p.name}</div>
-                  <div class="member-phone-number"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
-                </div>
-                <div style="font-weight:900; font-size:1.3rem; color:var(--accent-green);">${p.price} د.أ</div>
+            <div class="horizontal-card">
+              <div class="member-info-col">
+                <div class="member-name-txt">${p.name}</div>
+                <div class="member-phone-txt"><i class="fa-solid fa-calendar-days"></i> المدة: ${p.duration_days} يوم</div>
               </div>
-              <div class="card-actions-bar">
+              <div style="font-weight:900; font-size:1.3rem; color:var(--accent-green);">${p.price} د.أ</div>
+              <div class="card-actions-row">
                 <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
