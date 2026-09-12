@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IRON CORE — Gym Management System</title>
-  <!-- Google Fonts & Font Awesome Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -42,7 +41,6 @@
       overflow-x: hidden;
     }
 
-    /* Layout */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-secondary);
@@ -131,7 +129,6 @@
       gap: 12px;
     }
 
-    /* Buttons */
     .btn {
       padding: 10px 18px;
       border-radius: 8px;
@@ -179,7 +176,6 @@
       color: white;
     }
 
-    /* Content Area & Page Animations */
     .content {
       padding: 32px;
       flex: 1;
@@ -205,7 +201,6 @@
       }
     }
 
-    /* Dashboard Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -252,7 +247,6 @@
       font-size: 1.5rem;
     }
 
-    /* Tables & Controls */
     .table-container {
       background: var(--bg-secondary);
       border-radius: 12px;
@@ -321,7 +315,6 @@
       background: rgba(255, 255, 255, 0.02);
     }
 
-    /* Badges */
     .badge {
       padding: 6px 12px;
       border-radius: 20px;
@@ -348,7 +341,6 @@
       color: var(--accent-red);
     }
 
-    /* Modal Overlay & Card */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -417,7 +409,6 @@
       gap: 16px;
     }
 
-    /* Toast Notifications */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -446,21 +437,6 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    /* Skeleton Loading State */
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      border-radius: 4px;
-      height: 20px;
-    }
-
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
       .sidebar { width: 70px; }
       .brand span, .nav-item span { display: none; }
@@ -506,7 +482,6 @@
     </ul>
   </aside>
 
-  <!-- Main Application Wrapper -->
   <div class="main-wrapper">
     <header>
       <div class="header-title" id="page-title">Dashboard Overview</div>
@@ -563,7 +538,7 @@
           </div>
         </div>
 
-        <h3 style="margin-bottom: 12px;">Recent Activity</h3>
+        <h3 style="margin-bottom: 12px;">Recent Subscriptions</h3>
         <div class="table-container">
           <table class="data-table">
             <thead>
@@ -582,7 +557,7 @@
         </div>
       </section>
 
-      <!-- MEMBERS VIEW (ALL, ACTIVE, EXPIRING, EXPIRED) -->
+      <!-- MEMBERS VIEW -->
       <section id="members" class="page-section">
         <div class="table-container">
           <div class="table-toolbar">
@@ -647,8 +622,6 @@
     </div>
   </div>
 
-  <!-- MODALS -->
-
   <!-- Add/Edit Member Modal -->
   <div class="modal-overlay" id="member-modal">
     <div class="modal">
@@ -660,7 +633,7 @@
         <input type="hidden" id="member-id">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" id="member-name" required placeholder="e.g. John Doe">
+          <input type="text" id="member-name" required placeholder="e.g. Ahmad Khaled">
         </div>
         <div class="form-group">
           <label>Phone Number *</label>
@@ -706,7 +679,6 @@
         <div class="form-group">
           <label>Membership Plan *</label>
           <select id="sub-plan-id" required onchange="calculateSubExpiration()">
-            <!-- Populated via JS -->
           </select>
         </div>
         <div class="form-row">
@@ -732,7 +704,6 @@
         <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('details-modal')"></i>
       </div>
       <div id="details-content">
-        <!-- Dynamically Populated -->
       </div>
     </div>
   </div>
@@ -769,19 +740,14 @@
     </div>
   </div>
 
-  <!-- Notifications Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- CLIENT JAVASCRIPT LOGIC -->
   <script>
-    // State Application Store
     let membersData = [];
     let plansData = [];
     let currentTab = 'dashboard';
 
-    // Initialize Application
     document.addEventListener('DOMContentLoaded', () => {
-      // Default dates to today
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('member-start-date').value = today;
       document.getElementById('sub-start-date').value = today;
@@ -795,7 +761,6 @@
       await fetchDashboardStats();
     }
 
-    // Tab Navigation Switcher
     function switchTab(tabId) {
       currentTab = tabId;
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -831,7 +796,6 @@
       }
     }
 
-    // --- Data Fetchers ---
     async function fetchPlans() {
       try {
         const res = await fetch('/api/plans');
@@ -865,7 +829,7 @@
 
         const recentTbody = document.getElementById('dashboard-recent-tbody');
         recentTbody.innerHTML = '';
-        if (data.recentSubscriptions.length === 0) {
+        if (!data.recentSubscriptions || data.recentSubscriptions.length === 0) {
           recentTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No recent subscriptions recorded</td></tr>`;
           return;
         }
@@ -886,7 +850,6 @@
       }
     }
 
-    // --- Render Tables ---
     function renderMembersTable() {
       const tbody = document.getElementById('members-tbody');
       const searchVal = document.getElementById('member-search').value.toLowerCase();
@@ -929,6 +892,10 @@
     function renderPlansTable() {
       const tbody = document.getElementById('plans-tbody');
       tbody.innerHTML = '';
+      if (plansData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No membership plans found</td></tr>`;
+        return;
+      }
       plansData.forEach(p => {
         tbody.innerHTML += `
           <tr>
@@ -953,7 +920,6 @@
       return `<span class="badge" style="background:var(--bg-hover); color:var(--text-muted)">None</span>`;
     }
 
-    // --- Dropdown Helpers ---
     function populatePlanDropdowns() {
       const memberPlanSelect = document.getElementById('member-plan');
       const subPlanSelect = document.getElementById('sub-plan-id');
@@ -980,7 +946,6 @@
       });
     }
 
-    // --- Form Calculation Logic ---
     function calculateMemberExpiration() {
       const planSelect = document.getElementById('member-plan');
       const startDateVal = document.getElementById('member-start-date').value;
@@ -1015,7 +980,6 @@
       }
     }
 
-    // --- Modal Controls & Handlers ---
     function openModal(id) {
       document.getElementById(id).classList.add('active');
     }
@@ -1054,12 +1018,14 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
         showToast(id ? 'Member updated successfully' : 'Member registered successfully');
         closeModal('member-modal');
         loadAllData();
       } catch (err) {
-        showToast('Failed to save member', 'error');
+        showToast(err.message || 'Failed to save member', 'error');
       }
     }
 
@@ -1072,7 +1038,6 @@
       document.getElementById('member-notes').value = m.notes || '';
       document.getElementById('member-modal-title').innerText = 'Edit Member Details';
       
-      // Hide initial subscription creation input on plain edit
       document.getElementById('initial-plan-group').style.display = 'none';
       document.getElementById('initial-date-group').style.display = 'none';
       openModal('member-modal');
@@ -1112,13 +1077,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
         showToast('Subscription created successfully');
         closeModal('subscription-modal');
         closeModal('details-modal');
         loadAllData();
       } catch (err) {
-        showToast('Failed to create subscription', 'error');
+        showToast(err.message || 'Failed to create subscription', 'error');
       }
     }
 
@@ -1136,7 +1103,8 @@
                 <i class="fa-solid fa-rotate-right"></i> Renew Subscription
               </button>
             </div>
-            <p style="color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> ${data.phone}</p>${data.notes ? `<p style="margin-top:8px; font-size:0.9rem;"><strong>Notes:</strong> ${data.notes}</p>` : ''}
+            <p style="color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> ${data.phone}</p>
+            ${data.notes ? `<p style="margin-top:8px; font-size:0.9rem;"><strong>Notes:</strong> ${data.notes}</p>` : ''}
           </div>
 
           <h4 style="margin-bottom:10px;">Subscription History</h4>
@@ -1152,7 +1120,7 @@
                 </tr>
               </thead>
               <tbody>
-                ${data.history.length === 0 ? '<tr><td colspan="5">No subscription history</td></tr>' : 
+                ${!data.history || data.history.length === 0 ? '<tr><td colspan="5">No subscription history</td></tr>' : 
                   data.history.map(s => `
                     <tr>
                       <td>${s.plan_name}</td>
@@ -1173,7 +1141,6 @@
       }
     }
 
-    // --- Membership Plan CRUD Modal Handlers ---
     function openPlanModal() {
       document.getElementById('plan-form').reset();
       document.getElementById('plan-id').value = '';
@@ -1198,7 +1165,7 @@
       const id = document.getElementById('plan-id').value;
       const payload = {
         name: document.getElementById('plan-name').value,
-        description: document.getElementById('plan-desc').value,
+        description: document.getElementById('plan-desc').value || '',
         price: parseFloat(document.getElementById('plan-price').value),
         duration_days: parseInt(document.getElementById('plan-duration').value),
         active: 1
@@ -1213,12 +1180,17 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error();
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to save plan');
+        }
+
         showToast(id ? 'Plan updated successfully' : 'Plan created successfully');
         closeModal('plan-modal');
         loadAllData();
       } catch (err) {
-        showToast('Failed to save plan', 'error');
+        showToast(err.message || 'Failed to save plan', 'error');
       }
     }
 
@@ -1233,7 +1205,6 @@
       }
     }
 
-    // UI Toast System
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
