@@ -9,20 +9,19 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialize SQLite Database
+// Initialize Local SQLite Database
 const db = new sqlite3.Database('./gym_system.db', (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
   } else {
-    console.log('Connected to SQLite database.');
+    console.log('Connected to local SQLite database.');
     initDatabase();
   }
 });
 
-// Database Initialization & Schema Creation
+// Database Initialization
 function initDatabase() {
   db.serialize(() => {
-    // Enable Foreign Keys
     db.run('PRAGMA foreign_keys = ON');
 
     // Members Table
@@ -68,7 +67,7 @@ function initDatabase() {
   });
 }
 
-// Seed initial default plans if empty
+// Seed initial plans if empty
 function seedDefaultPlans() {
   db.get('SELECT COUNT(*) as count FROM membership_plans', [], (err, row) => {
     if (err) return;
@@ -83,7 +82,7 @@ function seedDefaultPlans() {
   });
 }
 
-// Helper to calculate subscription status based on target date
+// Calculate status helper
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
   const now = new Date();
@@ -101,7 +100,6 @@ function calculateStatus(endDateStr) {
 
 // ================= API ROUTES ================= //
 
-// --- Dashboard Statistics API ---
 app.get('/api/dashboard/stats', (req, res) => {
   const query = `
     SELECT 
@@ -117,9 +115,7 @@ app.get('/api/dashboard/stats', (req, res) => {
   db.all(query, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    let totalActive = 0;
-    let totalExpiring = 0;
-    let totalExpired = 0;
+    let totalActive = 0, totalExpiring = 0, totalExpired = 0;
 
     const subscriptionsWithStatus = (rows || []).map((sub) => {
       const status = calculateStatus(sub.end_date);
@@ -145,7 +141,6 @@ app.get('/api/dashboard/stats', (req, res) => {
   });
 });
 
-// --- Membership Plans API ---
 app.get('/api/plans', (req, res) => {
   db.all('SELECT * FROM membership_plans ORDER BY id ASC', [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -156,7 +151,7 @@ app.get('/api/plans', (req, res) => {
 app.post('/api/plans', (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
   if (!name || price === undefined || price === null || !duration_days) {
-    return res.status(400).json({ error: 'Name, price, and duration are required fields.' });
+    return res.status(400).json({ error: 'Name, price, and duration are required.' });
   }
 
   const query = 'INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES (?, ?, ?, ?, ?)';
@@ -182,7 +177,6 @@ app.delete('/api/plans/:id', (req, res) => {
   });
 });
 
-// --- Members API ---
 app.get('/api/members', (req, res) => {
   const query = `
     SELECT 
@@ -204,18 +198,17 @@ app.get('/api/members', (req, res) => {
   db.all(query, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    const members = (rows || []).map((row) => {
-      const status = row.end_date ? calculateStatus(row.end_date) : 'No Subscription';
-      return { ...row, status };
-    });
+    const members = (rows || []).map((row) => ({
+      ...row,
+      status: row.end_date ? calculateStatus(row.end_date) : 'No Subscription'
+    }));
 
     res.json(members);
   });
 });
 
 app.get('/api/members/:id', (req, res) => {
-  const memberId = req.params.id;
-  db.get('SELECT * FROM members WHERE id = ?', [memberId], (err, member) => {
+  db.get('SELECT * FROM members WHERE id = ?', [req.params.id], (err, member) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!member) return res.status(404).json({ error: 'Member not found' });
 
@@ -226,7 +219,7 @@ app.get('/api/members/:id', (req, res) => {
       WHERE s.member_id = ?
       ORDER BY s.id DESC
     `;
-    db.all(subQuery, [memberId], (err, subscriptions) => {
+    db.all(subQuery, [req.params.id], (err, subscriptions) => {
       if (err) return res.status(500).json({ error: err.message });
 
       const history = (subscriptions || []).map((sub) => ({
@@ -234,11 +227,9 @@ app.get('/api/members/:id', (req, res) => {
         status: calculateStatus(sub.end_date)
       }));
 
-      const currentSub = history.length > 0 ? history[0] : null;
-
       res.json({
         ...member,
-        currentSubscription: currentSub,
+        currentSubscription: history[0] || null,
         history
       });
     });
@@ -264,7 +255,6 @@ app.post('/api/members', (req, res) => {
         const start = new Date(start_date);
         const end = new Date(start);
         end.setDate(end.getDate() + plan.duration_days);
-
         const endDateStr = end.toISOString().split('T')[0];
 
         db.run(
@@ -284,7 +274,7 @@ app.post('/api/members', (req, res) => {
 
 app.put('/api/members/:id', (req, res) => {
   const { full_name, phone, notes } = req.body;
-  db.run('UPDATE members SET full_name = ?, phone = ? , notes = ? WHERE id = ?', [full_name, phone, notes || '', req.params.id], function (err) {
+  db.run('UPDATE members SET full_name = ?, phone = ?, notes = ? WHERE id = ?', [full_name, phone, notes || '', req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ updated: this.changes });
   });
@@ -297,7 +287,6 @@ app.delete('/api/members/:id', (req, res) => {
   });
 });
 
-// --- Subscriptions API ---
 app.post('/api/subscriptions', (req, res) => {
   const { member_id, plan_id, start_date } = req.body;
   if (!member_id || !plan_id || !start_date) {
@@ -305,27 +294,28 @@ app.post('/api/subscriptions', (req, res) => {
   }
 
   db.get('SELECT * FROM membership_plans WHERE id = ?', [plan_id], (err, plan) => {
-    if (err || !plan) return res.status(404).json({ error: 'Membership plan not found.' });
+    if (err || !plan) return res.status(404).json({ error: 'Plan not found' });
 
     const start = new Date(start_date);
     const end = new Date(start);
     end.setDate(end.getDate() + plan.duration_days);
     const endDateStr = end.toISOString().split('T')[0];
 
-    const query = 'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES (?, ?, ?, ?, ?)';
-    db.run(query, [member_id, plan_id, plan.price, start_date, endDateStr], function (err) {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ id: this.lastID, member_id, plan_id, price: plan.price, start_date, end_date: endDateStr });
-    });
+    db.run(
+      'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES (?, ?, ?, ?, ?)',
+      [member_id, plan_id, plan.price, start_date, endDateStr],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: this.lastID, member_id, plan_id, price: plan.price, start_date, end_date: endDateStr });
+      }
+    );
   });
 });
 
-// Fallback route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
 app.listen(PORT, () => {
-  console.log(`Gym Management System server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
