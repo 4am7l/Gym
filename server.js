@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// إعداد الاتصال المباشر بقاعدة بيانات Supabase المضمون بدون أخطاء URL Encoding
+// إعداد الاتصال بقاعدة بيانات Supabase 
 const pool = new Pool({
   user: 'postgres',
   host: 'db.cufcarfhygveznaufruv.supabase.co',
