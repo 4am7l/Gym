@@ -8,11 +8,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// رابط اتصال Supabase يتم قراءته من متغيرات البيئة في Render
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:6hC?Qt8mASzsJd+@db.cufcarfhygveznaufruv.supabase.co:5432/postgres";
-
+// إعداد الاتصال المباشر بقاعدة بيانات Supabase المضمون بدون أخطاء URL Encoding
 const pool = new Pool({
-  connectionString: DATABASE_URL,
+  user: 'postgres',
+  host: 'db.cufcarfhygveznaufruv.supabase.co',
+  database: 'postgres',
+  password: '6hC?Qt8mASzsJd+',
+  port: 5432,
   ssl: { rejectUnauthorized: false }
 });
 
