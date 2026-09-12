@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>نظام أيرون كور جيم الاحترافي</title>
   
-  <!-- خط Tajawal والـ FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -14,18 +13,18 @@
   <style>
     :root {
       --bg-dark: #090a0f;
-      --panel-glass: rgba(18, 20, 29, 0.65);
-      --card-glass: rgba(255, 255, 255, 0.03);
-      --card-glass-hover: rgba(255, 255, 255, 0.07);
-      --border-glass: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(255, 255, 255, 0.15);
+      --panel-glass: rgba(18, 20, 29, 0.75);
+      --card-glass: rgba(255, 255, 255, 0.04);
+      --card-glass-hover: rgba(255, 255, 255, 0.08);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --border-glow: rgba(99, 102, 241, 0.4);
       
       --text-bright: #ffffff;
       --text-sub: #94a3b8;
       --text-dim: #64748b;
       
-      --accent-white: #ffffff;
-      --accent-neon: #38bdf8;
+      --primary: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       --accent-green: #4ade80;
       --accent-amber: #fbbf24;
       --accent-red: #f87171;
@@ -51,13 +50,12 @@
       flex-direction: column;
       overflow-x: hidden;
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
     }
 
-    /* Container للكمبيوتر والأجهزة العريضة */
     .app-viewport {
-      max-width: 1300px;
+      max-width: 1350px;
       width: 100%;
       margin: 0 auto;
       padding: 24px;
@@ -67,7 +65,6 @@
       flex: 1;
     }
 
-    /* الهيدر العلوي بنمط زجاجي متطور Liquid Glass Header */
     header.main-header {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
@@ -81,23 +78,19 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .brand-section { display: flex; align-items: center; gap: 16px; }
 
     .brand-icon {
       width: 48px;
       height: 48px;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-      color: #0f172a;
+      background: var(--primary-gradient);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.4rem;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
     }
 
     .brand-title h1 {
@@ -109,20 +102,10 @@
       -webkit-text-fill-color: transparent;
     }
 
-    .brand-title p {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-    }
+    .brand-title p { font-size: 0.85rem; color: var(--text-sub); }
 
-    .header-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    /* زر التفاعل الرئيسي للمستخدم */
     .btn-liquid {
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-      backdrop-filter: blur(10px);
+      background: var(--primary-gradient);
       border: 1px solid var(--border-glow);
       color: var(--text-bright);
       padding: 12px 24px;
@@ -133,23 +116,21 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
     .btn-liquid:hover {
-      background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
     }
 
-    /* تخطيط الصفحة الرئيسي للكمبيوتر */
     .dashboard-layout {
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 260px 1fr;
       gap: 24px;
     }
 
-    /* القائمة الجانبية للبيسي Sidebar Navigation */
     aside.sidebar {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
@@ -175,32 +156,15 @@
       transition: all 0.3s ease;
     }
 
-    .nav-link i {
-      font-size: 1.2rem;
-      width: 24px;
-      text-align: center;
-    }
-
-    .nav-link:hover {
-      background: var(--card-glass-hover);
-      color: var(--text-bright);
-    }
-
+    .nav-link:hover { background: var(--card-glass-hover); color: var(--text-bright); }
     .nav-link.active {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
-      border: 1px solid var(--border-glow);
-      color: var(--text-bright);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     }
 
-    /* المحتوى الرئيسي للمعلومات */
-    .content-area {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
+    .content-area { display: flex; flex-direction: column; gap: 24px; }
 
-    /* شبكة الإحصائيات الفخمة */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -212,46 +176,29 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      position: relative;
-      overflow: hidden;
+      gap: 10px;
       transition: all 0.3s ease;
     }
 
-    .glass-card:hover {
-      border-color: var(--border-glow);
-      transform: translateY(-3px);
-    }
+    .glass-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
 
     .card-icon {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-glass);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
-      color: var(--text-bright);
     }
 
-    .card-value {
-      font-size: 2.2rem;
-      font-weight: 900;
-      line-height: 1;
-    }
+    .card-value { font-size: 2.2rem; font-weight: 900; }
+    .card-label { font-size: 0.9rem; color: var(--text-sub); font-weight: 600; }
 
-    .card-label {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-
-    /* لوحة الجداول والأعضاء الزجاجية */
     .data-panel {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
@@ -263,180 +210,14 @@
       gap: 20px;
     }
 
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; }
+    .panel-header h2 { font-size: 1.25rem; font-weight: 800; }
 
-    .panel-header h2 {
-      font-size: 1.25rem;
-      font-weight: 800;
-    }
-
-    /* البحث الزجاجي الأنيق */
-    .search-input-wrapper {
-      position: relative;
-      width: 320px;
-    }
+    .search-input-wrapper { position: relative; width: 320px; }
 
     .search-input-wrapper input {
       width: 100%;
       padding: 12px 20px 12px 44px;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-glass);
-      color: white;
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .search-input-wrapper input:focus {
-      border-color: var(--border-glow);
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    .search-input-wrapper i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-sub);
-    }
-
-    /* قائمة الكروت المنحنية للمعلومات */
-    .items-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-    }
-
-    .item-card-glass {
-      background: var(--card-glass);
-      border: 1px solid var(--border-glass);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-
-    .item-card-glass:hover {
-      background: var(--card-glass-hover);
-      border-color: var(--border-glow);
-    }
-
-    .item-info-main {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .item-name {
-      font-size: 1.1rem;
-      font-weight: 800;
-    }
-
-    .item-meta {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* الشارات المنحنية بكيرف زجاجي */
-    .badge-curved {
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      backdrop-filter: blur(8px);
-    }
-
-    .badge-curved.Active { background: rgba(74, 222, 128, 0.1); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
-    .badge-curved.Expiring { background: rgba(251, 191, 36, 0.1); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
-    .badge-curved.Expired { background: rgba(248, 113, 113, 0.1); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .action-icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-glass);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-bright);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .action-icon-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--border-glow);
-    }
-
-    /* Modals النوافذ الزجاجية بكيرف عالي */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(16px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .modal-backdrop.active {
-      display: flex;
-      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .modal-glass-box {
-      background: rgba(18, 20, 29, 0.9);
-      border: 1px solid var(--border-glow);
-      border-radius: var(--radius-xl);
-      width: 100%;
-      max-width: 480px;
-      padding: 32px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .modal-header-text {
-      font-size: 1.3rem;
-      font-weight: 800;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-group-custom {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .form-group-custom label {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-
-    .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
-      padding: 14px 18px;
       border-radius: var(--radius-md);
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-glass);
@@ -445,30 +226,170 @@
       outline: none;
     }
 
-    .form-group-custom input:focus {
+    .search-input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+
+    /* شبكة بطاقات الأعضاء المفصلة (Detailed Member Cards) */
+    .members-detailed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .detailed-card {
+      background: var(--card-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .detailed-card:hover {
+      background: var(--card-glass-hover);
       border-color: var(--border-glow);
-      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .member-main-name { font-size: 1.2rem; font-weight: 800; color: white; }
+    .member-phone-number { font-size: 0.88rem; color: var(--text-sub); margin-top: 4px; }
+
+    .subscription-details-box {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .detail-label { color: var(--text-sub); }
+    .detail-val { font-weight: 700; color: var(--text-bright); }
+
+    .card-actions-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 12px;
+    }
+
+    .action-icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-glass);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-icon-btn:hover { background: var(--primary); border-color: var(--primary); }
+
+    .badge-curved {
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .badge-curved.Active { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
+    .badge-curved.Expiring { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
+    .badge-curved.Expired { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
+    .badge-curved.NoSub { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+    /* حل مشكلة ألوان القوائم المنسدلة (Dropdown Options Styling) */
+    .form-group-custom select {
+      background-color: #1e293b !important;
+      color: #ffffff !important;
+      cursor: pointer;
+    }
+
+    .form-group-custom select option {
+      background-color: #0f172a !important;
+      color: #ffffff !important;
+      padding: 12px;
+    }
+
+    .form-group-custom select option:hover,
+    .form-group-custom select option:focus,
+    .form-group-custom select option:active,
+    .form-group-custom select option:checked {
+      background-color: #6366f1 !important;
+      color: #ffffff !important;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-backdrop.active { display: flex; }
+
+    .modal-glass-box {
+      background: #1e293b;
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    }
+
+    .modal-header-text { font-size: 1.3rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+
+    .form-group-custom { display: flex; flex-direction: column; gap: 8px; }
+    .form-group-custom label { font-size: 0.9rem; color: var(--text-sub); font-weight: 600; }
+
+    .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      background: #0f172a;
+      border: 1px solid var(--border-glass);
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
     }
 
     .section-view { display: none; }
-    .section-view.active { display: block; animation: sectionFade 0.3s ease; }
+    .section-view.active { display: block; }
 
-    @keyframes sectionFade {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    /* الاستجابة للموبايل تلقائياً Responsive */
     @media (max-width: 900px) {
       .dashboard-layout { grid-template-columns: 1fr; }
-      aside.sidebar { flex-direction: row; justify-content: space-around; padding: 12px; }
+      aside.sidebar { flex-direction: row; justify-content: space-around; }
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       .search-input-wrapper { width: 100%; }
+      .members-detailed-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -476,7 +397,6 @@
 
   <div class="app-viewport">
     
-    <!-- الهيدر العلوي الزجاجي -->
     <header class="main-header">
       <div class="brand-section">
         <div class="brand-icon"><i class="fa-solid fa-dumbbell"></i></div>
@@ -485,17 +405,13 @@
           <p>نظام الإدارة الذكي - عمان (الأردن)</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-liquid" onclick="openMemberModal()">
-          <i class="fa-solid fa-user-plus"></i> إضافة مشترك جديد
-        </button>
-      </div>
+      <button class="btn-liquid" onclick="openMemberModal()">
+        <i class="fa-solid fa-user-plus"></i> إضافة مشترك جديد
+      </button>
     </header>
 
-    <!-- التخطيط العام للجيم -->
     <div class="dashboard-layout">
       
-      <!-- القائمة الجانبية للتنقل (بيسي وموبايل) -->
       <aside class="sidebar">
         <div class="nav-link active" onclick="switchSection('dashboard', this)">
           <i class="fa-solid fa-chart-pie"></i>
@@ -503,7 +419,7 @@
         </div>
         <div class="nav-link" onclick="switchSection('members', this)">
           <i class="fa-solid fa-address-book"></i>
-          <span>الأعضاء</span>
+          <span>سجل الأعضاء التفصيلي</span>
         </div>
         <div class="nav-link" onclick="switchSection('plans', this)">
           <i class="fa-solid fa-layer-group"></i>
@@ -511,16 +427,15 @@
         </div>
       </aside>
 
-      <!-- المنطقة الرئيسية للمحتوى -->
       <div class="content-area">
         
-        <!-- قسم الداشبورد -->
+        <!-- الداشبورد -->
         <section id="view-dashboard" class="section-view active">
           <div class="stats-row">
             <div class="glass-card">
               <div class="card-icon"><i class="fa-solid fa-users"></i></div>
               <div class="card-value" id="stat-members">0</div>
-              <div class="card-label">إجمالي الاعضاء</div>
+              <div class="card-label">إجمالي المشتركين</div>
             </div>
             <div class="glass-card">
               <div class="card-icon" style="color: var(--accent-green);"><i class="fa-solid fa-bolt"></i></div>
@@ -543,36 +458,36 @@
 
           <div class="data-panel">
             <div class="panel-header">
-              <h2>آخر النشاطات والاشتراكات</h2>
+              <h2>سجل الاشتراك والنشاطات الحديثة</h2>
             </div>
-            <div class="items-grid" id="recent-subscriptions-list"></div>
+            <div class="members-detailed-grid" id="recent-subscriptions-list"></div>
           </div>
         </section>
 
-        <!-- قسم الأعضاء -->
+        <!-- سجل الأعضاء التفصيلي -->
         <section id="view-members" class="section-view">
           <div class="data-panel">
             <div class="panel-header">
-              <h2>سجل الأعضاء الكامل</h2>
+              <h2>سجل الأعضاء والاشتراكات التفصيلي</h2>
               <div class="search-input-wrapper">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="member-search" placeholder="ابحث بالإسم أو الهاتف..." oninput="filterMembers()">
+                <input type="text" id="member-search" placeholder="ابحث بالإسم أو رقم الهاتف..." oninput="filterMembers()">
               </div>
             </div>
-            <div class="items-grid" id="all-members-list"></div>
+            <div class="members-detailed-grid" id="all-members-list"></div>
           </div>
         </section>
 
-        <!-- قسم الخطط -->
+        <!-- الخطط -->
         <section id="view-plans" class="section-view">
           <div class="data-panel">
             <div class="panel-header">
-              <h2>الخطط والاشتراكات المتاحة</h2>
-              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 8px 16px; font-size: 0.85rem;">
-                + إضافة خطة رياضية
+              <h2>الخطط والرياضات المتاحة</h2>
+              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 10px 18px; font-size: 0.88rem;">
+                + إضافة خطة جديدة
               </button>
             </div>
-            <div class="items-grid" id="all-plans-list"></div>
+            <div class="members-detailed-grid" id="all-plans-list"></div>
           </div>
         </section>
 
@@ -592,7 +507,7 @@
       <form id="member-form" onsubmit="handleMemberSubmit(event)">
         <input type="hidden" id="member-id">
         <div class="form-group-custom">
-          <label>اسم المشترك</label>
+          <label>اسم المشترك الكامل</label>
           <input type="text" id="member-name" required placeholder="مثال: محمد علي">
         </div>
         <div class="form-group-custom">
@@ -601,17 +516,17 @@
         </div>
         <div class="form-group-custom">
           <label>ملاحظات إضافية</label>
-          <textarea id="member-notes" rows="2" placeholder="أية تفاصيل اختيارية..."></textarea>
+          <textarea id="member-notes" rows="2" placeholder="أية ملاحظات..."></textarea>
         </div>
         <div class="form-group-custom" id="plan-select-group">
-          <label>خطة الاشتراك (اختياري)</label>
+          <label>خطة الاشتراك المعتمدة</label>
           <select id="member-plan"></select>
         </div>
         <div class="form-group-custom" id="date-select-group">
           <label>تاريخ بدء الاشتراك</label>
           <input type="date" id="member-start-date">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ البيانات</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ وتأكيد البيانات</button>
       </form>
     </div>
   </div>
@@ -630,10 +545,10 @@
           <select id="renew-plan-id" required></select>
         </div>
         <div class="form-group-custom">
-          <label>تاريخ البدء</label>
+          <label>تاريخ بدء الاشتراك الجديد</label>
           <input type="date" id="renew-start-date" required>
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">تجديد الاشتراك فوراً</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">تأكيد تجديد الاشتراك</button>
       </form>
     </div>
   </div>
@@ -642,7 +557,7 @@
   <div class="modal-backdrop" id="plan-modal">
     <div class="modal-glass-box">
       <div class="modal-header-text">
-        <span>إضافة خطة جديدة</span>
+        <span>إضافة خطة رياضية</span>
         <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('plan-modal')"></i>
       </div>
       <form id="plan-form" onsubmit="handlePlanSubmit(event)">
@@ -655,7 +570,7 @@
           <input type="number" id="plan-price" required step="0.5" placeholder="15">
         </div>
         <div class="form-group-custom">
-          <label>المدة (بالأيام)</label>
+          <label>مدة الاشتراك (بالأيام)</label>
           <input type="number" id="plan-duration" required value="30">
         </div>
         <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ الخطة</button>
@@ -695,12 +610,20 @@
         container.innerHTML = '';
         (data.recentSubscriptions || []).forEach(s => {
           container.innerHTML += `
-            <div class="item-card-glass">
-              <div class="item-info-main">
-                <div class="item-name">${s.member_name}</div>
-                <div class="item-meta"><i class="fa-solid fa-tag"></i> ${s.plan_name} - ${s.price} د.أ</div>
+            <div class="detailed-card">
+              <div class="card-top">
+                <div>
+                  <div class="member-main-name">${s.member_name}</div>
+                  <div class="member-phone-number"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
+                </div>
+                <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
               </div>
-              <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
+              <div class="subscription-details-box">
+                <div class="detail-row"><span class="detail-label">الخطة:</span><span class="detail-val">${s.plan_name}</span></div>
+                <div class="detail-row"><span class="detail-label">السعر:</span><span class="detail-val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
+                <div class="detail-row"><span class="detail-label">بدأ في:</span><span class="detail-val">${s.start_date}</span></div>
+                <div class="detail-row"><span class="detail-label">ينتهي في:</span><span class="detail-val">${s.end_date}</span></div>
+              </div>
             </div>
           `;
         });
@@ -723,18 +646,26 @@
         const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'قريب الانتهاء' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
         
         container.innerHTML += `
-          <div class="item-card-glass">
-            <div class="item-info-main">
-              <div class="item-name">${m.full_name}</div>
-              <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
-            </div>
-            <div style="display:flex; align-items:center; gap:12px;">
-              <span class="badge-curved ${statusClass}">${statusText}</span>
-              <div class="card-actions">
-                <button class="action-icon-btn" onclick="openRenewModal(${m.id})" title="تجديد"><i class="fa-solid fa-rotate-right"></i></button>
-                <button class="action-icon-btn" onclick="editMember(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                <button class="action-icon-btn" onclick="deleteMember(${m.id})" title="حذف"><i class="fa-solid fa-trash"></i></button>
+          <div class="detailed-card">
+            <div class="card-top">
+              <div>
+                <div class="member-main-name">${m.full_name}</div>
+                <div class="member-phone-number"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
               </div>
+              <span class="badge-curved ${statusClass}">${statusText}</span>
+            </div>
+            
+            <div class="subscription-details-box">
+              <div class="detail-row"><span class="detail-label">الخطة الحالية:</span><span class="detail-val">${m.plan_name || 'لا يوجد'}</span></div>
+              <div class="detail-row"><span class="detail-label">تاريخ البدء:</span><span class="detail-val">${m.start_date || 'غير محدد'}</span></div>
+              <div class="detail-row"><span class="detail-label">تاريخ الانتهاء:</span><span class="detail-val">${m.end_date || 'غير محدد'}</span></div>
+              <div class="detail-row"><span class="detail-label">الملاحظات:</span><span class="detail-val">${m.notes || 'لا يوجد'}</span></div>
+            </div>
+
+            <div class="card-actions-bar">
+              <button class="action-icon-btn" onclick="openRenewModal(${m.id})" title="تجديد الاشتراك"><i class="fa-solid fa-rotate-right"></i></button>
+              <button class="action-icon-btn" onclick="editMember(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
+              <button class="action-icon-btn" onclick="deleteMember(${m.id})" title="حذف"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         `;
@@ -761,18 +692,20 @@
 
         globalPlans.forEach(p => {
           container.innerHTML += `
-            <div class="item-card-glass">
-              <div class="item-info-main">
-                <div class="item-name">${p.name}</div>
-                <div class="item-meta"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
+            <div class="detailed-card">
+              <div class="card-top">
+                <div>
+                  <div class="member-main-name">${p.name}</div>
+                  <div class="member-phone-number"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
+                </div>
+                <div style="font-weight:900; font-size:1.3rem; color:var(--accent-green);">${p.price} د.أ</div>
               </div>
-              <div style="display:flex; align-items:center; gap:14px;">
-                <div style="font-weight:900; font-size:1.1rem; color:white;">${p.price} د.أ</div>
-                <button class="action-icon-btn" onclick="deletePlan(${p.id})"><i class="fa-solid fa-trash"></i></button>
+              <div class="card-actions-bar">
+                <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
           `;
-          const opt = `<option value="${p.id}">${p.name} (${p.price} د.أ)</option>`;
+          const opt = `<option value="${p.id}">${p.name} (${p.price} د.أ - ${p.duration_days} يوم)</option>`;
           select.innerHTML += opt;
           renewSelect.innerHTML += opt;
         });
