@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>نظام إدارة أيرون كور جيم</title>
+  <title>نظام أيرون كور جيم الاحترافي</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,43 +12,56 @@
 
   <style>
     :root {
-      --bg-main: #090a0f;
-      --panel-bg: rgba(18, 20, 29, 0.75);
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --card-hover: rgba(255, 255, 255, 0.08);
-      --border-color: rgba(255, 255, 255, 0.1);
-      --border-glow: rgba(99, 102, 241, 0.4);
+      --bg-main: #0a0a0c;
+      --panel-bg: rgba(20, 20, 25, 0.8);
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-hover: rgba(255, 255, 255, 0.07);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-glow: rgba(255, 255, 255, 0.3);
       
       --text-bright: #ffffff;
-      --text-sub: #94a3b8;
+      --text-sub: #a1a1aa;
       
-      --primary: #6366f1;
-      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      --accent-green: #4ade80;
-      --accent-amber: #fbbf24;
-      --accent-red: #f87171;
+      --accent-silver: #e4e4e7;
+      --accent-white-btn: linear-gradient(135deg, #ffffff 0%, #d4d4d8 100%);
       
+      --status-active-bg: rgba(255, 255, 255, 0.1);
+      --status-active-txt: #ffffff;
+      --status-expiring-bg: rgba(212, 212, 216, 0.15);
+      --status-expiring-txt: #e4e4e7;
+      --status-expired-bg: rgba(113, 113, 122, 0.2);
+      --status-expired-txt: #a1a1aa;
+
       --radius-xl: 24px;
       --radius-lg: 16px;
       --radius-md: 12px;
 
-      --select-bg: #1e293b;
-      --select-opt-bg: #0f172a;
+      --select-bg: #18181b;
+      --select-opt-bg: #09090b;
     }
 
     body.light-mode {
-      --bg-main: #f1f5f9;
-      --panel-bg: rgba(255, 255, 255, 0.85);
+      --bg-main: #f4f4f5;
+      --panel-bg: rgba(255, 255, 255, 0.9);
       --card-bg: rgba(0, 0, 0, 0.03);
       --card-hover: rgba(0, 0, 0, 0.06);
-      --border-color: rgba(0, 0, 0, 0.08);
-      --border-glow: rgba(99, 102, 241, 0.3);
+      --border-color: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 0, 0, 0.3);
       
-      --text-bright: #0f172a;
-      --text-sub: #64748b;
+      --text-bright: #09090b;
+      --text-sub: #71717a;
       
+      --accent-white-btn: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+      
+      --status-active-bg: rgba(9, 9, 11, 0.1);
+      --status-active-txt: #09090b;
+      --status-expiring-bg: rgba(82, 82, 91, 0.15);
+      --status-expiring-txt: #27272a;
+      --status-expired-bg: rgba(161, 161, 170, 0.2);
+      --status-expired-txt: #71717a;
+
       --select-bg: #ffffff;
-      --select-opt-bg: #f8fafc;
+      --select-opt-bg: #f4f4f5;
     }
 
     * {
@@ -89,7 +102,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
     .brand-section { display: flex; align-items: center; gap: 16px; }
@@ -98,13 +111,13 @@
       width: 48px;
       height: 48px;
       border-radius: var(--radius-md);
-      background: var(--primary-gradient);
-      color: white;
+      background: var(--accent-white-btn);
+      color: var(--bg-main);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.4rem;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     }
 
     .brand-title h1 { font-size: 1.5rem; font-weight: 900; }
@@ -112,7 +125,6 @@
 
     .header-controls { display: flex; align-items: center; gap: 12px; }
 
-    /* زر الثيم العصري */
     .theme-toggle-btn {
       width: 44px;
       height: 44px;
@@ -125,26 +137,28 @@
       justify-content: center;
       cursor: pointer;
       font-size: 1.2rem;
-      position: relative;
-      overflow: hidden;
     }
 
-    .theme-toggle-btn i { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .theme-toggle-btn:hover i { transform: rotate(360deg) scale(1.15); }
+    .theme-toggle-btn i { transition: transform 0.4s ease; }
+    .theme-toggle-btn:hover i { transform: rotate(360deg); }
 
-    .btn-liquid {
-      background: var(--primary-gradient);
+    .btn-mono {
+      background: var(--accent-white-btn);
       border: 1px solid var(--border-glow);
-      color: white;
+      color: var(--bg-main);
       padding: 12px 24px;
       border-radius: var(--radius-md);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-mono:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
     }
 
     .dashboard-layout {
@@ -179,9 +193,9 @@
 
     .nav-link:hover { background: var(--card-hover); color: var(--text-bright); }
     .nav-link.active {
-      background: var(--primary-gradient);
-      color: white;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      background: var(--card-hover);
+      color: var(--text-bright);
+      border: 1px solid var(--border-glow);
     }
 
     .content-area { display: flex; flex-direction: column; gap: 24px; }
@@ -207,11 +221,13 @@
       width: 42px;
       height: 42px;
       border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
+      color: var(--text-bright);
     }
 
     .card-value { font-size: 2.2rem; font-weight: 900; }
@@ -231,10 +247,9 @@
     .panel-header { display: flex; justify-content: space-between; align-items: center; }
     .panel-header h2 { font-size: 1.25rem; font-weight: 800; }
 
-    /* تبويبات الفلترة المخصصة للأعضاء */
     .filter-tabs {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       background: var(--card-bg);
       padding: 6px;
       border-radius: var(--radius-md);
@@ -253,11 +268,10 @@
     }
 
     .tab-btn.active {
-      background: var(--primary);
-      color: white;
+      background: var(--text-bright);
+      color: var(--bg-main);
     }
 
-    /* البطاقات الطولية الكبيرة الأفقية (Horizontal Full Cards) */
     .horizontal-cards-list {
       display: flex;
       flex-direction: column;
@@ -310,9 +324,9 @@
       white-space: nowrap;
     }
 
-    .badge-curved.Active { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
-    .badge-curved.Expiring { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
-    .badge-curved.Expired { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
+    .badge-curved.Active { background: var(--status-active-bg); color: var(--status-active-txt); border: 1px solid var(--border-glow); }
+    .badge-curved.Expiring { background: var(--status-expiring-bg); color: var(--status-expiring-txt); border: 1px solid var(--border-color); }
+    .badge-curved.Expired { background: var(--status-expired-bg); color: var(--status-expired-txt); border: 1px solid var(--border-color); }
 
     .card-actions-row { display: flex; gap: 8px; }
 
@@ -329,9 +343,9 @@
       cursor: pointer;
     }
 
-    .action-icon-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .action-icon-btn:hover { background: var(--text-bright); color: var(--bg-main); }
 
-    /* ألوان الـ Select Options */
+    /* تنسيق ألوان الـ Dropdown الاختيارات أسود وأبيض محايد */
     .form-group-custom select {
       background-color: var(--select-bg) !important;
       color: var(--text-bright) !important;
@@ -347,15 +361,15 @@
     .form-group-custom select option:hover,
     .form-group-custom select option:focus,
     .form-group-custom select option:checked {
-      background-color: var(--primary) !important;
-      color: #ffffff !important;
+      background-color: var(--card-hover) !important;
+      color: var(--text-bright) !important;
     }
 
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(16px);
       z-index: 1000;
       align-items: center;
@@ -420,7 +434,7 @@
         <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغيير المود">
           <i class="fa-solid fa-moon" id="theme-icon"></i>
         </button>
-        <button class="btn-liquid" onclick="openMemberModal()">
+        <button class="btn-mono" onclick="openMemberModal()">
           <i class="fa-solid fa-user-plus"></i> إضافة مشترك جديد
         </button>
       </div>
@@ -454,17 +468,17 @@
               <div class="card-label">إجمالي المشتركين</div>
             </div>
             <div class="glass-card">
-              <div class="card-icon" style="color: var(--accent-green);"><i class="fa-solid fa-bolt"></i></div>
+              <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
               <div class="card-value" id="stat-active">0</div>
               <div class="card-label">اشتراكات سارية</div>
             </div>
             <div class="glass-card">
-              <div class="card-icon" style="color: var(--accent-amber);"><i class="fa-solid fa-hourglass-half"></i></div>
+              <div class="card-icon"><i class="fa-solid fa-hourglass-half"></i></div>
               <div class="card-value" id="stat-expiring">0</div>
               <div class="card-label">تنتهي قريباً</div>
             </div>
             <div class="glass-card">
-              <div class="card-icon" style="color: var(--accent-red);"><i class="fa-solid fa-circle-exclamation"></i></div>
+              <div class="card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
               <div class="card-value" id="stat-expired">0</div>
               <div class="card-label">منتهية</div>
             </div>
@@ -480,16 +494,16 @@
           </div>
         </section>
 
-        <!-- سجل الأعضاء التفصيلي بقوائم مفصّلة بطول كامل -->
+        <!-- سجل الأعضاء -->
         <section id="view-members" class="section-view">
           <div class="data-panel">
             <div class="panel-header">
               <h2>سجل الأعضاء والاشتراكات</h2>
               <div class="filter-tabs">
                 <button class="tab-btn active" onclick="filterMemberTab('all', this)">الكل</button>
-                <button class="tab-btn" onclick="filterMemberTab('Active', this)">🟢 نشطين</button>
-                <button class="tab-btn" onclick="filterMemberTab('Expiring Soon', this)">🟡 قربت تنتهي</button>
-                <button class="tab-btn" onclick="filterMemberTab('Expired', this)">🔴 منتهية</button>
+                <button class="tab-btn" onclick="filterMemberTab('Active', this)">نشطين</button>
+                <button class="tab-btn" onclick="filterMemberTab('Expiring Soon', this)">قربت تنتهي</button>
+                <button class="tab-btn" onclick="filterMemberTab('Expired', this)">منتهية</button>
               </div>
             </div>
 
@@ -502,7 +516,7 @@
           <div class="data-panel">
             <div class="panel-header">
               <h2>الخطط والرياضات المتاحة</h2>
-              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 10px 18px; font-size: 0.88rem;">
+              <button class="btn-mono" onclick="openPlanModal()" style="padding: 10px 18px; font-size: 0.88rem;">
                 + إضافة خطة جديدة
               </button>
             </div>
@@ -545,7 +559,7 @@
           <label>تاريخ بدء الاشتراك</label>
           <input type="date" id="member-start-date">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ وتأكيد البيانات</button>
+        <button type="submit" class="btn-mono" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ وتأكيد البيانات</button>
       </form>
     </div>
   </div>
@@ -567,7 +581,7 @@
           <label>تاريخ بدء الاشتراك الجديد</label>
           <input type="date" id="renew-start-date" required>
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">تأكيد تجديد الاشتراك</button>
+        <button type="submit" class="btn-mono" style="width: 100%; justify-content: center; margin-top: 10px;">تأكيد تجديد الاشتراك</button>
       </form>
     </div>
   </div>
@@ -592,7 +606,7 @@
           <label>مدة الاشتراك (بالأيام)</label>
           <input type="number" id="plan-duration" required value="30">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ الخطة</button>
+        <button type="submit" class="btn-mono" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ الخطة</button>
       </form>
     </div>
   </div>
@@ -646,7 +660,7 @@
               </div>
               <div class="sub-info-col">
                 <div class="info-sub-item"><span class="lbl">الخطة</span><span class="val">${s.plan_name}</span></div>
-                <div class="info-sub-item"><span class="lbl">السعر</span><span class="val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
+                <div class="info-sub-item"><span class="lbl">السعر</span><span class="val">${s.price} د.أ</span></div>
                 <div class="info-sub-item"><span class="lbl">بدأ في</span><span class="val">${s.start_date}</span></div>
                 <div class="info-sub-item"><span class="lbl">ينتهي في</span><span class="val">${s.end_date}</span></div>
               </div>
@@ -729,7 +743,7 @@
                 <div class="member-name-txt">${p.name}</div>
                 <div class="member-phone-txt"><i class="fa-solid fa-calendar-days"></i> المدة: ${p.duration_days} يوم</div>
               </div>
-              <div style="font-weight:900; font-size:1.3rem; color:var(--accent-green);">${p.price} د.أ</div>
+              <div style="font-weight:900; font-size:1.3rem;">${p.price} د.أ</div>
               <div class="card-actions-row">
                 <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
               </div>
