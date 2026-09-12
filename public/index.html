@@ -2,367 +2,305 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IRON CORE — نظام إدارة الجيم والاشتراكات</title>
-  <!-- خط tajawal من جوجل وتأثيرات الأيقونات -->
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>نظام إدارة أيرون كور جيم</title>
   
+  <!-- الخطوط والأيقونات -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    /* variables & Themes */
     :root {
-      /* Theme Variables: Dark Default */
-      --bg-primary: #0b0f17;
-      --bg-secondary: #111827;
-      --bg-card: #1f2937;
-      --bg-hover: #374151;
-      --accent-red: #ef4444;
-      --accent-red-glow: rgba(239, 68, 68, 0.25);
-      --accent-yellow: #f59e0b;
-      --accent-yellow-glow: rgba(245, 158, 11, 0.25);
-      --accent-green: #10b981;
-      --accent-green-glow: rgba(16, 185, 129, 0.25);
-      --accent-blue: #3b82f6;
+      --bg-gradient: linear-gradient(135deg, #090d16 0%, #111827 50%, #0f172a 100%);
+      --surface-glass: rgba(30, 41, 59, 0.65);
+      --surface-glass-hover: rgba(51, 65, 85, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-border-glow: rgba(99, 102, 241, 0.3);
+      
+      --primary: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      --accent-neon: #10b981;
+      --accent-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+      --warning-gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      --danger-gradient: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+      
       --text-main: #f9fafb;
       --text-muted: #9ca3af;
-      --border-color: #374151;
-      --sidebar-width: 260px;
+      --nav-height: 75px;
+      --border-radius-lg: 24px;
+      --border-radius-md: 16px;
+      --border-radius-sm: 12px;
     }
 
-    [data-theme="light"] {
-      --bg-primary: #f3f4f6;
-      --bg-secondary: #ffffff;
-      --bg-card: #f9fafb;
-      --bg-hover: #e5e7eb;
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --border-color: #e5e7eb;
-      --accent-red-glow: rgba(239, 68, 68, 0.15);
-      --accent-yellow-glow: rgba(245, 158, 11, 0.15);
-      --accent-green-glow: rgba(16, 185, 129, 0.15);
-    }
-
+    /* Reset System */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     body {
-      background-color: var(--bg-primary);
+      background: var(--bg-gradient);
       color: var(--text-main);
-      display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* Sidebar Layout RTL */
-    .sidebar {
-      width: var(--sidebar-width);
-      background: var(--bg-secondary);
-      border-left: 1px solid var(--border-color);
+      height: 100vh;
+      height: -webkit-fill-available;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 100;
-      transition: all 0.3s ease;
+      position: relative;
     }
 
-    .brand {
-      padding: 24px 20px;
+    /* خلفية متدرجة مضيئة لجمالية الشاشة */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(0,0,0,0) 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: 5%;
+      left: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(0,0,0,0) 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* الهيدر الأنيق */
+    header {
+      padding: 18px 22px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+      border-bottom-left-radius: var(--border-radius-lg);
+      border-bottom-right-radius: var(--border-radius-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: var(--accent-red);
-      border-bottom: 1px solid var(--border-color);
     }
 
-    .nav-links {
-      list-style: none;
-      padding: 20px 12px;
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--primary-gradient);
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .location-badge {
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      color: var(--text-muted);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      background: var(--bg-card);
-      color: var(--text-main);
-    }
-
-    .nav-item.active {
-      border-right: 4px solid var(--accent-red);
-      background: linear-gradient(270deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%);
-    }
-
-    .main-wrapper {
-      margin-right: var(--sidebar-width);
+    /* الحاوية الرئيسية والتنقل المحاكي للتطبيق */
+    main {
       flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      padding-bottom: calc(var(--nav-height) + 35px);
+      -webkit-overflow-scrolling: touch;
+      z-index: 10;
+    }
+
+    main::-webkit-scrollbar { display: none; }
+
+    /* شبكة كروت الإحصائيات الفخمة */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius-md);
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      min-width: 0;
-      transition: margin-right 0.3s ease;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
     }
 
-    header {
-      height: 70px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      position: sticky;
-      top: 0;
-      z-index: 90;
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 70%);
+      pointer-events: none;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .header-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .quick-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .theme-toggle-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
+    .stat-card .icon-box {
       width: 40px;
       height: 40px;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: var(--border-radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.1rem;
-      transition: all 0.2s ease;
     }
 
-    .theme-toggle-btn:hover {
-      background: var(--bg-hover);
-    }
+    .stat-card.members .icon-box { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .stat-card.active .icon-box { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .stat-card.expiring .icon-box { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .stat-card.expired .icon-box { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
 
-    /* Buttons */
-    .btn {
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-    }
-
-    .btn:active {
-      transform: scale(0.97);
-    }
-
-    .btn-primary {
-      background: var(--accent-red);
-      color: white;
-      box-shadow: 0 4px 14px var(--accent-red-glow);
-    }
-
-    .btn-primary:hover {
-      background: #dc2626;
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-hover);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--accent-red);
-    }
-
-    .btn-danger:hover {
-      background: var(--accent-red);
-      color: white;
-    }
-
-    .content {
-      padding: 32px;
-      flex: 1;
-    }
-
-    .page-section {
-      display: none;
-      animation: fadeInSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .page-section.active {
-      display: block;
-    }
-
-    @keyframes fadeInSlide {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-bottom: 32px;
-    }
-
-    .stat-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: #4b5563;
-    }
-
-    .stat-info h4 {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .stat-info .stat-value {
-      font-size: 2rem;
+    .stat-card .val {
+      font-size: 1.7rem;
       font-weight: 800;
+      line-height: 1;
     }
 
-    .stat-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
+    .stat-card .lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* العناوين والبحث */
+    .section-header {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin: 20px 0 14px 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-    }
-
-    .table-container {
-      background: var(--bg-secondary);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-
-    .table-toolbar {
-      padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .search-filter-box {
-      display: flex;
-      gap: 12px;
-      flex: 1;
-      max-width: 600px;
-    }
-
-    input, select, textarea {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 10px 14px;
-      border-radius: 8px;
+    }
+
+    .search-bar {
+      width: 100%;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 14px 18px;
+      padding-right: 48px;
+      border-radius: var(--border-radius-md);
+      background: var(--surface-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      color: white;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border 0.3s ease;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent-red);
-      box-shadow: 0 0 0 3px var(--accent-red-glow);
+    .search-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
     }
 
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: right;
-    }
-
-    .data-table th, .data-table td {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border-color);
-      white-space: nowrap;
-    }
-
-    .data-table th {
-      background: var(--bg-card);
+    .search-bar i {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 0.85rem;
-      letter-spacing: 0.5px;
+      font-size: 1.1rem;
     }
 
-    .data-table tbody tr {
-      transition: background 0.15s ease;
+    /* كروت القوائم بكيرفات ناعمة */
+    .cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .data-table tbody tr:hover {
-      background: rgba(255, 255, 255, 0.02);
+    .glass-item-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius-md);
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.25s ease;
     }
 
-    .badge {
-      padding: 6px 12px;
-      border-radius: 20px;
+    .glass-item-card:active {
+      transform: scale(0.98);
+      background: var(--surface-glass-hover);
+    }
+
+    .meta-details {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .meta-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .meta-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* شارات التمييز الناعمة */
+    .status-pill {
+      padding: 5px 12px;
+      border-radius: 30px;
       font-size: 0.75rem;
       font-weight: 700;
       display: inline-flex;
@@ -370,963 +308,579 @@
       gap: 6px;
     }
 
-    .badge-active {
-      background: var(--accent-green-glow);
-      color: var(--accent-green);
+    .status-pill.Active { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-pill.Expiring { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .status-pill.Expired { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+    .status-pill.NoSub { background: rgba(156, 163, 175, 0.15); color: #9ca3af; border: 1px solid rgba(156, 163, 175, 0.3); }
+
+    /* الأزرار التفاعلية المصغرة */
+    .action-group {
+      display: flex;
+      gap: 8px;
     }
 
-    .badge-expiring {
-      background: var(--accent-yellow-glow);
-      color: var(--accent-yellow);
-    }
-
-    .badge-expired {
-      background: var(--accent-red-glow);
-      color: var(--accent-red);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--border-radius-sm);
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn.edit { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .action-btn.renew { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .action-btn.delete { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+
+    /* شريط التصفح السفلي (Mobile Navigation Bar) */
+    nav.app-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 100;
+      border-top-left-radius: var(--border-radius-lg);
+      border-top-right-radius: var(--border-radius-lg);
+    }
+
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 33%;
       transition: all 0.25s ease;
     }
 
+    .nav-tab i { font-size: 1.3rem; transition: transform 0.2s ease; }
+    .nav-tab.active { color: var(--primary); font-weight: 800; }
+    .nav-tab.active i { transform: translateY(-3px); }
+
+    /* زر الإضافة العائم FAB */
+    .fab-trigger {
+      position: fixed;
+      bottom: calc(var(--nav-height) + 18px);
+      left: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+      border: none;
+      cursor: pointer;
+      z-index: 90;
+      transition: transform 0.2s ease;
+    }
+
+    .fab-trigger:active { transform: scale(0.9); }
+
+    /* النوافذ العائمة (Modals) بكيرف دائري ناعم */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
     .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
+      display: flex;
+      animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .modal {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      width: 90%;
-      max-width: 550px;
-      padding: 28px;
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    .modal-card {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius-lg);
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
     }
 
-    .modal-overlay.active .modal {
-      transform: scale(1);
-    }
-
-    .modal-header {
+    .modal-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      font-size: 1.15rem;
+      font-weight: 800;
     }
 
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 16px;
-    }
-
-    .toast-container {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      z-index: 2000;
+    .form-field {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .toast {
-      background: var(--bg-card);
-      border-right: 4px solid var(--accent-blue);
-      color: var(--text-main);
-      padding: 14px 20px;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .form-field label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(-50px); }
-      to { opacity: 1; transform: translateX(0); }
+    .form-field input, .form-field select, .form-field textarea {
+      padding: 12px 16px;
+      border-radius: var(--border-radius-sm);
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: white;
+      outline: none;
+      font-size: 0.95rem;
     }
 
-    /* Responsive Mobile & Tablet Design */
-    @media (max-width: 768px) {
-      .sidebar { 
-        width: 70px; 
-      }
-      .brand span, .nav-item span { 
-        display: none; 
-      }
-      .main-wrapper { 
-        margin-right: 70px; 
-      }
-      header {
-        padding: 0 16px;
-      }
-      .quick-actions span {
-        display: none;
-      }
-      .table-toolbar { 
-        flex-direction: column; 
-        align-items: stretch; 
-      }
-      .search-filter-box { 
-        max-width: 100%; 
-        flex-direction: column; 
-      }
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
+    .form-field input:focus, .form-field select:focus {
+      border-color: var(--primary);
+    }
+
+    .submit-btn {
+      padding: 14px;
+      border-radius: var(--border-radius-md);
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+      margin-top: 8px;
+    }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: pageSlide 0.25s ease; }
+
+    @keyframes pageSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <!-- القائمة الجانبية -->
-  <aside class="sidebar">
-    <div class="brand">
-      <i class="fa-solid fa-dumbbell fa-lg"></i>
-      <span>آيرون كور</span>
+  <!-- هيدر التطبيق العلوي -->
+  <header>
+    <div class="brand-logo">
+      <div class="brand-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <h1>أيرون كور جيم</h1>
     </div>
-    <ul class="nav-links">
-      <li class="nav-item active" onclick="switchTab('dashboard')">
-        <i class="fa-solid fa-chart-pie"></i>
-        <span>لوحة التحكم</span>
-      </li>
-      <li class="nav-item" onclick="switchTab('members')">
-        <i class="fa-solid fa-users"></i>
-        <span>جميع الأعضاء</span>
-      </li>
-      <li class="nav-item" onclick="switchTab('active-members')">
-        <i class="fa-solid fa-user-check"></i>
-        <span>الاشتراكات الفعالة</span>
-      </li>
-      <li class="nav-item" onclick="switchTab('expiring-members')">
-        <i class="fa-solid fa-user-clock"></i>
-        <span>تنتهي قريباً</span>
-      </li>
-      <li class="nav-item" onclick="switchTab('expired-members')">
-        <i class="fa-solid fa-user-xmark"></i>
-        <span>الاشتراكات المنتهية</span>
-      </li>
-      <li class="nav-item" onclick="switchTab('plans')">
-        <i class="fa-solid fa-layer-group"></i>
-        <span>خطط الاشتراك</span>
-      </li>
-    </ul>
-  </aside>
-
-  <!-- المحتوى الرئيسي -->
-  <div class="main-wrapper">
-    <header>
-      <div class="header-left">
-        <div class="header-title" id="page-title">لوحة التحكم العامة</div>
-      </div>
-      
-      <div class="quick-actions">
-        <!-- زر تبديل الثيم -->
-        <button class="theme-toggle-btn" onclick="toggleTheme()" title="تغيير الثيم">
-          <i class="fa-solid fa-moon" id="theme-icon"></i>
-        </button>
-
-        <button class="btn btn-secondary" onclick="openSubscriptionModal()">
-          <i class="fa-solid fa-plus"></i>
-          <span>إضافة اشتراك</span>
-        </button>
-        <button class="btn btn-primary" onclick="openMemberModal()">
-          <i class="fa-solid fa-user-plus"></i>
-          <span>إضافة مشترك</span>
-        </button>
-      </div>
-    </header>
-
-    <div class="content">
-      
-      <!-- قسم لوحة التحكم -->
-      <section id="dashboard" class="page-section active">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-info">
-              <h4>الأعضاء النشطين</h4>
-              <div class="stat-value" id="stat-active">-</div>
-            </div>
-            <div class="stat-icon" style="background: var(--accent-green-glow); color: var(--accent-green);">
-              <i class="fa-solid fa-user-check"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <h4>تنتهي قريباً (خلال 5 أيام)</h4>
-              <div class="stat-value" id="stat-expiring">-</div>
-            </div>
-            <div class="stat-icon" style="background: var(--accent-yellow-glow); color: var(--accent-yellow);">
-              <i class="fa-solid fa-clock"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <h4>الاشتراكات المنتهية</h4>
-              <div class="stat-value" id="stat-expired">-</div>
-            </div>
-            <div class="stat-icon" style="background: var(--accent-red-glow); color: var(--accent-red);">
-              <i class="fa-solid fa-user-slash"></i>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <h4>إجمالي الاشتراكات</h4>
-              <div class="stat-value" id="stat-total">-</div>
-            </div>
-            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.25); color: var(--accent-blue);">
-              <i class="fa-solid fa-receipt"></i>
-            </div>
-          </div>
-        </div>
-
-        <h3 style="margin-bottom: 12px;">أحدث الاشتراكات المسجلة</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>اسم المشترك</th>
-                <th>نوع الاشتراك</th>
-                <th>السعر</th>
-                <th>تاريخ الانتهاء</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody id="dashboard-recent-tbody">
-              <!-- يتم تعبئته أوتوماتيكياً -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- قسم إدارة الأعضاء -->
-      <section id="members" class="page-section">
-        <div class="table-container">
-          <div class="table-toolbar">
-            <div class="search-filter-box">
-              <input type="text" id="member-search" placeholder="ابحث باسم المشترك أو رقم الهاتف..." oninput="renderMembersTable()">
-              <select id="plan-filter" onchange="renderMembersTable()">
-                <option value="">جميع الخطط والرياضات</option>
-              </select>
-              <select id="status-filter" onchange="renderMembersTable()">
-                <option value="">جميع الحالات</option>
-                <option value="Active">فعّال</option>
-                <option value="Expiring Soon">ينتهي قريباً</option>
-                <option value="Expired">منتهي</option>
-              </select>
-            </div>
-          </div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>اسم المشترك</th>
-                <th>رقم الهاتف</th>
-                <th>نوع الاشتراك</th>
-                <th>تاريخ البداية</th>
-                <th>تاريخ الانتهاء</th>
-                <th>السعر</th>
-                <th>الحالة</th>
-                <th>خيارات</th>
-              </tr>
-            </thead>
-            <tbody id="members-tbody">
-              <!-- يتم تعبئته أوتوماتيكياً -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- قسم خطط الاشتراكات -->
-      <section id="plans" class="page-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3>الخطط والرياضات المتاحة</h3>
-          <button class="btn btn-primary" onclick="openPlanModal()"><i class="fa-solid fa-plus"></i> إضافة خطة جديدة</button>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>اسم الاشتراك / الرياضة</th>
-                <th>الوصف</th>
-                <th>المدة (بالأيام)</th>
-                <th>السعر (دينار أردني)</th>
-                <th>الحالة</th>
-                <th>خيارات</th>
-              </tr>
-            </thead>
-            <tbody id="plans-tbody">
-              <!-- يتم تعبئته أوتوماتيكياً -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
+    <div class="location-badge">
+      <i class="fa-solid fa-location-dot" style="color: #6366f1;"></i> عمان
     </div>
-  </div>
+  </header>
 
-  <!-- النوافذ المنبثقة (Modals) -->
+  <!-- الجسم الرئيسي لشبكة الصفحات -->
+  <main>
+    
+    <!-- 1. الشاشة الرئيسية Dashboard -->
+    <section id="page-dashboard" class="page-section active">
+      <div class="stats-grid">
+        <div class="stat-card members">
+          <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+          <div class="val" id="stat-members">0</div>
+          <div class="lbl">إجمالي المشتركين</div>
+        </div>
+        <div class="stat-card active">
+          <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+          <div class="val" id="stat-active">0</div>
+          <div class="lbl">اشتراكات سارية</div>
+        </div>
+        <div class="stat-card expiring">
+          <div class="icon-box"><i class="fa-solid fa-hourglass-half"></i></div>
+          <div class="val" id="stat-expiring">0</div>
+          <div class="lbl">تنتهي قريباً</div>
+        </div>
+        <div class="stat-card expired">
+          <div class="icon-box"><i class="fa-solid fa-circle-exclamation"></i></div>
+          <div class="val" id="stat-expired">0</div>
+          <div class="lbl">منتهية</div>
+        </div>
+      </div>
 
-  <!-- نافذة إضافة / تعديل مشترك -->
+      <div class="section-header">آخر النشاطات والاشتراكات</div>
+      <div class="cards-list" id="recent-subscriptions-list"></div>
+    </section>
+
+    <!-- 2. شاشة الأعضاء Members -->
+    <section id="page-members" class="page-section">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="member-search" placeholder="ابحث بالإسم أو رقم الهاتف..." oninput="filterMembers()">
+      </div>
+      <div class="cards-list" id="all-members-list"></div>
+    </section>
+
+    <!-- 3. شاشة الخطط والرياضات Plans -->
+    <section id="page-plans" class="page-section">
+      <div class="section-header">
+        <span>الخطط والرياضات المتاحة</span>
+        <button class="status-pill Active" onclick="openPlanModal()" style="border:none; cursor:pointer;">+ خطة جديدة</button>
+      </div>
+      <div class="cards-list" id="all-plans-list"></div>
+    </section>
+
+  </main>
+
+  <!-- زر إضافة مشترك سريع عائم -->
+  <button class="fab-trigger" onclick="openMemberModal()"><i class="fa-solid fa-plus"></i></button>
+
+  <!-- شريط الموبايل السفلي للأقسام -->
+  <nav class="app-navbar">
+    <div class="nav-tab active" onclick="switchTab('dashboard', this)">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>الرئيسية</span>
+    </div>
+    <div class="nav-tab" onclick="switchTab('members', this)">
+      <i class="fa-solid fa-id-card"></i>
+      <span>الأعضاء</span>
+    </div>
+    <div class="nav-tab" onclick="switchTab('plans', this)">
+      <i class="fa-solid fa-layer-group"></i>
+      <span>الخطط</span>
+    </div>
+  </nav>
+
+  <!-- Modal 1: إضافة وتعديل عضو -->
   <div class="modal-overlay" id="member-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title" id="member-modal-title">تسجيل مشترك جديد</h3>
-        <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('member-modal')"></i>
+    <div class="modal-card">
+      <div class="modal-card-header">
+        <span id="member-modal-title">إضافة مشترك جديد</span>
+        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('member-modal')"></i>
       </div>
       <form id="member-form" onsubmit="handleMemberSubmit(event)">
         <input type="hidden" id="member-id">
-        <div class="form-group">
-          <label>الاسم الكامل *</label>
-          <input type="text" id="member-name" required placeholder="مثال: أحمد خالد">
+        <div class="form-field">
+          <label>اسم المشترك</label>
+          <input type="text" id="member-name" required placeholder="مثال: محمد علي">
         </div>
-        <div class="form-group">
-          <label>رقم الهاتف *</label>
-          <input type="text" id="member-phone" required placeholder="مثال: 0791234567">
+        <div class="form-field">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="member-phone" required placeholder="079XXXXXXXX">
         </div>
-        <div class="form-group" id="initial-plan-group">
-          <label>خطة الاشتراك الأولى</label>
-          <select id="member-plan" onchange="calculateMemberExpiration()">
-            <option value="">اختر الاشتراك...</option>
-          </select>
-        </div>
-        <div class="form-row" id="initial-date-group">
-          <div class="form-group" style="flex: 1;">
-            <label>تاريخ البدء</label>
-            <input type="date" id="member-start-date" onchange="calculateMemberExpiration()">
-          </div>
-          <div class="form-group" style="flex: 1;">
-            <label>تاريخ الانتهاء المحسوب</label>
-            <input type="date" id="member-end-date" readonly style="opacity: 0.7;">
-          </div>
-        </div>
-        <div class="form-group">
+        <div class="form-field">
           <label>ملاحظات إضافية</label>
-          <textarea id="member-notes" rows="2" placeholder="أي ملاحظات أو تفاصيل خاصة..."></textarea>
+          <textarea id="member-notes" rows="2" placeholder="أية تفاصيل اختيارية..."></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">حفظ المشترك</button>
+        <div class="form-field" id="plan-select-group">
+          <label>خطة الاشتراك (اختياري)</label>
+          <select id="member-plan"></select>
+        </div>
+        <div class="form-field" id="date-select-group">
+          <label>تاريخ بدء الاشتراك</label>
+          <input type="date" id="member-start-date">
+        </div>
+        <button type="submit" class="submit-btn">حفظ وتأكيد البيانات</button>
       </form>
     </div>
   </div>
 
-  <!-- نافذة إضافة / تجديد اشتراك -->
-  <div class="modal-overlay" id="subscription-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title">إضافة / تجديد اشتراك</h3>
-        <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('subscription-modal')"></i>
+  <!-- Modal 2: تجديد اشتراك عضو -->
+  <div class="modal-overlay" id="renew-modal">
+    <div class="modal-card">
+      <div class="modal-card-header">
+        <span>تجديد اشتراك العضو</span>
+        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('renew-modal')"></i>
       </div>
-      <form id="subscription-form" onsubmit="handleSubscriptionSubmit(event)">
-        <div class="form-group">
-          <label>اختر المشترك *</label>
-          <select id="sub-member-id" required></select>
+      <form id="renew-form" onsubmit="handleRenewSubmit(event)">
+        <input type="hidden" id="renew-member-id">
+        <div class="form-field">
+          <label>اختر الخطة الرياضية</label>
+          <select id="renew-plan-id" required></select>
         </div>
-        <div class="form-group">
-          <label>خطة الاشتراك / الرياضة *</label>
-          <select id="sub-plan-id" required onchange="calculateSubExpiration()"></select>
+        <div class="form-field">
+          <label>تاريخ البدء</label>
+          <input type="date" id="renew-start-date" required>
         </div>
-        <div class="form-row">
-          <div class="form-group" style="flex: 1;">
-            <label>تاريخ البدء *</label>
-            <input type="date" id="sub-start-date" required onchange="calculateSubExpiration()">
-          </div>
-          <div class="form-group" style="flex: 1;">
-            <label>تاريخ الانتهاء</label>
-            <input type="date" id="sub-end-date" readonly style="opacity: 0.7;">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">تأكيد وإضافة الاشتراك</button>
+        <button type="submit" class="submit-btn">تجديد الاشتراك فوراً</button>
       </form>
     </div>
   </div>
 
-  <!-- نافذة التفاصيل والسجل للمشترك -->
-  <div class="modal-overlay" id="details-modal">
-    <div class="modal" style="max-width: 650px;">
-      <div class="modal-header">
-        <h3 class="modal-title">ملف المشترك</h3>
-        <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('details-modal')"></i>
-      </div>
-      <div id="details-content"></div>
-    </div>
-  </div>
-
-  <!-- نافذة إضافة / تعديل خطة اشتراك -->
+  <!-- Modal 3: إضافة تعديل خطة -->
   <div class="modal-overlay" id="plan-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title" id="plan-modal-title">إضافة خطة اشتراك جديدة</h3>
-        <i class="fa-solid fa-xmark fa-lg" style="cursor: pointer;" onclick="closeModal('plan-modal')"></i>
+    <div class="modal-card">
+      <div class="modal-card-header">
+        <span id="plan-modal-title">إضافة خطة جديدة</span>
+        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeModal('plan-modal')"></i>
       </div>
       <form id="plan-form" onsubmit="handlePlanSubmit(event)">
         <input type="hidden" id="plan-id">
-        <div class="form-group">
-          <label>اسم الخطة / الرياضة *</label>
-          <input type="text" id="plan-name" required placeholder="مثال: تايكوندو / ملاكمة / كمال أسام">
+        <div class="form-field">
+          <label>اسم الخطة / الرياضة</label>
+          <input type="text" id="plan-name" required placeholder="مثال: كمال أجسام">
         </div>
-        <div class="form-group">
-          <label>الوصف</label>
-          <input type="text" id="plan-desc" placeholder="وصف مختصر لمميزات الاشتراك">
+        <div class="form-field">
+          <label>السعر (بالدينار الأردني)</label>
+          <input type="number" id="plan-price" required step="0.5" placeholder="15">
         </div>
-        <div class="form-row">
-          <div class="form-group" style="flex: 1;">
-            <label>السعر (بالدينار الأردني JOD) *</label>
-            <input type="number" step="0.01" id="plan-price" required placeholder="20">
-          </div>
-          <div class="form-group" style="flex: 1;">
-            <label>المدة (بالأيام) *</label>
-            <input type="number" id="plan-duration" required placeholder="30">
-          </div>
+        <div class="form-field">
+          <label>المدة (بالأيام)</label>
+          <input type="number" id="plan-duration" required value="30">
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">حفظ الخطة</button>
+        <button type="submit" class="submit-btn">حفظ الخطة</button>
       </form>
     </div>
   </div>
 
-  <!-- حاوية التنبيهات -->
-  <div class="toast-container" id="toast-container"></div>
-
-  <!-- منطق التطبيق (JavaScript) -->
   <script>
-    let membersData = [];
-    let plansData = [];
-    let currentTab = 'dashboard';
+    let globalMembers = [];
+    let globalPlans = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // تطبيق الثيم المحفوظ
-      const savedTheme = localStorage.getItem('gym_theme') || 'dark';
-      setTheme(savedTheme);
-
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('member-start-date').value = today;
-      document.getElementById('sub-start-date').value = today;
-
-      loadAllData();
-    });
-
-    // Dark / Light Theme Logic
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
+    function switchTab(pageId, element) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      element.classList.add('active');
     }
 
-    function setTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        document.getElementById('theme-icon').className = 'fa-solid fa-sun';
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        document.getElementById('theme-icon').className = 'fa-solid fa-moon';
-      }
-      localStorage.setItem('gym_theme', theme);
-    }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     async function loadAllData() {
-      await fetchPlans();
-      await fetchMembers();
-      await fetchDashboardStats();
+      await loadDashboard();
+      await loadMembers();
+      await loadPlans();
     }
 
-    // التنقل بين الصفحات
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-
-      const targetNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes(tabId));
-      if (targetNav) targetNav.classList.add('active');
-
-      const titleMap = {
-        'dashboard': 'لوحة التحكم العامة',
-        'members': 'سجل الأعضاء الكامل',
-        'active-members': 'الاشتراكات الفعّالة حالياً',
-        'expiring-members': 'اشتراكات تنتهي قريباً',
-        'expired-members': 'الاشتراكات المنتهية',
-        'plans': 'إدارة خطط الاشتراكات والرياضات'
-      };
-      document.getElementById('page-title').innerText = titleMap[tabId] || 'نظام إدارة الجيم';
-
-      if (tabId === 'plans') {
-        document.getElementById('plans').classList.add('active');
-        renderPlansTable();
-      } else if (tabId === 'dashboard') {
-        document.getElementById('dashboard').classList.add('active');
-        fetchDashboardStats();
-      } else {
-        document.getElementById('members').classList.add('active');
-        const statusFilter = document.getElementById('status-filter');
-        if (tabId === 'active-members') statusFilter.value = 'Active';
-        else if (tabId === 'expiring-members') statusFilter.value = 'Expiring Soon';
-        else if (tabId === 'expired-members') statusFilter.value = 'Expired';
-        else if (tabId === 'members') statusFilter.value = '';
-        renderMembersTable();
-      }
-    }
-
-    // جلب البيانات
-    async function fetchPlans() {
-      try {
-        const res = await fetch('/api/plans');
-        plansData = await res.json();
-        populatePlanDropdowns();
-      } catch (err) {
-        showToast('خطأ في تحميل خطط الاشتراكات', 'error');
-      }
-    }
-
-    async function fetchMembers() {
-      try {
-        const res = await fetch('/api/members');
-        membersData = await res.json();
-        renderMembersTable();
-        populateMemberDropdown();
-      } catch (err) {
-        showToast('خطأ في تحميل قائمة الأعضاء', 'error');
-      }
-    }
-
-    async function fetchDashboardStats() {
+    async function loadDashboard() {
       try {
         const res = await fetch('/api/dashboard/stats');
         const data = await res.json();
-        
-        document.getElementById('stat-active').innerText = data.totalActive;
-        document.getElementById('stat-expiring').innerText = data.totalExpiring;
-        document.getElementById('stat-expired').innerText = data.totalExpired;
-        document.getElementById('stat-total').innerText = data.totalSubscriptions;
+        document.getElementById('stat-members').innerText = data.totalMembers || 0;
+        document.getElementById('stat-active').innerText = data.totalActive || 0;
+        document.getElementById('stat-expiring').innerText = data.totalExpiring || 0;
+        document.getElementById('stat-expired').innerText = data.totalExpired || 0;
 
-        const recentTbody = document.getElementById('dashboard-recent-tbody');
-        recentTbody.innerHTML = '';
-        if (!data.recentSubscriptions || data.recentSubscriptions.length === 0) {
-          recentTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">لا يوجد اشتراكات حديثة مسجلة</td></tr>`;
-          return;
-        }
-
-        data.recentSubscriptions.forEach(sub => {
-          recentTbody.innerHTML += `
-            <tr>
-              <td><strong>${sub.member_name}</strong></td>
-              <td>${sub.plan_name}</td>
-              <td>${sub.price} JOD</td>
-              <td>${sub.end_date}</td>
-              <td>${getStatusBadge(sub.status)}</td>
-            </tr>
+        const container = document.getElementById('recent-subscriptions-list');
+        container.innerHTML = '';
+        (data.recentSubscriptions || []).forEach(s => {
+          container.innerHTML += `
+            <div class="glass-item-card">
+              <div class="meta-details">
+                <div class="meta-title">${s.member_name}</div>
+                <div class="meta-sub"><i class="fa-solid fa-tag"></i> ${s.plan_name} - ${s.price} د.أ</div>
+              </div>
+              <span class="status-pill ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
+            </div>
           `;
         });
-      } catch (err) {
-        showToast('خطأ في تحميل الإحصائيات', 'error');
-      }
+      } catch (e) { console.error(e); }
     }
 
-    // عرض الجداول
-    function renderMembersTable() {
-      const tbody = document.getElementById('members-tbody');
-      const searchVal = document.getElementById('member-search').value.toLowerCase();
-      const planVal = document.getElementById('plan-filter').value;
-      const statusVal = document.getElementById('status-filter').value;
+    async function loadMembers() {
+      try {
+        const res = await fetch('/api/members');
+        globalMembers = await res.json();
+        renderMembers(globalMembers);
+      } catch (e) { console.error(e); }
+    }
 
-      const filtered = membersData.filter(m => {
-        const matchesSearch = m.full_name.toLowerCase().includes(searchVal) || m.phone.includes(searchVal);
-        const matchesPlan = !planVal || (m.plan_id && m.plan_id.toString() === planVal);
-        const matchesStatus = !statusVal || m.status === statusVal;
-        return matchesSearch && matchesPlan && matchesStatus;
-      });
-
-      tbody.innerHTML = '';
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted);">لم يتم العثور على أي مشتركين</td></tr>`;
-        return;
-      }
-
-      filtered.forEach(m => {
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${m.full_name}</strong></td>
-            <td>${m.phone}</td>
-            <td>${m.plan_name || '<span style="color:var(--text-muted)">بدون اشتراك</span>'}</td>
-            <td>${m.start_date || '-'}</td>
-            <td>${m.end_date || '-'}</td>
-            <td>${m.subscription_price ? m.subscription_price + ' JOD' : '-'}</td>
-            <td>${getStatusBadge(m.status)}</td>
-            <td>
-              <button class="btn btn-secondary" style="padding: 4px 8px;" title="عرض الملف والتاريخ" onclick="viewMemberDetails(${m.id})"><i class="fa-solid fa-eye"></i></button>
-              <button class="btn btn-secondary" style="padding: 4px 8px;" title="تعديل البيانات" onclick="editMember(${m.id})"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn btn-danger" style="padding: 4px 8px;" title="حذف" onclick="deleteMember(${m.id})"><i class="fa-solid fa-trash"></i></button>
-            </td>
-          </tr>
+    function renderMembers(list) {
+      const container = document.getElementById('all-members-list');
+      container.innerHTML = '';
+      list.forEach(m => {
+        const statusClass = m.status === 'Active' ? 'Active' : (m.status === 'Expiring Soon' ? 'Expiring' : (m.status === 'Expired' ? 'Expired' : 'NoSub'));
+        const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'قريب الانتهاء' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
+        
+        container.innerHTML += `
+          <div class="glass-item-card">
+            <div class="meta-details">
+              <div class="meta-title">${m.full_name}</div>
+              <div class="meta-sub"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="status-pill ${statusClass}">${statusText}</span>
+              <div class="action-group">
+                <button class="action-btn renew" onclick="openRenewModal(${m.id})"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="action-btn edit" onclick="editMember(${m.id})"><i class="fa-solid fa-pen"></i></button>
+                <button class="action-btn delete" onclick="deleteMember(${m.id})"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
         `;
       });
     }
 
-    function renderPlansTable() {
-      const tbody = document.getElementById('plans-tbody');
-      tbody.innerHTML = '';
-      if (plansData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">لا يوجد خطط اشتراك مضافة</td></tr>`;
-        return;
-      }
-      plansData.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${p.name}</strong></td>
-            <td>${p.description || '-'}</td>
-            <td>${p.duration_days} يوم</td>
-            <td><strong>${p.price} JOD</strong></td>
-            <td><span class="badge ${p.active ? 'badge-active' : 'badge-expired'}">${p.active ? 'مفعلة' : 'معطلة'}</span></td>
-            <td>
-              <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="editPlan(${p.id})"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn btn-danger" style="padding: 4px 8px;" onclick="deletePlan(${p.id})"><i class="fa-solid fa-trash"></i></button>
-            </td>
-          </tr>
-        `;
-      });
+    function filterMembers() {
+      const q = document.getElementById('member-search').value.toLowerCase();
+      const filtered = globalMembers.filter(m => m.full_name.toLowerCase().includes(q) || m.phone.includes(q));
+      renderMembers(filtered);
     }
 
-    function getStatusBadge(status) {
-      if (status === 'Active') return `<span class="badge badge-active"><i class="fa-solid fa-check"></i> فعّال</span>`;
-      if (status === 'Expiring Soon') return `<span class="badge badge-expiring"><i class="fa-solid fa-clock"></i> ينتهي قريباً</span>`;
-      if (status === 'Expired') return `<span class="badge badge-expired"><i class="fa-solid fa-xmark"></i> منتهي</span>`;
-      return `<span class="badge" style="background:var(--bg-hover); color:var(--text-muted)">بدون اشتراك</span>`;
-    }
+    async function loadPlans() {
+      try {
+        const res = await fetch('/api/plans');
+        globalPlans = await res.json();
+        const container = document.getElementById('all-plans-list');
+        const select = document.getElementById('member-plan');
+        const renewSelect = document.getElementById('renew-plan-id');
+        
+        container.innerHTML = '';
+        select.innerHTML = '<option value="">-- اختر الخطة --</option>';
+        renewSelect.innerHTML = '<option value="">-- اختر الخطة --</option>';
 
-    function populatePlanDropdowns() {
-      const memberPlanSelect = document.getElementById('member-plan');
-      const subPlanSelect = document.getElementById('sub-plan-id');
-      const filterPlanSelect = document.getElementById('plan-filter');
-
-      let optionsHTML = '<option value="">اختر الاشتراك...</option>';
-      let filterHTML = '<option value="">جميع الخطط والرياضات</option>';
-
-      plansData.filter(p => p.active).forEach(p => {
-        optionsHTML += `<option value="${p.id}" data-days="${p.duration_days}">${p.name} (${p.price} JOD / ${p.duration_days} يوم)</option>`;
-        filterHTML += `<option value="${p.id}">${p.name}</option>`;
-      });
-
-      memberPlanSelect.innerHTML = optionsHTML;
-      subPlanSelect.innerHTML = optionsHTML;
-      filterPlanSelect.innerHTML = filterHTML;
-    }
-
-    function populateMemberDropdown() {
-      const select = document.getElementById('sub-member-id');
-      select.innerHTML = '<option value="">اختر المشترك...</option>';
-      membersData.forEach(m => {
-        select.innerHTML += `<option value="${m.id}">${m.full_name} (${m.phone})</option>`;
-      });
-    }
-
-    function calculateMemberExpiration() {
-      const planSelect = document.getElementById('member-plan');
-      const startDateVal = document.getElementById('member-start-date').value;
-      const endDateInput = document.getElementById('member-end-date');
-
-      const selectedOption = planSelect.options[planSelect.selectedIndex];
-      const durationDays = selectedOption ? parseInt(selectedOption.getAttribute('data-days')) : 0;
-
-      if (durationDays && startDateVal) {
-        const start = new Date(startDateVal);
-        start.setDate(start.getDate() + durationDays);
-        endDateInput.value = start.toISOString().split('T')[0];
-      } else {
-        endDateInput.value = '';
-      }
-    }
-
-    function calculateSubExpiration() {
-      const planSelect = document.getElementById('sub-plan-id');
-      const startDateVal = document.getElementById('sub-start-date').value;
-      const endDateInput = document.getElementById('sub-end-date');
-
-      const selectedOption = planSelect.options[planSelect.selectedIndex];
-      const durationDays = selectedOption ? parseInt(selectedOption.getAttribute('data-days')) : 0;
-
-      if (durationDays && startDateVal) {
-        const start = new Date(startDateVal);
-        start.setDate(start.getDate() + durationDays);
-        endDateInput.value = start.toISOString().split('T')[0];
-      } else {
-        endDateInput.value = '';
-      }
-    }
-
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+        globalPlans.forEach(p => {
+          container.innerHTML += `
+            <div class="glass-item-card">
+              <div class="meta-details">
+                <div class="meta-title">${p.name}</div>
+                <div class="meta-sub"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="font-weight:800; color:var(--accent-neon);">${p.price} د.أ</div>
+                <button class="action-btn delete" onclick="deletePlan(${p.id})"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          `;
+          const opt = `<option value="${p.id}">${p.name} (${p.price} د.أ)</option>`;
+          select.innerHTML += opt;
+          renewSelect.innerHTML += opt;
+        });
+      } catch (e) { console.error(e); }
     }
 
     function openMemberModal() {
-      document.getElementById('member-form').reset();
       document.getElementById('member-id').value = '';
-      document.getElementById('member-modal-title').innerText = 'تسجيل مشترك جديد';
-      document.getElementById('initial-plan-group').style.display = 'block';
-      document.getElementById('initial-date-group').style.display = 'flex';
-      document.getElementById('member-start-date').value = new Date().toISOString().split('T')[0];
-      openModal('member-modal');
-    }
-
-    async function handleMemberSubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById('member-id').value;
-      const payload = {
-        full_name: document.getElementById('member-name').value,
-        phone: document.getElementById('member-phone').value,
-        plan_id: document.getElementById('member-plan').value,
-        start_date: document.getElementById('member-start-date').value,
-        notes: document.getElementById('member-notes').value
-      };
-
-      const url = id ? `/api/members/${id}` : '/api/members';
-      const method = id ? 'PUT' : 'POST';
-
-      try {
-        const res = await fetch(url, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
-        showToast(id ? 'تم تحديث بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح');
-        closeModal('member-modal');
-        loadAllData();
-      } catch (err) {
-        showToast(err.message || 'فشل حفظ بيانات المشترك', 'error');
-      }
+      document.getElementById('member-form').reset();
+      document.getElementById('member-modal-title').innerText = 'إضافة مشترك جديد';
+      document.getElementById('plan-select-group').style.display = 'flex';
+      document.getElementById('date-select-group').style.display = 'flex';
+      document.getElementById('member-start-date').valueAsDate = new Date();
+      document.getElementById('member-modal').classList.add('active');
     }
 
     function editMember(id) {
-      const m = membersData.find(item => item.id === id);
+      const m = globalMembers.find(x => x.id === id);
       if (!m) return;
       document.getElementById('member-id').value = m.id;
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
       document.getElementById('member-notes').value = m.notes || '';
-      document.getElementById('member-modal-title').innerText = 'تعديل بيانات المشترك';
-      
-      document.getElementById('initial-plan-group').style.display = 'none';
-      document.getElementById('initial-date-group').style.display = 'none';
-      openModal('member-modal');
+      document.getElementById('member-modal-title').innerText = 'تعديل بيانات العضو';
+      document.getElementById('plan-select-group').style.display = 'none';
+      document.getElementById('date-select-group').style.display = 'none';
+      document.getElementById('member-modal').classList.add('active');
     }
 
-    async function deleteMember(id) {
-      if (!confirm('هل أنت تأكد من رغبتك في حذف هذا المشترك؟ سيتم حذف كافة سجلات اشتراكاته أيضاً.')) return;
-      try {
-        await fetch(`/api/members/${id}`, { method: 'DELETE' });
-        showToast('تم حذف المشترك بنجاح');
-        loadAllData();
-      } catch (err) {
-        showToast('فشل حذف المشترك', 'error');
-      }
-    }
-
-    function openSubscriptionModal(preselectedMemberId = null) {
-      document.getElementById('subscription-form').reset();
-      document.getElementById('sub-start-date').value = new Date().toISOString().split('T')[0];
-      if (preselectedMemberId) {
-        document.getElementById('sub-member-id').value = preselectedMemberId;
-      }
-      openModal('subscription-modal');
-    }
-
-    async function handleSubscriptionSubmit(e) {
-      e.preventDefault();
-      const payload = {
-        member_id: document.getElementById('sub-member-id').value,
-        plan_id: document.getElementById('sub-plan-id').value,
-        start_date: document.getElementById('sub-start-date').value
-      };
-
-      try {
-        const res = await fetch('/api/subscriptions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-
-        showToast('تم إضافة / تجديد الاشتراك بنجاح');
-        closeModal('subscription-modal');
-        closeModal('details-modal');
-        loadAllData();
-      } catch (err) {
-        showToast(err.message || 'فشل إضافة الاشتراك', 'error');
-      }
-    }
-
-    async function viewMemberDetails(id) {
-      try {
-        const res = await fetch(`/api/members/${id}`);
-        const data = await res.json();
-
-        const container = document.getElementById('details-content');
-        container.innerHTML = `
-          <div style="margin-bottom: 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h2>${data.full_name}</h2>
-              <button class="btn btn-primary" onclick="openSubscriptionModal(${data.id})">
-                <i class="fa-solid fa-rotate-right"></i> تجديد الاشتراك
-              </button>
-            </div>
-            <p style="color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-phone"></i> ${data.phone}</p>
-            ${data.notes ? `<p style="margin-top:8px; font-size:0.9rem;"><strong>ملاحظات:</strong> ${data.notes}</p>` : ''}
-          </div>
-
-          <h4 style="margin-bottom:10px;">سجل الاشتراكات السابقة والحالية</h4>
-          <div style="max-height: 250px; overflow-y: auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>الخطة / الرياضة</th>
-                  <th>تاريخ البداية</th>
-                  <th>تاريخ الانتهاء</th>
-                  <th>السعر</th>
-                  <th>الحالة</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${!data.history || data.history.length === 0 ? '<tr><td colspan="5" style="text-align:center;">لا يوجد سجل اشتراكات سابق</td></tr>' : 
-                  data.history.map(s => `
-                    <tr>
-                      <td>${s.plan_name}</td>
-                      <td>${s.start_date}</td>
-                      <td>${s.end_date}</td>
-                      <td>${s.price} JOD</td>
-                      <td>${getStatusBadge(s.status)}</td>
-                    </tr>
-                  `).join('')
-                }
-              </tbody>
-            </table>
-          </div>
-        `;
-        openModal('details-modal');
-      } catch (err) {
-        showToast('خطأ في جلب بيانات ملف المشترك', 'error');
-      }
+    function openRenewModal(memberId) {
+      document.getElementById('renew-member-id').value = memberId;
+      document.getElementById('renew-start-date').valueAsDate = new Date();
+      document.getElementById('renew-modal').classList.add('active');
     }
 
     function openPlanModal() {
-      document.getElementById('plan-form').reset();
       document.getElementById('plan-id').value = '';
-      document.getElementById('plan-modal-title').innerText = 'إضافة خطة اشتراك جديدة';
-      openModal('plan-modal');
+      document.getElementById('plan-form').reset();
+      document.getElementById('plan-modal').classList.add('active');
     }
 
-    function editPlan(id) {
-      const p = plansData.find(item => item.id === id);
-      if (!p) return;
-      document.getElementById('plan-id').value = p.id;
-      document.getElementById('plan-name').value = p.name;
-      document.getElementById('plan-desc').value = p.description || '';
-      document.getElementById('plan-price').value = p.price;
-      document.getElementById('plan-duration').value = p.duration_days;
-      document.getElementById('plan-modal-title').innerText = 'تعديل خطة الاشتراك';
-      openModal('plan-modal');
+    async function handleMemberSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('member-id').value;
+      const body = {
+        full_name: document.getElementById('member-name').value,
+        phone: document.getElementById('member-phone').value,
+        notes: document.getElementById('member-notes').value,
+        plan_id: document.getElementById('member-plan').value,
+        start_date: document.getElementById('member-start-date').value
+      };
+
+      const url = id ? '/api/members/' + id : '/api/members';
+      const method = id ? 'PUT' : 'POST';
+
+      await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      closeModal('member-modal');
+      loadAllData();
+    }
+
+    async function handleRenewSubmit(e) {
+      e.preventDefault();
+      const body = {
+        member_id: document.getElementById('renew-member-id').value,
+        plan_id: document.getElementById('renew-plan-id').value,
+        start_date: document.getElementById('renew-start-date').value
+      };
+
+      await fetch('/api/subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      closeModal('renew-modal');
+      loadAllData();
     }
 
     async function handlePlanSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('plan-id').value;
-      const payload = {
+      const body = {
         name: document.getElementById('plan-name').value,
-        description: document.getElementById('plan-desc').value || '',
-        price: parseFloat(document.getElementById('plan-price').value),
-        duration_days: parseInt(document.getElementById('plan-duration').value),
+        price: document.getElementById('plan-price').value,
+        duration_days: document.getElementById('plan-duration').value,
         active: 1
       };
 
-      const url = id ? `/api/plans/${id}` : '/api/plans';
-      const method = id ? 'PUT' : 'POST';
+      await fetch('/api/plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
-      try {
-        const res = await fetch(url, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
+      closeModal('plan-modal');
+      loadPlans();
+    }
 
-        if (!res.ok) {
-          throw new Error(data.error || 'فشل حفظ الخطة');
-        }
-
-        showToast(id ? 'تم تعديل الخطة بنجاح' : 'تم إضافة الخطة بنجاح');
-        closeModal('plan-modal');
-        loadAllData();
-      } catch (err) {
-        showToast(err.message || 'فشل حفظ الخطة', 'error');
-      }
+    async function deleteMember(id) {
+      if (!confirm('هل أنت متأكد من حذف هذا العضو؟')) return;
+      await fetch('/api/members/' + id, { method: 'DELETE' });
+      loadAllData();
     }
 
     async function deletePlan(id) {
-      if (!confirm('هل أنت تأكد من رغبتك في حذف خطة الاشتراك هذه؟')) return;
-      try {
-        await fetch(`/api/plans/${id}`, { method: 'DELETE' });
-        showToast('تم حذف الخطة بنجاح');
-        loadAllData();
-      } catch (err) {
-        showToast('فشل حذف الخطة', 'error');
-      }
+      if (!confirm('هل أنت متأكد من حذف هذه الخطة؟')) return;
+      await fetch('/api/plans/' + id, { method: 'DELETE' });
+      loadPlans();
     }
 
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      if (type === 'error') toast.style.borderRightColor = 'var(--accent-red)';
-      toast.innerHTML = `
-        <i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'}" style="color:${type === 'error' ? 'var(--accent-red)' : 'var(--accent-green)'}"></i>
-        <span>${message}</span>
-      `;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(-50px)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
+    loadAllData();
   </script>
 </body>
 </html>
