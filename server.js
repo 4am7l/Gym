@@ -2,26 +2,35 @@ const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 
+// تثبيت المنطقة الزمنية للسيرفر على توقيت الأردن (عمان)
+process.env.TZ = 'Asia/Amman';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// بيانات الاتصال السريعة والمباشرة الخاصة بـ Supabase
+// بيانات الاتصال الخاصة بـ Supabase
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://cufcarfhygveznaufruv.supabase.co";
 const SUPABASE_KEY = process.env.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1ZmNhcmZoeWd2ZXpuYXVmcnV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMjMzMjYsImV4cCI6MjEwNDc5OTMyNn0.pKG14BWQeEdsmdUFR39wt5CTEo_SFIn1QsWtgMgnsxA";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// دالة حساب حالة الاشتراك بناءً على توقيت عمان
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
+  
+  // تحويل تاريخ اليوم لتوقيت عمان
   const now = new Date();
-  now.setHours(0, 0, 0, 0);
+  const jordanDateStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Amman' });
+  const today = new Date(jordanDateStr);
+  today.setHours(0, 0, 0, 0);
+
   const endDate = new Date(endDateStr);
   endDate.setHours(0, 0, 0, 0);
 
-  const diffTime = endDate.getTime() - now.getTime();
+  const diffTime = endDate.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays < 0) return 'Expired';
@@ -307,5 +316,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT} (Asia/Amman Timezone)`);
 });
