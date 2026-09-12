@@ -22,6 +22,9 @@ const db = new sqlite3.Database('./gym_system.db', (err) => {
 // Database Initialization & Schema Creation
 function initDatabase() {
   db.serialize(() => {
+    // Enable Foreign Keys
+    db.run('PRAGMA foreign_keys = ON');
+
     // Members Table
     db.run(`
       CREATE TABLE IF NOT EXISTS members (
@@ -57,7 +60,7 @@ function initDatabase() {
         end_date DATE NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (member_id) REFERENCES members (id) ON DELETE CASCADE,
-        FOREIGN KEY (plan_id) REFERENCES membership_plans (id)
+        FOREIGN KEY (plan_id) REFERENCES membership_plans (id) ON DELETE CASCADE
       )
     `, () => {
       seedDefaultPlans();
@@ -69,19 +72,20 @@ function initDatabase() {
 function seedDefaultPlans() {
   db.get('SELECT COUNT(*) as count FROM membership_plans', [], (err, row) => {
     if (err) return;
-    if (row.count === 0) {
+    if (row && row.count === 0) {
       const stmt = db.prepare('INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES (?, ?, ?, ?, 1)');
       stmt.run('Weight Training / Gym', 'Access to general weightlifting & cardio equipment', 15, 30);
       stmt.run('Taekwondo', 'Full access to martial arts training & group classes', 20, 30);
       stmt.run('Boxing', 'Boxing classes and heavy bag ring access', 20, 30);
       stmt.finalize();
-      console.log('Default membership plans seeded.');
+      console.log('Default membership plans seeded successfully.');
     }
   });
 }
 
 // Helper to calculate subscription status based on target date
 function calculateStatus(endDateStr) {
+  if (!endDateStr) return 'No Subscription';
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const endDate = new Date(endDateStr);
@@ -117,7 +121,7 @@ app.get('/api/dashboard/stats', (req, res) => {
     let totalExpiring = 0;
     let totalExpired = 0;
 
-    const subscriptionsWithStatus = rows.map((sub) => {
+    const subscriptionsWithStatus = (rows || []).map((sub) => {
       const status = calculateStatus(sub.end_date);
       if (status === 'Active') totalActive++;
       if (status === 'Expiring Soon') totalExpiring++;
@@ -125,17 +129,16 @@ app.get('/api/dashboard/stats', (req, res) => {
       return { ...sub, status };
     });
 
-    // Recent registrations (limit 5)
     db.all('SELECT * FROM members ORDER BY id DESC LIMIT 5', [], (err, recentMembers) => {
       if (err) return res.status(500).json({ error: err.message });
 
       res.json({
-        totalMembers: recentMembers.length,
+        totalMembers: (recentMembers || []).length,
         totalActive,
         totalExpiring,
         totalExpired,
-        totalSubscriptions: rows.length,
-        recentMembers,
+        totalSubscriptions: (rows || []).length,
+        recentMembers: recentMembers || [],
         recentSubscriptions: subscriptionsWithStatus.slice(0, 5)
       });
     });
@@ -146,18 +149,18 @@ app.get('/api/dashboard/stats', (req, res) => {
 app.get('/api/plans', (req, res) => {
   db.all('SELECT * FROM membership_plans ORDER BY id ASC', [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+    res.json(rows || []);
   });
 });
 
 app.post('/api/plans', (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
-  if (!name || price == null || !duration_days) {
-    return res.status(400).json({ error: 'Name, price, and duration are required.' });
+  if (!name || price === undefined || price === null || !duration_days) {
+    return res.status(400).json({ error: 'Name, price, and duration are required fields.' });
   }
 
   const query = 'INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES (?, ?, ?, ?, ?)';
-  db.run(query, [name, description || '', price, duration_days, active ? 1 : 0], function (err) {
+  db.run(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0], function (err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ id: this.lastID, name, description, price, duration_days, active: active ? 1 : 0 });
   });
@@ -166,7 +169,7 @@ app.post('/api/plans', (req, res) => {
 app.put('/api/plans/:id', (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
   const query = 'UPDATE membership_plans SET name = ?, description = ?, price = ?, duration_days = ?, active = ? WHERE id = ?';
-  db.run(query, [name, description, price, duration_days, active ? 1 : 0, req.params.id], function (err) {
+  db.run(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0, req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ updated: this.changes });
   });
@@ -201,7 +204,7 @@ app.get('/api/members', (req, res) => {
   db.all(query, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    const members = rows.map((row) => {
+    const members = (rows || []).map((row) => {
       const status = row.end_date ? calculateStatus(row.end_date) : 'No Subscription';
       return { ...row, status };
     });
@@ -226,7 +229,7 @@ app.get('/api/members/:id', (req, res) => {
     db.all(subQuery, [memberId], (err, subscriptions) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      const history = subscriptions.map((sub) => ({
+      const history = (subscriptions || []).map((sub) => ({
         ...sub,
         status: calculateStatus(sub.end_date)
       }));
@@ -281,7 +284,7 @@ app.post('/api/members', (req, res) => {
 
 app.put('/api/members/:id', (req, res) => {
   const { full_name, phone, notes } = req.body;
-  db.run('UPDATE members SET full_name = ?, phone = ?, notes = ? WHERE id = ?', [full_name, phone, notes, req.params.id], function (err) {
+  db.run('UPDATE members SET full_name = ?, phone = ? , notes = ? WHERE id = ?', [full_name, phone, notes || '', req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ updated: this.changes });
   });
@@ -317,7 +320,7 @@ app.post('/api/subscriptions', (req, res) => {
   });
 });
 
-// Fallback to index SPA
+// Fallback route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
