@@ -1,88 +1,76 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialize Local SQLite Database
-const db = new sqlite3.Database('./gym_system.db', (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to local SQLite database.');
-    initDatabase();
-  }
+// رابط اتصال Supabase يتم قراءته من متغيرات البيئة في Render
+const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:6hC?Qt8mASzsJd+@db.cufcarfhygveznaufruv.supabase.co:5432/postgres";
+
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
-// Database Initialization
-function initDatabase() {
-  db.serialize(() => {
-    db.run('PRAGMA foreign_keys = ON');
-
-    // Members Table
-    db.run(`
+async function initDatabase() {
+  try {
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS members (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        full_name TEXT NOT NULL,
-        phone TEXT NOT NULL,
+        id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
+        phone VARCHAR(50) NOT NULL,
         notes TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
-    // Membership Plans Table
-    db.run(`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS membership_plans (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
         description TEXT,
-        price REAL NOT NULL,
+        price NUMERIC(10, 2) NOT NULL,
         duration_days INTEGER NOT NULL,
         active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
-    // Subscriptions Table
-    db.run(`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS subscriptions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        member_id INTEGER NOT NULL,
-        plan_id INTEGER NOT NULL,
-        price REAL NOT NULL,
+        id SERIAL PRIMARY KEY,
+        member_id INTEGER REFERENCES members(id) ON DELETE CASCADE,
+        plan_id INTEGER REFERENCES membership_plans(id) ON DELETE CASCADE,
+        price NUMERIC(10, 2) NOT NULL,
         start_date DATE NOT NULL,
         end_date DATE NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (member_id) REFERENCES members (id) ON DELETE CASCADE,
-        FOREIGN KEY (plan_id) REFERENCES membership_plans (id) ON DELETE CASCADE
-      )
-    `, () => {
-      seedDefaultPlans();
-    });
-  });
-}
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
-// Seed initial plans if empty
-function seedDefaultPlans() {
-  db.get('SELECT COUNT(*) as count FROM membership_plans', [], (err, row) => {
-    if (err) return;
-    if (row && row.count === 0) {
-      const stmt = db.prepare('INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES (?, ?, ?, ?, 1)');
-      stmt.run('Weight Training / Gym', 'Access to general weightlifting & cardio equipment', 15, 30);
-      stmt.run('Taekwondo', 'Full access to martial arts training & group classes', 20, 30);
-      stmt.run('Boxing', 'Boxing classes and heavy bag ring access', 20, 30);
-      stmt.finalize();
-      console.log('Default membership plans seeded successfully.');
+    const plansCount = await pool.query('SELECT COUNT(*) FROM membership_plans');
+    if (parseInt(plansCount.rows[0].count) === 0) {
+      await pool.query(`
+        INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES
+        ('كمال أجسام / جيم', 'اشتراك صالة الأجهزة والحديد كاملة', 15.00, 30, 1),
+        ('تايكوندو', 'حصص تايكوندو وتدريب قتال', 20.00, 30, 1),
+        ('ملاكمة', 'تدريب ملاكمة مع مدرب وحلبة', 20.00, 30, 1);
+      `);
+      console.log('Default membership plans seeded in Supabase.');
     }
-  });
+
+    console.log('Connected to Supabase PostgreSQL Database.');
+  } catch (err) {
+    console.error('Database connection error:', err.message);
+  }
 }
 
-// Calculate status helper
+initDatabase();
+
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
   const now = new Date();
@@ -98,26 +86,24 @@ function calculateStatus(endDateStr) {
   return 'Active';
 }
 
-// ================= API ROUTES ================= //
-
-app.get('/api/dashboard/stats', (req, res) => {
-  const query = `
-    SELECT 
-      s.id, s.start_date, s.end_date, s.price,
-      m.full_name as member_name, m.phone,
-      p.name as plan_name
-    FROM subscriptions s
-    JOIN members m ON s.member_id = m.id
-    JOIN membership_plans p ON s.plan_id = p.id
-    ORDER BY s.id DESC
-  `;
-
-  db.all(query, [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
+// APIs
+app.get('/api/dashboard/stats', async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        s.id, s.start_date, s.end_date, s.price,
+        m.full_name as member_name, m.phone,
+        p.name as plan_name
+      FROM subscriptions s
+      JOIN members m ON s.member_id = m.id
+      JOIN membership_plans p ON s.plan_id = p.id
+      ORDER BY s.id DESC
+    `;
+    const { rows } = await pool.query(query);
 
     let totalActive = 0, totalExpiring = 0, totalExpired = 0;
 
-    const subscriptionsWithStatus = (rows || []).map((sub) => {
+    const subscriptionsWithStatus = rows.map((sub) => {
       const status = calculateStatus(sub.end_date);
       if (status === 'Active') totalActive++;
       if (status === 'Expiring Soon') totalExpiring++;
@@ -125,191 +111,193 @@ app.get('/api/dashboard/stats', (req, res) => {
       return { ...sub, status };
     });
 
-    db.all('SELECT * FROM members ORDER BY id DESC LIMIT 5', [], (err, recentMembers) => {
-      if (err) return res.status(500).json({ error: err.message });
+    const recentMembers = await pool.query('SELECT * FROM members ORDER BY id DESC LIMIT 5');
 
-      res.json({
-        totalMembers: (recentMembers || []).length,
-        totalActive,
-        totalExpiring,
-        totalExpired,
-        totalSubscriptions: (rows || []).length,
-        recentMembers: recentMembers || [],
-        recentSubscriptions: subscriptionsWithStatus.slice(0, 5)
-      });
+    res.json({
+      totalMembers: recentMembers.rows.length,
+      totalActive,
+      totalExpiring,
+      totalExpired,
+      totalSubscriptions: rows.length,
+      recentMembers: recentMembers.rows,
+      recentSubscriptions: subscriptionsWithStatus.slice(0, 5)
     });
-  });
-});
-
-app.get('/api/plans', (req, res) => {
-  db.all('SELECT * FROM membership_plans ORDER BY id ASC', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows || []);
-  });
-});
-
-app.post('/api/plans', (req, res) => {
-  const { name, description, price, duration_days, active } = req.body;
-  if (!name || price === undefined || price === null || !duration_days) {
-    return res.status(400).json({ error: 'Name, price, and duration are required.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  const query = 'INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES (?, ?, ?, ?, ?)';
-  db.run(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: this.lastID, name, description, price, duration_days, active: active ? 1 : 0 });
-  });
 });
 
-app.put('/api/plans/:id', (req, res) => {
+app.get('/api/plans', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM membership_plans ORDER BY id ASC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/plans', async (req, res) => {
   const { name, description, price, duration_days, active } = req.body;
-  const query = 'UPDATE membership_plans SET name = ?, description = ?, price = ?, duration_days = ?, active = ? WHERE id = ?';
-  db.run(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0, req.params.id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ updated: this.changes });
-  });
+  try {
+    const query = 'INSERT INTO membership_plans (name, description, price, duration_days, active) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const values = [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0];
+    const { rows } = await pool.query(query, values);
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.delete('/api/plans/:id', (req, res) => {
-  db.run('DELETE FROM membership_plans WHERE id = ?', [req.params.id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ deleted: this.changes });
-  });
+app.put('/api/plans/:id', async (req, res) => {
+  const { name, description, price, duration_days, active } = req.body;
+  try {
+    const query = 'UPDATE membership_plans SET name=$1, description=$2, price=$3, duration_days=$4, active=$5 WHERE id=$6';
+    await pool.query(query, [name, description || '', parseFloat(price), parseInt(duration_days), active ? 1 : 0, req.params.id]);
+    res.json({ updated: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.get('/api/members', (req, res) => {
-  const query = `
-    SELECT 
-      m.*,
-      s.id as subscription_id,
-      s.start_date,
-      s.end_date,
-      s.price as subscription_price,
-      p.name as plan_name,
-      p.id as plan_id
-    FROM members m
-    LEFT JOIN subscriptions s ON s.id = (
-      SELECT id FROM subscriptions WHERE member_id = m.id ORDER BY id DESC LIMIT 1
-    )
-    LEFT JOIN membership_plans p ON s.plan_id = p.id
-    ORDER BY m.id DESC
-  `;
+app.delete('/api/plans/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM membership_plans WHERE id = $1', [req.params.id]);
+    res.json({ deleted: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-  db.all(query, [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
+app.get('/api/members', async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        m.*,
+        s.id as subscription_id,
+        TO_CHAR(s.start_date, 'YYYY-MM-DD') as start_date,
+        TO_CHAR(s.end_date, 'YYYY-MM-DD') as end_date,
+        s.price as subscription_price,
+        p.name as plan_name,
+        p.id as plan_id
+      FROM members m
+      LEFT JOIN subscriptions s ON s.id = (
+        SELECT id FROM subscriptions WHERE member_id = m.id ORDER BY id DESC LIMIT 1
+      )
+      LEFT JOIN membership_plans p ON s.plan_id = p.id
+      ORDER BY m.id DESC
+    `;
+    const { rows } = await pool.query(query);
 
-    const members = (rows || []).map((row) => ({
+    const members = rows.map((row) => ({
       ...row,
       status: row.end_date ? calculateStatus(row.end_date) : 'No Subscription'
     }));
 
     res.json(members);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.get('/api/members/:id', (req, res) => {
-  db.get('SELECT * FROM members WHERE id = ?', [req.params.id], (err, member) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!member) return res.status(404).json({ error: 'Member not found' });
+app.get('/api/members/:id', async (req, res) => {
+  try {
+    const member = await pool.query('SELECT * FROM members WHERE id = $1', [req.params.id]);
+    if (member.rows.length === 0) return res.status(404).json({ error: 'Member not found' });
 
     const subQuery = `
-      SELECT s.*, p.name as plan_name 
+      SELECT s.id, s.member_id, s.plan_id, s.price, 
+             TO_CHAR(s.start_date, 'YYYY-MM-DD') as start_date, 
+             TO_CHAR(s.end_date, 'YYYY-MM-DD') as end_date, 
+             p.name as plan_name 
       FROM subscriptions s
       JOIN membership_plans p ON s.plan_id = p.id
-      WHERE s.member_id = ?
+      WHERE s.member_id = $1
       ORDER BY s.id DESC
     `;
-    db.all(subQuery, [req.params.id], (err, subscriptions) => {
-      if (err) return res.status(500).json({ error: err.message });
+    const subscriptions = await pool.query(subQuery, [req.params.id]);
 
-      const history = (subscriptions || []).map((sub) => ({
-        ...sub,
-        status: calculateStatus(sub.end_date)
-      }));
+    const history = subscriptions.rows.map((sub) => ({
+      ...sub,
+      status: calculateStatus(sub.end_date)
+    }));
 
-      res.json({
-        ...member,
-        currentSubscription: history[0] || null,
-        history
-      });
+    res.json({
+      ...member.rows[0],
+      currentSubscription: history[0] || null,
+      history
     });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.post('/api/members', (req, res) => {
+app.post('/api/members', async (req, res) => {
   const { full_name, phone, notes, plan_id, start_date } = req.body;
-  if (!full_name || !phone) {
-    return res.status(400).json({ error: 'Full name and phone number are required.' });
-  }
-
-  db.run('INSERT INTO members (full_name, phone, notes) VALUES (?, ?, ?)', [full_name, phone, notes || ''], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    const memberId = this.lastID;
+  try {
+    const memberRes = await pool.query('INSERT INTO members (full_name, phone, notes) VALUES ($1, $2, $3) RETURNING *', [full_name, phone, notes || '']);
+    const newMember = memberRes.rows[0];
 
     if (plan_id && start_date) {
-      db.get('SELECT * FROM membership_plans WHERE id = ?', [plan_id], (err, plan) => {
-        if (err || !plan) {
-          return res.json({ id: memberId, full_name, phone, notes });
-        }
-        
+      const planRes = await pool.query('SELECT * FROM membership_plans WHERE id = $1', [plan_id]);
+      if (planRes.rows.length > 0) {
+        const plan = planRes.rows[0];
         const start = new Date(start_date);
         const end = new Date(start);
         end.setDate(end.getDate() + plan.duration_days);
         const endDateStr = end.toISOString().split('T')[0];
 
-        db.run(
-          'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES (?, ?, ?, ?, ?)',
-          [memberId, plan.id, plan.price, start_date, endDateStr],
-          function (subErr) {
-            if (subErr) return res.status(500).json({ error: subErr.message });
-            res.json({ id: memberId, full_name, phone, subscription_id: this.lastID });
-          }
+        await pool.query(
+          'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES ($1, $2, $3, $4, $5)',
+          [newMember.id, plan.id, plan.price, start_date, endDateStr]
         );
-      });
-    } else {
-      res.json({ id: memberId, full_name, phone, notes });
+      }
     }
-  });
-});
-
-app.put('/api/members/:id', (req, res) => {
-  const { full_name, phone, notes } = req.body;
-  db.run('UPDATE members SET full_name = ?, phone = ?, notes = ? WHERE id = ?', [full_name, phone, notes || '', req.params.id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ updated: this.changes });
-  });
-});
-
-app.delete('/api/members/:id', (req, res) => {
-  db.run('DELETE FROM members WHERE id = ?', [req.params.id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ deleted: this.changes });
-  });
-});
-
-app.post('/api/subscriptions', (req, res) => {
-  const { member_id, plan_id, start_date } = req.body;
-  if (!member_id || !plan_id || !start_date) {
-    return res.status(400).json({ error: 'Member, Plan, and Start Date are required.' });
+    res.json(newMember);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
+});
 
-  db.get('SELECT * FROM membership_plans WHERE id = ?', [plan_id], (err, plan) => {
-    if (err || !plan) return res.status(404).json({ error: 'Plan not found' });
+app.put('/api/members/:id', async (req, res) => {
+  const { full_name, phone, notes } = req.body;
+  try {
+    await pool.query('UPDATE members SET full_name=$1, phone=$2, notes=$3 WHERE id=$4', [full_name, phone, notes || '', req.params.id]);
+    res.json({ updated: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
+app.delete('/api/members/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM members WHERE id = $1', [req.params.id]);
+    res.json({ deleted: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/subscriptions', async (req, res) => {
+  const { member_id, plan_id, start_date } = req.body;
+  try {
+    const planRes = await pool.query('SELECT * FROM membership_plans WHERE id = $1', [plan_id]);
+    if (planRes.rows.length === 0) return res.status(404).json({ error: 'Plan not found' });
+
+    const plan = planRes.rows[0];
     const start = new Date(start_date);
     const end = new Date(start);
     end.setDate(end.getDate() + plan.duration_days);
     const endDateStr = end.toISOString().split('T')[0];
 
-    db.run(
-      'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES (?, ?, ?, ?, ?)',
-      [member_id, plan_id, plan.price, start_date, endDateStr],
-      function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: this.lastID, member_id, plan_id, price: plan.price, start_date, end_date: endDateStr });
-      }
+    const { rows } = await pool.query(
+      'INSERT INTO subscriptions (member_id, plan_id, price, start_date, end_date) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [member_id, plan_id, plan.price, start_date, endDateStr]
     );
-  });
+
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('*', (req, res) => {
@@ -317,5 +305,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
