@@ -244,10 +244,29 @@
       text-align: center;
     }
 
-    .cliq-logo-img {
-      height: 26px;
-      object-fit: contain;
-      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
+    .cliq-badge-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #ffffff;
+      padding: 4px 12px;
+      border-radius: 8px;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    .cliq-text-logo {
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #0b132b;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .cliq-text-logo span {
+      color: #f5a623;
     }
 
     .payment-detail-row {
@@ -545,7 +564,7 @@
         border-left: none; border-right: none; border-bottom: none;
       }
 
-      .payment-side-box { display: none; } /* إخفاؤها من القائمة السفلية في الموبايل لعدم المساحة */
+      .payment-side-box { display: none; }
 
       .nav-link {
         flex-direction: column;
@@ -621,13 +640,15 @@
           <span>الخطط</span>
         </div>
 
-        <!-- بطاقة طرق الدفع المضافة بجانب الشاشة -->
+        <!-- بطاقة طرق الدفع المضافة (محدثة بشعار SVG مدمج وعالي الجودة) -->
         <div class="payment-side-box">
           <div class="payment-side-title">
             <i class="fa-solid fa-wallet"></i> طرق الدفع
           </div>
           <div class="cliq-card-mini">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/CliQ_logo.png" alt="CliQ Logo" class="cliq-logo-img">
+            <div class="cliq-badge-header">
+              <div class="cliq-text-logo">Cli<span>Q</span></div>
+            </div>
             <div class="payment-detail-row">
               <span class="info-lbl">الاسم المستعار:</span>
               <span class="info-val">066</span>
