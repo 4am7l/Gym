@@ -70,13 +70,12 @@
       --anim-speed: 0.25s;
     }
 
-    * {
-      box-sizing: border-box;
+    *, *::before, *::after {
+      box-sizing: border-box !important;
       margin: 0;
       padding: 0;
       font-family: 'Tajawal', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color var(--anim-speed) ease, border-color var(--anim-speed) ease, color var(--anim-speed) ease;
     }
 
     html, body {
@@ -94,7 +93,7 @@
       background-image: var(--bg-gradient);
     }
 
-    /* ================= LOGIN PORTAL STYLING ================= */
+    /* ================= LOGIN PORTAL ================= */
     .login-wrapper {
       position: fixed;
       inset: 0;
@@ -104,13 +103,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      transition: opacity var(--anim-speed) ease;
+      padding: 16px;
     }
 
     .login-wrapper.hidden {
-      opacity: 0;
-      pointer-events: none;
       display: none !important;
     }
 
@@ -120,12 +116,12 @@
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
-      padding: 28px 20px;
+      padding: 24px 18px;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     }
 
@@ -134,13 +130,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .login-header .brand-icon {
-      width: 50px;
-      height: 50px;
-      font-size: 1.5rem;
+      width: 48px;
+      height: 48px;
+      font-size: 1.4rem;
     }
 
     .login-tabs {
@@ -153,7 +149,7 @@
 
     .login-tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 8px;
       border: none;
       background: transparent;
       color: var(--text-sub);
@@ -173,11 +169,12 @@
       position: relative;
       display: flex;
       align-items: center;
+      width: 100%;
     }
 
     .input-pass-wrapper input {
       width: 100%;
-      padding-left: 42px !important;
+      padding-left: 40px !important;
     }
 
     .toggle-pass-btn {
@@ -189,13 +186,11 @@
       user-select: none;
     }
 
-    .toggle-pass-btn:hover { color: var(--text-bright); }
-
     .checkbox-remember {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-sub);
       cursor: pointer;
       user-select: none;
@@ -210,21 +205,18 @@
 
     /* ================= MAIN APPLICATION VIEWPORT ================= */
     .app-viewport {
-      max-width: 1350px;
       width: 100%;
+      max-width: 1350px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       height: 100%;
       overflow: hidden;
-      transition: opacity var(--anim-speed) ease;
     }
 
     .app-viewport.hidden {
-      opacity: 0;
-      pointer-events: none;
       display: none !important;
     }
 
@@ -234,7 +226,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 14px 20px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -246,8 +238,8 @@
     .brand-section { display: flex; align-items: center; gap: 10px; }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
       color: #ffffff;
@@ -260,7 +252,7 @@
     }
 
     .brand-title h1 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 900;
       letter-spacing: -0.5px;
       color: var(--text-bright);
@@ -275,7 +267,7 @@
     }
 
     .theme-toggle-btn, .logout-btn {
-      height: 38px;
+      height: 36px;
       padding: 0 10px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
@@ -286,13 +278,8 @@
       justify-content: center;
       gap: 6px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
-    }
-
-    .theme-toggle-btn:hover, .logout-btn:hover {
-      transform: scale(1.03);
-      border-color: var(--border-glow);
     }
 
     .btn-liquid {
@@ -300,10 +287,10 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--border-glow);
       color: #ffffff;
-      padding: 9px 14px;
+      padding: 8px 14px;
       border-radius: var(--radius-md);
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -311,15 +298,10 @@
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
     }
 
-    .btn-liquid:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
-    }
-
     .dashboard-layout {
       display: grid;
-      grid-template-columns: 250px 1fr;
-      gap: 16px;
+      grid-template-columns: 240px 1fr;
+      gap: 14px;
       flex: 1;
       overflow: hidden;
       width: 100%;
@@ -330,18 +312,16 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 16px 12px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       height: fit-content;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     }
 
-    /* ================= PAYMENT SIDEBAR BOX ================= */
     .payment-side-box {
-      margin-top: 12px;
-      padding: 12px;
+      margin-top: 10px;
+      padding: 10px;
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
@@ -351,7 +331,7 @@
     }
 
     .payment-side-title {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: var(--text-bright);
       display: flex;
@@ -376,42 +356,39 @@
     .cliq-badge-header {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
-      padding: 6px 10px;
+      padding: 4px 8px;
       border-radius: 8px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 4px;
       direction: ltr;
     }
 
     .cliq-svg-logo {
-      height: 22px;
+      height: 20px;
       width: auto;
-      display: block;
-      margin: 0 auto;
     }
 
-    .cliq-element-fill { fill: var(--cliq-logo-color); transition: fill var(--anim-speed) ease; }
-    .cliq-element-stroke { stroke: var(--cliq-logo-color); transition: stroke var(--anim-speed) ease; }
+    .cliq-element-fill { fill: var(--cliq-logo-color); }
+    .cliq-element-stroke { stroke: var(--cliq-logo-color); }
 
     .payment-detail-row {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .cash-option-mini {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px;
+      padding: 6px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent-green);
     }
@@ -420,27 +397,25 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: var(--radius-md);
       color: var(--text-sub);
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
     }
 
     .nav-link i { font-size: 1rem; width: 18px; text-align: center; }
-    .nav-link:hover { background: var(--card-glass-hover); color: var(--text-bright); }
     .nav-link.active {
       background: var(--btn-liquid-bg);
       color: #ffffff;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
     }
 
     .nav-badge {
       margin-right: auto;
       padding: 2px 6px;
       border-radius: 8px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       background: rgba(0,0,0,0.06);
       border: 1px solid var(--border-glass);
@@ -449,9 +424,9 @@
     .content-area {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       overflow-y: auto;
-      padding-bottom: 16px;
+      padding-bottom: 14px;
       width: 100%;
     }
 
@@ -460,7 +435,7 @@
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -469,66 +444,62 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+      gap: 4px;
     }
 
-    .glass-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
-
     .card-icon {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-bright);
     }
 
-    .card-value { font-size: 1.6rem; font-weight: 900; line-height: 1; }
-    .card-label { font-size: 0.78rem; color: var(--text-sub); font-weight: 600; }
+    .card-value { font-size: 1.5rem; font-weight: 900; line-height: 1; }
+    .card-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
 
     .data-panel {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      gap: 12px;
       width: 100%;
     }
 
-    .panel-header { display: flex; justify-content: space-between; align-items: center; }
-    .panel-header h2 { font-size: 1.05rem; font-weight: 800; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .panel-header h2 { font-size: 1rem; font-weight: 800; }
 
-    .search-input-wrapper { position: relative; width: 260px; }
+    .search-input-wrapper { position: relative; width: 240px; }
 
     .search-input-wrapper input {
       width: 100%;
-      padding: 8px 14px 8px 34px;
+      padding: 8px 12px 8px 32px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       outline: none;
     }
 
-    .search-input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.85rem; }
+    .search-input-wrapper i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.8rem; }
 
     .items-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
       width: 100%;
     }
 
@@ -536,33 +507,29 @@
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
     }
 
-    .item-card-glass:hover {
-      background: var(--card-glass-hover);
-      border-color: var(--border-glow);
-    }
-
-    .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; }
-    .item-name { font-size: 1rem; font-weight: 800; }
-    .item-meta { font-size: 0.78rem; color: var(--text-sub); display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+    .item-name { font-size: 0.95rem; font-weight: 800; }
+    .item-meta { font-size: 0.75rem; color: var(--text-sub); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
     .details-box-inner {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       gap: 4px;
+      width: 100%;
     }
 
-    .info-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
+    .info-row { display: flex; justify-content: space-between; font-size: 0.78rem; width: 100%; }
     .info-lbl { color: var(--text-sub); }
     .info-val { font-weight: 700; color: var(--text-bright); }
 
@@ -572,12 +539,13 @@
       gap: 6px;
       border-top: 1px solid var(--border-glass);
       padding-top: 6px;
+      width: 100%;
     }
 
     .badge-curved {
-      padding: 3px 10px;
-      border-radius: 16px;
-      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 14px;
+      font-size: 0.7rem;
       font-weight: 800;
     }
 
@@ -587,8 +555,8 @@
     .badge-curved.NoSub { background: rgba(148, 163, 184, 0.15); color: var(--text-sub); border: 1px solid rgba(148, 163, 184, 0.3); }
 
     .action-icon-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
       background: var(--card-glass);
@@ -597,24 +565,20 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
     }
 
-    .action-icon-btn:hover {
-      background: var(--card-glass-hover);
-      border-color: var(--border-glow);
-    }
-
-    .form-group-custom { display: flex; flex-direction: column; gap: 5px; }
-    .form-group-custom label { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
+    .form-group-custom { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+    .form-group-custom label { font-size: 0.8rem; color: var(--text-sub); font-weight: 600; }
 
     .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
+      width: 100%;
       padding: 10px 12px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       outline: none;
     }
 
@@ -632,7 +596,7 @@
       z-index: 3000;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 14px;
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--anim-speed) ease;
@@ -648,21 +612,14 @@
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
       width: 100%;
-      max-width: 400px;
-      padding: 20px;
+      max-width: 380px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-      transform: scale(0.94);
-      transition: transform var(--anim-speed) ease;
+      gap: 12px;
     }
 
-    .modal-backdrop.active .modal-glass-box {
-      transform: scale(1);
-    }
-
-    .modal-header-text { font-size: 1.1rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header-text { font-size: 1rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
     .section-view { 
       display: none; 
@@ -673,29 +630,25 @@
       display: block; 
     }
 
-    /* ================= FULL RESPONSIVE MOBILE FIXES ================= */
+    /* ================= FIX MOBILE LAYOUT ALIGNMENT ================= */
     @media (max-width: 900px) {
-      body {
-        position: relative;
-        overflow: hidden;
-      }
-
       .app-viewport {
-        padding: 10px 10px calc(var(--nav-height-mobile) + 12px) 10px;
-        gap: 10px;
+        padding: 8px 8px calc(var(--nav-height-mobile) + 8px) 8px;
+        gap: 8px;
         width: 100%;
       }
 
       header.main-header { 
-        padding: 10px 14px; 
+        padding: 10px; 
         border-radius: var(--radius-lg); 
+        width: 100%;
       }
 
       .brand-title p { display: none; }
-      .brand-title h1 { font-size: 1rem; }
+      .brand-title h1 { font-size: 0.95rem; }
       
-      .btn-liquid { padding: 7px 10px; font-size: 0.78rem; }
-      .theme-toggle-btn, .logout-btn { height: 34px; padding: 0 8px; font-size: 0.8rem; }
+      .btn-liquid { padding: 6px 10px; font-size: 0.75rem; }
+      .theme-toggle-btn, .logout-btn { height: 32px; padding: 0 8px; font-size: 0.75rem; }
 
       .dashboard-layout { 
         display: flex; 
@@ -713,9 +666,9 @@
         height: var(--nav-height-mobile);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-around;
         align-items: center;
-        padding: 4px 8px calc(env(safe-area-inset-bottom) / 2) 8px;
+        padding: 2px 4px calc(env(safe-area-inset-bottom) / 2) 4px;
         z-index: 999;
         background: var(--panel-glass);
         backdrop-filter: blur(25px);
@@ -724,7 +677,6 @@
         border-left: none; 
         border-right: none; 
         border-bottom: none;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
       }
 
       .payment-side-box { display: none; }
@@ -733,8 +685,8 @@
         flex: 1;
         flex-direction: column;
         gap: 2px;
-        padding: 6px 4px;
-        font-size: 0.65rem;
+        padding: 4px 2px;
+        font-size: 0.62rem;
         border-radius: var(--radius-md);
         justify-content: center;
         align-items: center;
@@ -742,20 +694,42 @@
         position: relative;
       }
 
-      .nav-link i { font-size: 1.1rem; width: auto; margin: 0; }
-      .nav-badge { position: absolute; top: 2px; left: 8px; font-size: 0.58rem; padding: 1px 4px; }
+      .nav-link i { font-size: 1rem; width: auto; margin: 0; }
+      .nav-badge { position: absolute; top: 2px; left: 4px; font-size: 0.55rem; padding: 1px 3px; }
 
-      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .glass-card { padding: 10px; gap: 2px; }
-      .card-value { font-size: 1.35rem; }
-      .card-label { font-size: 0.72rem; }
+      .stats-row { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 6px; 
+        width: 100%;
+      }
+      
+      .glass-card { padding: 8px; gap: 2px; width: 100%; }
+      .card-value { font-size: 1.25rem; }
+      .card-label { font-size: 0.7rem; }
 
-      .data-panel { padding: 14px; border-radius: var(--radius-lg); gap: 10px; }
-      .panel-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .data-panel { 
+        padding: 10px; 
+        border-radius: var(--radius-lg); 
+        gap: 8px; 
+        width: 100%;
+      }
+
+      .panel-header { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: 6px; 
+        width: 100%;
+      }
+
       .search-input-wrapper { width: 100%; }
 
-      .items-grid { grid-template-columns: 1fr; gap: 10px; }
-      .item-card-glass { padding: 12px; }
+      .items-grid { 
+        grid-template-columns: 1fr; 
+        gap: 8px; 
+        width: 100%;
+      }
+
+      .item-card-glass { padding: 10px; width: 100%; }
     }
   </style>
 </head>
@@ -763,14 +737,14 @@
 
   <!-- ================= CUSTOM SYSTEM ALERT & CONFIRM MODAL ================= -->
   <div class="modal-backdrop" id="custom-alert-modal">
-    <div class="modal-glass-box" style="max-width: 360px; text-align: center; align-items: center; gap: 12px;">
-      <div id="alert-icon-wrapper" style="font-size: 2.2rem; color: var(--accent-neon); margin-top: 4px;">
+    <div class="modal-glass-box" style="max-width: 340px; text-align: center; align-items: center; gap: 10px;">
+      <div id="alert-icon-wrapper" style="font-size: 2rem; color: var(--accent-neon); margin-top: 4px;">
         <i class="fa-solid fa-circle-info"></i>
       </div>
-      <div id="alert-message-text" style="font-weight: 700; font-size: 0.9rem; color: var(--text-bright); line-height: 1.5;"></div>
-      <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
-        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 9px;">موافق</button>
-        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 90px; height: auto; padding: 9px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
+      <div id="alert-message-text" style="font-weight: 700; font-size: 0.88rem; color: var(--text-bright); line-height: 1.4;"></div>
+      <div style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
+        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 8px;">موافق</button>
+        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 80px; height: auto; padding: 8px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
       </div>
     </div>
   </div>
@@ -801,7 +775,7 @@
           <input type="checkbox" id="remember-member" checked>
           تذكرني دائماً على هذا الجهاز
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">عرض اشتراكي</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 10px;">عرض اشتراكي</button>
       </form>
 
       <!-- Form الآدمن (الكابتن) -->
@@ -817,7 +791,7 @@
           <input type="checkbox" id="remember-admin" checked>
           تذكر تسجيل الدخول
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">دخول الكابتن</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 10px;">دخول الكابتن</button>
       </form>
     </div>
   </div>
@@ -855,11 +829,11 @@
         <div id="member-personal-card"></div>
       </div>
 
-      <div class="data-panel" style="margin-top: 16px;">
+      <div class="data-panel" style="margin-top: 14px;">
         <div class="panel-header">
           <h2><i class="fa-solid fa-wallet" style="color:var(--accent-green);"></i> طرق الدفع المتاحة للجم</h2>
         </div>
-        <div style="max-width: 320px;">
+        <div style="max-width: 320px; width: 100%;">
           <div class="cliq-card-mini">
             <div class="cliq-badge-header">
               <svg class="cliq-svg-logo" viewBox="0 0 200 65" xmlns="http://www.w3.org/2000/svg">
@@ -971,7 +945,7 @@
             </div>
           </div>
 
-          <div style="height: 6px;"></div>
+          <div style="height: 4px;"></div>
 
           <div class="data-panel">
             <div class="panel-header">
@@ -1020,7 +994,7 @@
           <div class="data-panel">
             <div class="panel-header">
               <h2>الخطط والاشتراكات المتاحة</h2>
-              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 7px 12px; font-size: 0.78rem;">
+              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 6px 10px; font-size: 0.75rem;">
                 + إضافة خطة
               </button>
             </div>
@@ -1176,7 +1150,6 @@
       });
     }
 
-    // ================= SHOW / HIDE PASSWORD =================
     function togglePassVisibility(inputId, iconElem) {
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
@@ -1188,7 +1161,6 @@
       }
     }
 
-    // ================= SESSION MANAGEMENT WITH REMEMBER ME =================
     function checkExistingSession() {
       const savedSession = localStorage.getItem('gym-user-session') || sessionStorage.getItem('gym-user-session');
       if (savedSession) {
@@ -1322,7 +1294,7 @@
         const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'تنتهي قريباً' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
 
         container.innerHTML = `
-          <div class="item-card-glass" style="max-width: 480px;">
+          <div class="item-card-glass">
             <div class="card-header-flex">
               <div>
                 <div class="item-name" style="font-size: 1.1rem;">${m.full_name || 'مشترك'}</div>
@@ -1331,7 +1303,7 @@
               <span class="badge-curved ${statusClass}">${statusText}</span>
             </div>
 
-            <div class="details-box-inner" style="gap: 8px; padding: 12px;">
+            <div class="details-box-inner">
               <div class="info-row"><span class="info-lbl">الخطة المسجلة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1344,7 +1316,6 @@
       }
     }
 
-    // ================= THEME CONTROLLER =================
     function initTheme() {
       const savedTheme = localStorage.getItem('gym-theme') || 'dark';
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -1368,7 +1339,6 @@
       }
     }
 
-    // ================= SECURE & FIXED SECTION SWITCHING =================
     function switchSection(viewId, element) {
       document.querySelectorAll('.section-view').forEach(s => {
         s.classList.remove('active');
