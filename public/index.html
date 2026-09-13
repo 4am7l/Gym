@@ -209,6 +209,67 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     }
 
+    /* ================= PAYMENT SIDEBAR BOX ================= */
+    .payment-side-box {
+      margin-top: 15px;
+      padding: 14px;
+      background: var(--card-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .payment-side-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 6px;
+    }
+
+    .cliq-card-mini {
+      background: var(--inner-box-bg);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .cliq-logo-img {
+      height: 26px;
+      object-fit: contain;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .payment-detail-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 0.78rem;
+    }
+
+    .cash-option-mini {
+      background: var(--inner-box-bg);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
     .nav-link {
       display: flex;
       align-items: center;
@@ -484,6 +545,8 @@
         border-left: none; border-right: none; border-bottom: none;
       }
 
+      .payment-side-box { display: none; } /* إخفاؤها من القائمة السفلية في الموبايل لعدم المساحة */
+
       .nav-link {
         flex-direction: column;
         gap: 4px;
@@ -557,6 +620,29 @@
           <i class="fa-solid fa-layer-group"></i>
           <span>الخطط</span>
         </div>
+
+        <!-- بطاقة طرق الدفع المضافة بجانب الشاشة -->
+        <div class="payment-side-box">
+          <div class="payment-side-title">
+            <i class="fa-solid fa-wallet"></i> طرق الدفع
+          </div>
+          <div class="cliq-card-mini">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/CliQ_logo.png" alt="CliQ Logo" class="cliq-logo-img">
+            <div class="payment-detail-row">
+              <span class="info-lbl">الاسم المستعار:</span>
+              <span class="info-val">066</span>
+            </div>
+            <div class="payment-detail-row">
+              <span class="info-lbl">الرقم:</span>
+              <span class="info-val">06234</span>
+            </div>
+          </div>
+          <div class="cash-option-mini">
+            <span><i class="fa-solid fa-money-bill-wave"></i> الدفع كاش</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+
       </aside>
 
       <div class="content-area">
