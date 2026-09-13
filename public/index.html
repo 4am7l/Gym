@@ -240,6 +240,7 @@
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
       flex-shrink: 0;
       width: 100%;
+      max-width: 100%;
     }
 
     .brand-section { display: flex; align-items: center; gap: 10px; }
@@ -678,7 +679,7 @@
       display: block; 
     }
 
-    /* حماية مطلقة: إخفاء قسم الإدارة إجبارياً إن لم تكن الرتبة الكابتن */
+    /* حماية مطلقة: إخفاء لوحة التحكم إجبارياً إن لم تكن رتبة الكابتن */
     body:not(.is-admin) #admin-portal-view {
       display: none !important;
     }
@@ -869,7 +870,7 @@
       </div>
     </header>
 
-    <!-- واجهة المشترك (تظهر للمشترك فقط) -->
+    <!-- واجهة المشترك (تظهر للمشترك فقط وبدون أي إحصائيات أو أعضاء آخرين) -->
     <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
@@ -971,7 +972,7 @@
       <div class="content-area">
         
         <section id="view-dashboard" class="section-view active">
-          <!-- الإحصائيات الخاصة بالكابتن فقط -->
+          <!-- الإحصائيات (تظهر للآدمن فقط) -->
           <div class="stats-row">
             <div class="glass-card">
               <div class="card-icon"><i class="fa-solid fa-users"></i></div>
@@ -1751,7 +1752,7 @@
       }
     }
 
-    async function deletePlan(id) {
+    async function deletePlan(id)  {
       const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذه الخطة؟');
       if (!confirmed) return;
 
