@@ -67,6 +67,7 @@
       --radius-lg: 20px;
       --radius-md: 14px;
       --nav-height-mobile: 68px;
+      --anim-speed: 0.35s;
     }
 
     * {
@@ -75,7 +76,7 @@
       padding: 0;
       font-family: 'Tajawal', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      transition: background-color var(--anim-speed) ease, border-color var(--anim-speed) ease, color var(--anim-speed) ease, opacity var(--anim-speed) ease, transform var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html, body {
@@ -92,6 +93,19 @@
       background-image: var(--bg-gradient);
     }
 
+    /* ================= ANIMATIONS & SMOOTH TRANSITIONS ================= */
+    .fade-anim {
+      opacity: 1;
+      transform: scale(1);
+      will-change: opacity, transform;
+    }
+
+    .fade-anim.hidden {
+      opacity: 0;
+      transform: scale(0.96);
+      pointer-events: none;
+    }
+
     /* ================= LOGIN PORTAL STYLING ================= */
     .login-wrapper {
       position: fixed;
@@ -103,6 +117,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
+      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
     }
 
     .login-box {
@@ -152,13 +167,51 @@
       font-size: 0.88rem;
       border-radius: 10px;
       cursor: pointer;
-      transition: all 0.25s ease;
     }
 
     .login-tab-btn.active {
       background: var(--btn-liquid-bg);
       color: #ffffff;
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+
+    .input-pass-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-pass-wrapper input {
+      width: 100%;
+      padding-left: 42px !important;
+    }
+
+    .toggle-pass-btn {
+      position: absolute;
+      left: 12px;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 1rem;
+      user-select: none;
+    }
+
+    .toggle-pass-btn:hover { color: var(--text-bright); }
+
+    .checkbox-remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-remember input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-neon);
+      cursor: pointer;
     }
 
     /* ================= MAIN APPLICATION VIEWPORT ================= */
@@ -172,6 +225,7 @@
       gap: 20px;
       height: 100%;
       overflow: hidden;
+      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
     }
 
     header.main-header {
@@ -232,7 +286,6 @@
       cursor: pointer;
       font-size: 0.88rem;
       font-weight: 700;
-      transition: all 0.3s ease;
     }
 
     .theme-toggle-btn:hover, .logout-btn:hover {
@@ -253,7 +306,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
     }
 
@@ -338,8 +390,8 @@
       margin: 0 auto;
     }
 
-    .cliq-element-fill { fill: var(--cliq-logo-color); transition: fill 0.3s ease; }
-    .cliq-element-stroke { stroke: var(--cliq-logo-color); transition: stroke 0.3s ease; }
+    .cliq-element-fill { fill: var(--cliq-logo-color); transition: fill var(--anim-speed) ease; }
+    .cliq-element-stroke { stroke: var(--cliq-logo-color); transition: stroke var(--anim-speed) ease; }
 
     .payment-detail-row {
       display: flex;
@@ -371,7 +423,6 @@
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.25s ease;
     }
 
     .nav-link i { font-size: 1.1rem; width: 20px; text-align: center; }
@@ -417,7 +468,6 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      transition: all 0.3s ease;
       box-shadow: 0 10px 25px rgba(0,0,0,0.03);
     }
 
@@ -483,7 +533,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: all 0.25s ease;
     }
 
     .item-card-glass:hover {
@@ -567,18 +616,24 @@
     }
 
     .modal-backdrop {
-      display: none;
+      display: flex;
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(16px);
-      z-index: 1000;
+      z-index: 3000;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--anim-speed) ease;
     }
 
-    .modal-backdrop.active { display: flex; }
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     .modal-glass-box {
       background: var(--panel-glass);
@@ -591,12 +646,28 @@
       flex-direction: column;
       gap: 16px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      transform: scale(0.92);
+      transition: transform var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .modal-glass-box {
+      transform: scale(1);
     }
 
     .modal-header-text { font-size: 1.15rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
-    .section-view { display: none; }
-    .section-view.active { display: block; }
+    .section-view { 
+      display: none; 
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
+    }
+    
+    .section-view.active { 
+      display: block; 
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* ================= MOBILE VIEWPORT CONFIGURATION ================= */
     @media (max-width: 900px) {
@@ -661,8 +732,22 @@
 </head>
 <body>
 
+  <!-- ================= CUSTOM SYSTEM ALERT & CONFIRM MODAL ================= -->
+  <div class="modal-backdrop" id="custom-alert-modal">
+    <div class="modal-glass-box" style="max-width: 380px; text-align: center; align-items: center; gap: 14px;">
+      <div id="alert-icon-wrapper" style="font-size: 2.4rem; color: var(--accent-neon); margin-top: 6px;">
+        <i class="fa-solid fa-circle-info"></i>
+      </div>
+      <div id="alert-message-text" style="font-weight: 700; font-size: 0.95rem; color: var(--text-bright); line-height: 1.5;"></div>
+      <div style="display: flex; gap: 10px; width: 100%; margin-top: 6px;">
+        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 10px;">موافق</button>
+        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 100px; height: auto; padding: 10px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= LOGIN PORTAL ================= -->
-  <div class="login-wrapper" id="login-portal">
+  <div class="login-wrapper fade-anim" id="login-portal">
     <div class="login-box">
       <div class="login-header">
         <div class="brand-icon"><i class="fa-solid fa-dumbbell"></i></div>
@@ -683,6 +768,10 @@
           <label>رقم الهاتف المسجل</label>
           <input type="tel" id="login-phone" required placeholder="مثال: 0791234567">
         </div>
+        <label class="checkbox-remember">
+          <input type="checkbox" id="remember-member" checked>
+          تذكرني دائماً على هذا الجهاز
+        </label>
         <button type="submit" class="btn-liquid" style="justify-content: center; padding: 12px;">عرض اشتراكي</button>
       </form>
 
@@ -690,15 +779,22 @@
       <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none; flex-direction: column; gap: 14px;">
         <div class="form-group-custom">
           <label>الرمز السري للكابتن</label>
-          <input type="password" id="login-passcode" required placeholder="أدخل رمز الوصول">
+          <div class="input-pass-wrapper">
+            <input type="password" id="login-passcode" required placeholder="أدخل رمز الوصول">
+            <i class="fa-solid fa-eye toggle-pass-btn" onclick="togglePassVisibility('login-passcode', this)" title="إظهار / إخفاء الرمز"></i>
+          </div>
         </div>
+        <label class="checkbox-remember">
+          <input type="checkbox" id="remember-admin" checked>
+          تذكر تسجيل الدخول
+        </label>
         <button type="submit" class="btn-liquid" style="justify-content: center; padding: 12px;">دخول الكابتن</button>
       </form>
     </div>
   </div>
 
   <!-- ================= APPLICATION CONTENT ================= -->
-  <div class="app-viewport" id="app-view" style="display: none;">
+  <div class="app-viewport fade-anim hidden" id="app-view">
     
     <header class="main-header">
       <div class="brand-section">
@@ -722,7 +818,7 @@
     </header>
 
     <!-- واجهة المشترك (Read-Only) -->
-    <div id="member-portal-view" style="display: none; flex-direction: column; gap: 20px;">
+    <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
           <h2><i class="fa-solid fa-id-card" style="color:var(--accent-neon);"></i> تفاصيل اشتراكك الشخصي</h2>
@@ -730,8 +826,7 @@
         <div id="member-personal-card"></div>
       </div>
 
-      <!-- بطاقة وسائل الدفع للمشترك -->
-      <div class="data-panel">
+      <div class="data-panel" style="margin-top: 20px;">
         <div class="panel-header">
           <h2><i class="fa-solid fa-wallet" style="color:var(--accent-green);"></i> طرق الدفع المتاحة للجم</h2>
         </div>
@@ -992,21 +1087,87 @@
   </div>
 
   <script>
-    const ADMIN_SECRET = "320320SM";
+    const ADMIN_SECRET = "88573";
     let globalMembers = [];
     let globalPlans = [];
     let globalRecentSubscriptions = [];
     let currentSession = null;
 
-    // ================= LOCAL STORAGE SESSION MANAGEMENT =================
+    // ================= CUSTOM SYSTEM MODALS (REPLACING CHROMIUM ALERTS) =================
+    function showCustomAlert(message, type = 'info') {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('custom-alert-modal');
+        const textElem = document.getElementById('alert-message-text');
+        const iconElem = document.getElementById('alert-icon-wrapper');
+        const confirmBtn = document.getElementById('alert-confirm-btn');
+        const cancelBtn = document.getElementById('alert-cancel-btn');
+
+        textElem.innerText = message;
+        cancelBtn.style.display = 'none';
+
+        if (type === 'error') {
+          iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-red);"></i>';
+        } else if (type === 'success') {
+          iconElem.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--accent-green);"></i>';
+        } else {
+          iconElem.innerHTML = '<i class="fa-solid fa-circle-info" style="color:var(--accent-neon);"></i>';
+        }
+
+        modal.classList.add('active');
+
+        confirmBtn.onclick = () => {
+          modal.classList.remove('active');
+          resolve(true);
+        };
+      });
+    }
+
+    function showCustomConfirm(message) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('custom-alert-modal');
+        const textElem = document.getElementById('alert-message-text');
+        const iconElem = document.getElementById('alert-icon-wrapper');
+        const confirmBtn = document.getElementById('alert-confirm-btn');
+        const cancelBtn = document.getElementById('alert-cancel-btn');
+
+        textElem.innerText = message;
+        iconElem.innerHTML = '<i class="fa-solid fa-circle-question" style="color:var(--accent-amber);"></i>';
+        cancelBtn.style.display = 'block';
+        modal.classList.add('active');
+
+        confirmBtn.onclick = () => {
+          modal.classList.remove('active');
+          resolve(true);
+        };
+
+        cancelBtn.onclick = () => {
+          modal.classList.remove('active');
+          resolve(false);
+        };
+      });
+    }
+
+    // ================= SHOW / HIDE PASSWORD =================
+    function togglePassVisibility(inputId, iconElem) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        iconElem.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        iconElem.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    // ================= SESSION MANAGEMENT WITH REMEMBER ME =================
     function checkExistingSession() {
-      const savedSession = localStorage.getItem('gym-user-session');
+      const savedSession = localStorage.getItem('gym-user-session') || sessionStorage.getItem('gym-user-session');
       if (savedSession) {
         currentSession = JSON.parse(savedSession);
         renderAppForRole();
       } else {
-        document.getElementById('login-portal').style.display = 'flex';
-        document.getElementById('app-view').style.display = 'none';
+        document.getElementById('login-portal').classList.remove('hidden');
+        document.getElementById('app-view').classList.add('hidden');
       }
     }
 
@@ -1014,13 +1175,19 @@
       const buttons = document.querySelectorAll('.login-tab-btn');
       buttons[0].classList.toggle('active', type === 'member');
       buttons[1].classList.toggle('active', type === 'admin');
-      document.getElementById('member-login-form').style.display = type === 'member' ? 'flex' : 'none';
-      document.getElementById('admin-login-form').style.display = type === 'admin' ? 'flex' : 'none';
+
+      const memForm = document.getElementById('member-login-form');
+      const admForm = document.getElementById('admin-login-form');
+
+      memForm.style.display = type === 'member' ? 'flex' : 'none';
+      admForm.style.display = type === 'admin' ? 'flex' : 'none';
     }
 
     async function handleMemberLogin(e) {
       e.preventDefault();
       const phone = document.getElementById('login-phone').value.trim();
+      const remember = document.getElementById('remember-member').checked;
+
       if (!phone) return;
 
       try {
@@ -1029,54 +1196,77 @@
         const found = members.find(m => m.phone === phone);
 
         if (!found) {
-          alert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.');
+          await showCustomAlert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.', 'error');
           return;
         }
 
         currentSession = { role: 'member', phone: phone };
-        localStorage.setItem('gym-user-session', JSON.stringify(currentSession));
+        const storage = remember ? localStorage : sessionStorage;
+        storage.setItem('gym-user-session', JSON.stringify(currentSession));
         renderAppForRole();
       } catch (e) {
-        alert('حدث خطأ أثناء الاتصال بالسيرفر');
+        await showCustomAlert('حدث خطأ أثناء الاتصال بالسيرفر', 'error');
       }
     }
 
-    function handleAdminLogin(e) {
+    async function handleAdminLogin(e) {
       e.preventDefault();
       const pass = document.getElementById('login-passcode').value.trim();
+      const remember = document.getElementById('remember-admin').checked;
+
       if (pass === ADMIN_SECRET) {
         currentSession = { role: 'admin' };
-        localStorage.setItem('gym-user-session', JSON.stringify(currentSession));
+        const storage = remember ? localStorage : sessionStorage;
+        storage.setItem('gym-user-session', JSON.stringify(currentSession));
         renderAppForRole();
       } else {
-        alert('الرمز السري غير صحيح!');
+        await showCustomAlert('الرمز السري غير صحيح!', 'error');
       }
     }
 
     function handleLogout() {
       localStorage.removeItem('gym-user-session');
+      sessionStorage.removeItem('gym-user-session');
       currentSession = null;
-      document.getElementById('login-portal').style.display = 'flex';
-      document.getElementById('app-view').style.display = 'none';
+
+      const appView = document.getElementById('app-view');
+      const loginPortal = document.getElementById('login-portal');
+
+      appView.classList.add('hidden');
+      setTimeout(() => {
+        appView.style.display = 'none';
+        loginPortal.style.display = 'flex';
+        setTimeout(() => loginPortal.classList.remove('hidden'), 50);
+      }, 350);
     }
 
     function renderAppForRole() {
-      document.getElementById('login-portal').style.display = 'none';
-      document.getElementById('app-view').style.display = 'flex';
+      const loginPortal = document.getElementById('login-portal');
+      const appView = document.getElementById('app-view');
 
-      if (currentSession.role === 'admin') {
-        document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
-        document.getElementById('admin-add-btn').style.display = 'flex';
-        document.getElementById('admin-portal-view').style.display = 'grid';
-        document.getElementById('member-portal-view').style.display = 'none';
-        loadAllData();
-      } else {
-        document.getElementById('role-subtitle').innerText = 'بوابة المشتركين';
-        document.getElementById('admin-add-btn').style.display = 'none';
-        document.getElementById('admin-portal-view').style.display = 'none';
-        document.getElementById('member-portal-view').style.display = 'flex';
-        loadMemberPersonalCard(currentSession.phone);
-      }
+      loginPortal.classList.add('hidden');
+      setTimeout(() => {
+        loginPortal.style.display = 'none';
+        appView.style.display = 'flex';
+        setTimeout(() => appView.classList.remove('hidden'), 50);
+
+        if (currentSession.role === 'admin') {
+          document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
+          document.getElementById('admin-add-btn').style.display = 'flex';
+          document.getElementById('admin-portal-view').style.display = 'grid';
+          document.getElementById('member-portal-view').style.display = 'none';
+          document.getElementById('member-portal-view').classList.remove('active');
+          loadAllData();
+        } else {
+          document.getElementById('role-subtitle').innerText = 'بوابة المشتركين';
+          document.getElementById('admin-add-btn').style.display = 'none';
+          document.getElementById('admin-portal-view').style.display = 'none';
+          const memView = document.getElementById('member-portal-view');
+          memView.style.display = 'block';
+          setTimeout(() => memView.classList.add('active'), 50);
+          loadMemberPersonalCard(currentSession.phone);
+        }
+      }, 350);
     }
 
     async function loadMemberPersonalCard(phone) {
@@ -1150,13 +1340,41 @@
     }
 
     function switchSection(viewId, element) {
-      document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+      const current = document.querySelector('.section-view.active');
+      const target = document.getElementById('view-' + viewId);
+
+      if (current === target) return;
+
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-      document.getElementById('view-' + viewId).classList.add('active');
       element.classList.add('active');
+
+      if (current) {
+        current.style.opacity = '0';
+        current.style.transform = 'translateY(8px)';
+        setTimeout(() => {
+          current.classList.remove('active');
+          current.style.display = 'none';
+
+          target.style.display = 'block';
+          setTimeout(() => {
+            target.classList.add('active');
+          }, 50);
+        }, 200);
+      } else {
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 50);
+      }
     }
 
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.remove('active');
+    }
 
     function getRemainingDays(endDateStr) {
       if (!endDateStr) return null;
@@ -1358,7 +1576,7 @@
       document.getElementById('plan-select-group').style.display = 'flex';
       document.getElementById('date-select-group').style.display = 'flex';
       document.getElementById('member-start-date').valueAsDate = new Date();
-      document.getElementById('member-modal').classList.add('active');
+      openModal('member-modal');
     }
 
     function editMember(id) {
@@ -1371,18 +1589,18 @@
       document.getElementById('member-modal-title').innerText = 'تعديل بيانات العضو';
       document.getElementById('plan-select-group').style.display = 'none';
       document.getElementById('date-select-group').style.display = 'none';
-      document.getElementById('member-modal').classList.add('active');
+      openModal('member-modal');
     }
 
     function openRenewModal(memberId) {
       document.getElementById('renew-member-id').value = memberId;
       document.getElementById('renew-start-date').valueAsDate = new Date();
-      document.getElementById('renew-modal').classList.add('active');
+      openModal('renew-modal');
     }
 
     function openPlanModal() {
       document.getElementById('plan-form').reset();
-      document.getElementById('plan-modal').classList.add('active');
+      openModal('plan-modal');
     }
 
     async function handleMemberSubmit(e) {
@@ -1406,6 +1624,7 @@
       });
 
       closeModal('member-modal');
+      await showCustomAlert(id ? 'تم تعديل بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح', 'success');
       loadAllData();
     }
 
@@ -1424,6 +1643,7 @@
       });
 
       closeModal('renew-modal');
+      await showCustomAlert('تم تجديد اشتراك العضو بنجاح', 'success');
       loadAllData();
     }
 
@@ -1443,18 +1663,25 @@
       });
 
       closeModal('plan-modal');
+      await showCustomAlert('تمت إضافة الخطة الجديدة بنجاح', 'success');
       loadPlans();
     }
 
     async function deleteMember(id) {
-      if (!confirm('هل أنت متأكد من حذف هذا العضو؟')) return;
+      const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذا العضو من النظام؟');
+      if (!confirmed) return;
+
       await fetch('/api/members/' + id, { method: 'DELETE' });
+      await showCustomAlert('تم حذف المشترك بنجاح', 'success');
       loadAllData();
     }
 
     async function deletePlan(id) {
-      if (!confirm('هل أنت متأكد من حذف هذه الخطة؟')) return;
+      const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذه الخطة؟');
+      if (!confirmed) return;
+
       await fetch('/api/plans/' + id, { method: 'DELETE' });
+      await showCustomAlert('تم حذف الخطة بنجاح', 'success');
       loadPlans();
     }
 
