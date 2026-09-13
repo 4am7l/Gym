@@ -63,10 +63,10 @@
     }
 
     :root {
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --nav-height-mobile: 68px;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --nav-height-mobile: 65px;
       --anim-speed: 0.25s;
     }
 
@@ -82,6 +82,7 @@
     html, body {
       height: 100%;
       height: 100svh;
+      width: 100%;
       overflow: hidden;
       background: var(--bg-dark);
       color: var(--text-bright);
@@ -119,12 +120,12 @@
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
-      padding: 32px 24px;
+      padding: 28px 20px;
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     }
 
@@ -137,9 +138,9 @@
     }
 
     .login-header .brand-icon {
-      width: 54px;
-      height: 54px;
-      font-size: 1.6rem;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
     }
 
     .login-tabs {
@@ -157,7 +158,7 @@
       background: transparent;
       color: var(--text-sub);
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       border-radius: 10px;
       cursor: pointer;
     }
@@ -212,10 +213,10 @@
       max-width: 1350px;
       width: 100%;
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       height: 100%;
       overflow: hidden;
       transition: opacity var(--anim-speed) ease;
@@ -233,47 +234,49 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 16px 24px;
+      padding: 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
       flex-shrink: 0;
+      width: 100%;
     }
 
-    .brand-section { display: flex; align-items: center; gap: 12px; }
+    .brand-section { display: flex; align-items: center; gap: 10px; }
 
     .brand-icon {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      flex-shrink: 0;
     }
 
     .brand-title h1 {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 900;
       letter-spacing: -0.5px;
       color: var(--text-bright);
     }
 
-    .brand-title p { font-size: 0.78rem; color: var(--text-sub); }
+    .brand-title p { font-size: 0.75rem; color: var(--text-sub); }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .theme-toggle-btn, .logout-btn {
-      height: 40px;
-      padding: 0 12px;
+      height: 38px;
+      padding: 0 10px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
       background: var(--card-glass);
@@ -283,7 +286,7 @@
       justify-content: center;
       gap: 6px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
     }
 
@@ -297,14 +300,14 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--border-glow);
       color: #ffffff;
-      padding: 10px 18px;
+      padding: 9px 14px;
       border-radius: var(--radius-md);
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
     }
 
@@ -315,10 +318,11 @@
 
     .dashboard-layout {
       display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 20px;
+      grid-template-columns: 250px 1fr;
+      gap: 16px;
       flex: 1;
       overflow: hidden;
+      width: 100%;
     }
 
     aside.sidebar {
@@ -326,7 +330,7 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 20px 14px;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -336,18 +340,18 @@
 
     /* ================= PAYMENT SIDEBAR BOX ================= */
     .payment-side-box {
-      margin-top: 15px;
-      padding: 14px;
+      margin-top: 12px;
+      padding: 12px;
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .payment-side-title {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 800;
       color: var(--text-bright);
       display: flex;
@@ -361,10 +365,10 @@
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
       text-align: center;
     }
@@ -372,8 +376,8 @@
     .cliq-badge-header {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 6px 10px;
+      border-radius: 8px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -383,7 +387,7 @@
     }
 
     .cliq-svg-logo {
-      height: 26px;
+      height: 22px;
       width: auto;
       display: block;
       margin: 0 auto;
@@ -396,18 +400,18 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
     }
 
     .cash-option-mini {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px 10px;
+      padding: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: var(--accent-green);
     }
@@ -415,16 +419,16 @@
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
+      gap: 10px;
+      padding: 10px 14px;
       border-radius: var(--radius-md);
       color: var(--text-sub);
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
     }
 
-    .nav-link i { font-size: 1.1rem; width: 20px; text-align: center; }
+    .nav-link i { font-size: 1rem; width: 18px; text-align: center; }
     .nav-link:hover { background: var(--card-glass-hover); color: var(--text-bright); }
     .nav-link.active {
       background: var(--btn-liquid-bg);
@@ -434,9 +438,9 @@
 
     .nav-badge {
       margin-right: auto;
-      padding: 2px 7px;
-      border-radius: 10px;
-      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.7rem;
       font-weight: 800;
       background: rgba(0,0,0,0.06);
       border: 1px solid var(--border-glass);
@@ -445,9 +449,10 @@
     .content-area {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       overflow-y: auto;
-      padding-bottom: 20px;
+      padding-bottom: 16px;
+      width: 100%;
     }
 
     .content-area::-webkit-scrollbar { display: none; }
@@ -455,7 +460,8 @@
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+      gap: 12px;
+      width: 100%;
     }
 
     .glass-card {
@@ -463,75 +469,78 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.03);
     }
 
     .glass-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
 
     .card-icon {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--text-bright);
     }
 
-    .card-value { font-size: 1.8rem; font-weight: 900; line-height: 1; }
-    .card-label { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
+    .card-value { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+    .card-label { font-size: 0.78rem; color: var(--text-sub); font-weight: 600; }
 
     .data-panel {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 22px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      width: 100%;
     }
 
     .panel-header { display: flex; justify-content: space-between; align-items: center; }
-    .panel-header h2 { font-size: 1.15rem; font-weight: 800; }
+    .panel-header h2 { font-size: 1.05rem; font-weight: 800; }
 
-    .search-input-wrapper { position: relative; width: 280px; }
+    .search-input-wrapper { position: relative; width: 260px; }
 
     .search-input-wrapper input {
       width: 100%;
-      padding: 10px 16px 10px 38px;
+      padding: 8px 14px 8px 34px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       outline: none;
     }
 
-    .search-input-wrapper i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.9rem; }
+    .search-input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.85rem; }
 
     .items-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 12px;
+      width: 100%;
     }
 
     .item-card-glass {
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      width: 100%;
     }
 
     .item-card-glass:hover {
@@ -540,35 +549,35 @@
     }
 
     .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; }
-    .item-name { font-size: 1.05rem; font-weight: 800; }
-    .item-meta { font-size: 0.8rem; color: var(--text-sub); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .item-name { font-size: 1rem; font-weight: 800; }
+    .item-meta { font-size: 0.78rem; color: var(--text-sub); display: flex; align-items: center; gap: 5px; margin-top: 2px; }
 
     .details-box-inner {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 10px 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
-    .info-row { display: flex; justify-content: space-between; font-size: 0.82rem; }
+    .info-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
     .info-lbl { color: var(--text-sub); }
     .info-val { font-weight: 700; color: var(--text-bright); }
 
     .card-bottom-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 6px;
       border-top: 1px solid var(--border-glass);
-      padding-top: 8px;
+      padding-top: 6px;
     }
 
     .badge-curved {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 16px;
+      font-size: 0.72rem;
       font-weight: 800;
     }
 
@@ -578,8 +587,8 @@
     .badge-curved.NoSub { background: rgba(148, 163, 184, 0.15); color: var(--text-sub); border: 1px solid rgba(148, 163, 184, 0.3); }
 
     .action-icon-btn {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
       background: var(--card-glass);
@@ -588,7 +597,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .action-icon-btn:hover {
@@ -596,16 +605,16 @@
       border-color: var(--border-glow);
     }
 
-    .form-group-custom { display: flex; flex-direction: column; gap: 6px; }
-    .form-group-custom label { font-size: 0.85rem; color: var(--text-sub); font-weight: 600; }
+    .form-group-custom { display: flex; flex-direction: column; gap: 5px; }
+    .form-group-custom label { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
 
     .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       outline: none;
     }
 
@@ -639,13 +648,13 @@
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
       width: 100%;
-      max-width: 440px;
-      padding: 24px;
+      max-width: 400px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-      transform: scale(0.92);
+      transform: scale(0.94);
       transition: transform var(--anim-speed) ease;
     }
 
@@ -653,74 +662,100 @@
       transform: scale(1);
     }
 
-    .modal-header-text { font-size: 1.15rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header-text { font-size: 1.1rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
     .section-view { 
       display: none; 
+      width: 100%;
     }
     
     .section-view.active { 
       display: block; 
     }
 
-    /* ================= MOBILE VIEWPORT CONFIGURATION ================= */
+    /* ================= FULL RESPONSIVE MOBILE FIXES ================= */
     @media (max-width: 900px) {
-      .app-viewport {
-        padding: 12px 12px calc(var(--nav-height-mobile) + 12px) 12px;
-        gap: 12px;
+      body {
+        position: relative;
+        overflow: hidden;
       }
 
-      header.main-header { padding: 12px 16px; border-radius: var(--radius-lg); }
-      .brand-title p { display: none; }
-      .brand-title h1 { font-size: 1.1rem; }
-      .btn-liquid { padding: 8px 12px; font-size: 0.8rem; }
+      .app-viewport {
+        padding: 10px 10px calc(var(--nav-height-mobile) + 12px) 10px;
+        gap: 10px;
+        width: 100%;
+      }
 
-      .dashboard-layout { display: flex; flex-direction: column; gap: 0; }
+      header.main-header { 
+        padding: 10px 14px; 
+        border-radius: var(--radius-lg); 
+      }
+
+      .brand-title p { display: none; }
+      .brand-title h1 { font-size: 1rem; }
+      
+      .btn-liquid { padding: 7px 10px; font-size: 0.78rem; }
+      .theme-toggle-btn, .logout-btn { height: 34px; padding: 0 8px; font-size: 0.8rem; }
+
+      .dashboard-layout { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 0; 
+        width: 100%;
+      }
 
       aside.sidebar {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
+        width: 100%;
         height: var(--nav-height-mobile);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
-        padding: 0 8px calc(env(safe-area-inset-bottom) / 2) 8px;
+        padding: 4px 8px calc(env(safe-area-inset-bottom) / 2) 8px;
         z-index: 999;
         background: var(--panel-glass);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         border-top: 1px solid var(--border-glow);
-        border-left: none; border-right: none; border-bottom: none;
+        border-left: none; 
+        border-right: none; 
+        border-bottom: none;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
       }
 
       .payment-side-box { display: none; }
 
       .nav-link {
+        flex: 1;
         flex-direction: column;
-        gap: 4px;
-        padding: 6px 8px;
-        font-size: 0.68rem;
+        gap: 2px;
+        padding: 6px 4px;
+        font-size: 0.65rem;
         border-radius: var(--radius-md);
         justify-content: center;
+        align-items: center;
+        text-align: center;
         position: relative;
       }
 
-      .nav-link i { font-size: 1.15rem; width: auto; }
-      .nav-badge { position: absolute; top: 2px; left: 4px; font-size: 0.6rem; padding: 1px 4px; }
+      .nav-link i { font-size: 1.1rem; width: auto; margin: 0; }
+      .nav-badge { position: absolute; top: 2px; left: 8px; font-size: 0.58rem; padding: 1px 4px; }
 
-      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      .glass-card { padding: 14px; gap: 4px; }
-      .card-value { font-size: 1.5rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .glass-card { padding: 10px; gap: 2px; }
+      .card-value { font-size: 1.35rem; }
+      .card-label { font-size: 0.72rem; }
 
-      .data-panel { padding: 16px; border-radius: var(--radius-lg); gap: 14px; }
-      .panel-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .data-panel { padding: 14px; border-radius: var(--radius-lg); gap: 10px; }
+      .panel-header { flex-direction: column; align-items: flex-start; gap: 8px; }
       .search-input-wrapper { width: 100%; }
 
       .items-grid { grid-template-columns: 1fr; gap: 10px; }
-      .item-card-glass { padding: 14px; }
+      .item-card-glass { padding: 12px; }
     }
   </style>
 </head>
@@ -728,14 +763,14 @@
 
   <!-- ================= CUSTOM SYSTEM ALERT & CONFIRM MODAL ================= -->
   <div class="modal-backdrop" id="custom-alert-modal">
-    <div class="modal-glass-box" style="max-width: 380px; text-align: center; align-items: center; gap: 14px;">
-      <div id="alert-icon-wrapper" style="font-size: 2.4rem; color: var(--accent-neon); margin-top: 6px;">
+    <div class="modal-glass-box" style="max-width: 360px; text-align: center; align-items: center; gap: 12px;">
+      <div id="alert-icon-wrapper" style="font-size: 2.2rem; color: var(--accent-neon); margin-top: 4px;">
         <i class="fa-solid fa-circle-info"></i>
       </div>
-      <div id="alert-message-text" style="font-weight: 700; font-size: 0.95rem; color: var(--text-bright); line-height: 1.5;"></div>
-      <div style="display: flex; gap: 10px; width: 100%; margin-top: 6px;">
-        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 10px;">موافق</button>
-        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 100px; height: auto; padding: 10px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
+      <div id="alert-message-text" style="font-weight: 700; font-size: 0.9rem; color: var(--text-bright); line-height: 1.5;"></div>
+      <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 9px;">موافق</button>
+        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 90px; height: auto; padding: 9px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
       </div>
     </div>
   </div>
@@ -757,7 +792,7 @@
       </div>
 
       <!-- Form المشترك -->
-      <form id="member-login-form" onsubmit="handleMemberLogin(event)" style="display: flex; flex-direction: column; gap: 14px;">
+      <form id="member-login-form" onsubmit="handleMemberLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
         <div class="form-group-custom">
           <label>رقم الهاتف المسجل</label>
           <input type="tel" id="login-phone" required placeholder="مثال: 0791234567">
@@ -766,11 +801,11 @@
           <input type="checkbox" id="remember-member" checked>
           تذكرني دائماً على هذا الجهاز
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 12px;">عرض اشتراكي</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">عرض اشتراكي</button>
       </form>
 
       <!-- Form الآدمن (الكابتن) -->
-      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none; flex-direction: column; gap: 14px;">
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none; flex-direction: column; gap: 12px;">
         <div class="form-group-custom">
           <label>الرمز السري للكابتن</label>
           <div class="input-pass-wrapper">
@@ -782,7 +817,7 @@
           <input type="checkbox" id="remember-admin" checked>
           تذكر تسجيل الدخول
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 12px;">دخول الكابتن</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">دخول الكابتن</button>
       </form>
     </div>
   </div>
@@ -820,7 +855,7 @@
         <div id="member-personal-card"></div>
       </div>
 
-      <div class="data-panel" style="margin-top: 20px;">
+      <div class="data-panel" style="margin-top: 16px;">
         <div class="panel-header">
           <h2><i class="fa-solid fa-wallet" style="color:var(--accent-green);"></i> طرق الدفع المتاحة للجم</h2>
         </div>
@@ -936,7 +971,7 @@
             </div>
           </div>
 
-          <div style="height: 10px;"></div>
+          <div style="height: 6px;"></div>
 
           <div class="data-panel">
             <div class="panel-header">
@@ -985,7 +1020,7 @@
           <div class="data-panel">
             <div class="panel-header">
               <h2>الخطط والاشتراكات المتاحة</h2>
-              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 8px 14px; font-size: 0.8rem;">
+              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 7px 12px; font-size: 0.78rem;">
                 + إضافة خطة
               </button>
             </div>
@@ -1028,7 +1063,7 @@
           <label>تاريخ البدء</label>
           <input type="date" id="member-start-date">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 8px;">حفظ البيانات</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">حفظ البيانات</button>
       </form>
     </div>
   </div>
@@ -1050,7 +1085,7 @@
           <label>تاريخ البدء</label>
           <input type="date" id="renew-start-date" required>
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 8px;">تجديد فوراً</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">تجديد فوراً</button>
       </form>
     </div>
   </div>
@@ -1075,7 +1110,7 @@
           <label>المدة (أيام)</label>
           <input type="number" id="plan-duration" required value="30">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 8px;">حفظ الخطة</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">حفظ الخطة</button>
       </form>
     </div>
   </div>
@@ -1290,13 +1325,13 @@
           <div class="item-card-glass" style="max-width: 480px;">
             <div class="card-header-flex">
               <div>
-                <div class="item-name" style="font-size: 1.2rem;">${m.full_name || 'مشترك'}</div>
+                <div class="item-name" style="font-size: 1.1rem;">${m.full_name || 'مشترك'}</div>
                 <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone || ''}</div>
               </div>
               <span class="badge-curved ${statusClass}">${statusText}</span>
             </div>
 
-            <div class="details-box-inner" style="gap: 8px; padding: 14px;">
+            <div class="details-box-inner" style="gap: 8px; padding: 12px;">
               <div class="info-row"><span class="info-lbl">الخطة المسجلة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1552,7 +1587,7 @@
                     <div class="item-name">${p.name}</div>
                     <div class="item-meta"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
                   </div>
-                  <div style="font-weight:900; font-size:1.2rem; color:var(--accent-neon);">${p.price} د.أ</div>
+                  <div style="font-weight:900; font-size:1.1rem; color:var(--accent-neon);">${p.price} د.أ</div>
                 </div>
                 <div class="card-bottom-actions">
                   <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
