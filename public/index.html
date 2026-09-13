@@ -8,9 +8,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- مكتبة الرموز الموثوقة المباشرة -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
+    /* ================= SYSTEM THEMES ================= */
     :root[data-theme="dark"] {
       --bg-dark: #090a0f;
       --bg-gradient: radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
@@ -21,12 +23,16 @@
       --border-glass: rgba(255, 255, 255, 0.08);
       --border-glow: rgba(255, 255, 255, 0.15);
       --inner-box-bg: rgba(0, 0, 0, 0.25);
+      
       --text-bright: #ffffff;
       --text-sub: #94a3b8;
+      --text-dim: #64748b;
+      
       --accent-neon: #38bdf8;
       --accent-green: #4ade80;
       --accent-amber: #fbbf24;
       --accent-red: #f87171;
+
       --btn-liquid-bg: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
       --dropdown-bg: #090a0f;
       --cliq-logo-color: #ffffff;
@@ -42,12 +48,16 @@
       --border-glass: rgba(0, 0, 0, 0.06);
       --border-glow: rgba(56, 189, 248, 0.3);
       --inner-box-bg: rgba(241, 245, 249, 0.8);
+      
       --text-bright: #0f172a;
       --text-sub: #475569;
+      --text-dim: #94a3b8;
+      
       --accent-neon: #0284c7;
       --accent-green: #16a34a;
       --accent-amber: #d97706;
       --accent-red: #dc2626;
+
       --btn-liquid-bg: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       --dropdown-bg: #ffffff;
       --cliq-logo-color: #0f172a;
@@ -61,8 +71,9 @@
       --anim-speed: 0.25s;
     }
 
+    /* حصر تام وصارم للأبعاد لحل الانزياح يميناً */
     *, *::before, *::after {
-      box-sizing: border-box;
+      box-sizing: border-box !important;
       margin: 0;
       padding: 0;
       font-family: 'Tajawal', sans-serif;
@@ -70,8 +81,8 @@
     }
 
     html, body {
-      width: 100%;
-      max-width: 100vw;
+      width: 100% !important;
+      max-width: 100vw !important;
       min-height: 100vh;
       overflow-x: hidden !important;
       background: var(--bg-dark);
@@ -137,6 +148,7 @@
       justify-content: center;
       font-size: 1.2rem;
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      flex-shrink: 0;
     }
 
     .login-tabs {
@@ -203,7 +215,7 @@
 
     .app-viewport {
       max-width: 1250px;
-      width: 100%;
+      width: 100% !important;
       margin: 0 auto;
       padding: 14px;
       display: flex;
@@ -225,8 +237,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
 
     .brand-section { display: flex; align-items: center; gap: 10px; }
@@ -270,7 +282,8 @@
       display: grid;
       grid-template-columns: 240px 1fr;
       gap: 14px;
-      width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
 
     aside.sidebar {
@@ -392,8 +405,8 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
       overflow-x: hidden !important;
     }
 
@@ -401,7 +414,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      width: 100%;
+      width: 100% !important;
     }
 
     .glass-card {
@@ -413,6 +426,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      width: 100% !important;
     }
 
     .card-icon {
@@ -440,8 +454,8 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
 
     .panel-header { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
@@ -466,8 +480,8 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 10px;
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
 
     .item-card-glass {
@@ -478,8 +492,8 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 100%;
-      max-width: 100%;
+      width: 100% !important;
+      max-width: 100% !important;
     }
 
     .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
@@ -588,12 +602,12 @@
     .modal-backdrop.active .modal-glass-box { transform: scale(1); }
     .modal-header-text { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
-    .section-view { display: none; width: 100%; max-width: 100%; }
+    .section-view { display: none; width: 100% !important; max-width: 100% !important; }
     .section-view.active { display: block; }
 
     body:not(.is-admin) #admin-portal-view { display: none !important; }
 
-    /* حماية تامة ومطلقة ضد انزياح الشاشة يميناً على جميع الهواتف */
+    /* حماية صارمة لكل الأجهزة ذات العرض الصغير لمنع الميلان */
     @media (max-width: 900px) {
       html, body {
         width: 100% !important;
@@ -602,8 +616,8 @@
       }
 
       .app-viewport {
-        padding: 8px;
-        gap: 8px;
+        padding: 8px !important;
+        gap: 8px !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
@@ -614,7 +628,7 @@
       }
 
       header.main-header { 
-        padding: 8px 10px; 
+        padding: 8px 10px !important; 
         border-radius: var(--radius-lg); 
         width: 100% !important; 
         max-width: 100% !important; 
@@ -679,18 +693,18 @@
       .card-value { font-size: 1.2rem; }
       .card-label { font-size: 0.68rem; }
 
-      .data-panel { padding: 10px; border-radius: var(--radius-lg); gap: 8px; width: 100% !important; max-width: 100% !important; }
+      .data-panel { padding: 10px !important; border-radius: var(--radius-lg); gap: 8px; width: 100% !important; max-width: 100% !important; }
       .panel-header { flex-direction: column; align-items: stretch; gap: 6px; width: 100% !important; }
       .search-input-wrapper { width: 100% !important; max-width: 100% !important; }
 
       .items-grid { grid-template-columns: 1fr !important; gap: 8px !important; width: 100% !important; max-width: 100% !important; }
-      .item-card-glass { padding: 10px; width: 100% !important; max-width: 100% !important; }
+      .item-card-glass { padding: 10px !important; width: 100% !important; max-width: 100% !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- تنبيهات النظام الموحدة -->
+  <!-- تنبيهات النظام -->
   <div class="modal-backdrop" id="custom-alert-modal">
     <div class="modal-glass-box" style="max-width: 340px; text-align: center; align-items: center; gap: 10px;">
       <div id="alert-icon-wrapper" style="font-size: 2rem; color: var(--accent-neon); margin-top: 2px;">
@@ -749,7 +763,7 @@
     </div>
   </div>
 
-  <!-- محتوى التطبيق الرئيسي -->
+  <!-- تطبيق واجهة النظام -->
   <div class="app-viewport hidden" id="app-view">
     
     <header class="main-header">
@@ -773,7 +787,7 @@
       </div>
     </header>
 
-    <!-- واجهة المشترك العادي (بدون أي إحصائيات أو أعضاء آخرين نهائياً) -->
+    <!-- واجهة المشترك العادي -->
     <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
@@ -812,7 +826,7 @@
       </div>
     </div>
 
-    <!-- واجهة الكابتن (تظهر للآدمن فقط) -->
+    <!-- واجهة الكابتن -->
     <div class="dashboard-layout" id="admin-portal-view" style="display: none !important;">
       
       <aside class="sidebar">
@@ -875,7 +889,6 @@
       <div class="content-area">
         
         <section id="view-dashboard" class="section-view active">
-          <!-- الإحصائيات (للكابتن فقط) -->
           <div class="stats-row">
             <div class="glass-card">
               <div class="card-icon"><i class="fa-solid fa-users"></i></div>
