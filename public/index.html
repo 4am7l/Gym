@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* ================= SYSTEM THEMES ================= */
     :root[data-theme="dark"] {
       --bg-dark: #090a0f;
       --bg-gradient: radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
@@ -22,16 +21,12 @@
       --border-glass: rgba(255, 255, 255, 0.08);
       --border-glow: rgba(255, 255, 255, 0.15);
       --inner-box-bg: rgba(0, 0, 0, 0.25);
-      
       --text-bright: #ffffff;
       --text-sub: #94a3b8;
-      --text-dim: #64748b;
-      
       --accent-neon: #38bdf8;
       --accent-green: #4ade80;
       --accent-amber: #fbbf24;
       --accent-red: #f87171;
-
       --btn-liquid-bg: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
       --dropdown-bg: #090a0f;
       --cliq-logo-color: #ffffff;
@@ -47,16 +42,12 @@
       --border-glass: rgba(0, 0, 0, 0.06);
       --border-glow: rgba(56, 189, 248, 0.3);
       --inner-box-bg: rgba(241, 245, 249, 0.8);
-      
       --text-bright: #0f172a;
       --text-sub: #475569;
-      --text-dim: #94a3b8;
-      
       --accent-neon: #0284c7;
       --accent-green: #16a34a;
       --accent-amber: #d97706;
       --accent-red: #dc2626;
-
       --btn-liquid-bg: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       --dropdown-bg: #ffffff;
       --cliq-logo-color: #0f172a;
@@ -79,9 +70,9 @@
     }
 
     html, body {
-      height: 100%;
       width: 100%;
       max-width: 100vw;
+      min-height: 100vh;
       overflow-x: hidden !important;
       background: var(--bg-dark);
       color: var(--text-bright);
@@ -91,9 +82,9 @@
       display: flex;
       flex-direction: column;
       background-image: var(--bg-gradient);
+      position: relative;
     }
 
-    /* ================= LOGIN PORTAL STYLING ================= */
     .login-wrapper {
       position: fixed;
       inset: 0;
@@ -103,8 +94,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      transition: opacity var(--anim-speed) ease;
+      padding: 16px;
     }
 
     .login-wrapper.hidden {
@@ -119,12 +109,12 @@
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
-      padding: 28px 20px;
+      padding: 24px 18px;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     }
 
@@ -133,13 +123,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .login-header .brand-icon {
-      width: 50px;
-      height: 50px;
-      font-size: 1.5rem;
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
     }
 
     .login-tabs {
@@ -152,13 +149,13 @@
 
     .login-tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 9px;
       border: none;
       background: transparent;
       color: var(--text-sub);
       font-weight: 700;
-      font-size: 0.85rem;
-      border-radius: 10px;
+      font-size: 0.82rem;
+      border-radius: 9px;
       cursor: pointer;
     }
 
@@ -172,6 +169,7 @@
       position: relative;
       display: flex;
       align-items: center;
+      width: 100%;
     }
 
     .input-pass-wrapper input {
@@ -185,98 +183,61 @@
       color: var(--text-sub);
       cursor: pointer;
       font-size: 1rem;
-      user-select: none;
     }
-
-    .toggle-pass-btn:hover { color: var(--text-bright); }
 
     .checkbox-remember {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-sub);
       cursor: pointer;
-      user-select: none;
     }
 
     .checkbox-remember input {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       accent-color: var(--accent-neon);
       cursor: pointer;
     }
 
-    /* ================= MAIN APPLICATION VIEWPORT ================= */
     .app-viewport {
-      max-width: 1350px;
+      max-width: 1250px;
       width: 100%;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      height: 100%;
+      gap: 14px;
       overflow-x: hidden !important;
-      transition: opacity var(--anim-speed) ease;
     }
 
     .app-viewport.hidden {
-      opacity: 0;
-      pointer-events: none;
       display: none !important;
     }
 
     header.main-header {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 14px 20px;
+      padding: 12px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-      flex-shrink: 0;
       width: 100%;
       max-width: 100%;
     }
 
     .brand-section { display: flex; align-items: center; gap: 10px; }
+    .brand-title h1 { font-size: 1.05rem; font-weight: 900; color: var(--text-bright); }
+    .brand-title p { font-size: 0.72rem; color: var(--text-sub); }
 
-    .brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-      flex-shrink: 0;
-    }
-
-    .brand-title h1 {
-      font-size: 1.15rem;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      color: var(--text-bright);
-    }
-
-    .brand-title p { font-size: 0.75rem; color: var(--text-sub); }
-
-    .header-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .header-controls { display: flex; align-items: center; gap: 6px; }
 
     .theme-toggle-btn, .logout-btn {
-      height: 38px;
-      padding: 0 10px;
+      height: 36px;
+      padding: 0 9px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
       background: var(--card-glass);
@@ -284,44 +245,31 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
-    }
-
-    .theme-toggle-btn:hover, .logout-btn:hover {
-      transform: scale(1.03);
-      border-color: var(--border-glow);
     }
 
     .btn-liquid {
       background: var(--btn-liquid-bg);
-      backdrop-filter: blur(10px);
       border: 1px solid var(--border-glow);
       color: #ffffff;
-      padding: 9px 14px;
+      padding: 8px 12px;
       border-radius: var(--radius-md);
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
-    }
-
-    .btn-liquid:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
     }
 
     .dashboard-layout {
       display: grid;
-      grid-template-columns: 250px 1fr;
-      gap: 16px;
-      flex: 1;
-      overflow: hidden;
+      grid-template-columns: 240px 1fr;
+      gap: 14px;
       width: 100%;
     }
 
@@ -330,45 +278,44 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 16px 12px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       height: fit-content;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     }
 
     .payment-side-box {
-      margin-top: 12px;
-      padding: 12px;
+      margin-top: 10px;
+      padding: 10px;
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
     }
 
     .payment-side-title {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 800;
       color: var(--text-bright);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       border-bottom: 1px solid var(--border-glass);
-      padding-bottom: 6px;
+      padding-bottom: 5px;
     }
 
     .cliq-card-mini {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px;
+      padding: 7px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       align-items: center;
       text-align: center;
       width: 100%;
@@ -377,42 +324,35 @@
     .cliq-badge-header {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
-      padding: 6px 10px;
-      border-radius: 8px;
+      padding: 5px 8px;
+      border-radius: 6px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 4px;
       direction: ltr;
     }
 
-    .cliq-svg-logo {
-      height: 22px;
-      width: auto;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .cliq-element-fill { fill: var(--cliq-logo-color); transition: fill var(--anim-speed) ease; }
-    .cliq-element-stroke { stroke: var(--cliq-logo-color); transition: stroke var(--anim-speed) ease; }
+    .cliq-svg-logo { height: 18px; width: auto; display: block; margin: 0 auto; }
+    .cliq-element-fill { fill: var(--cliq-logo-color); }
+    .cliq-element-stroke { stroke: var(--cliq-logo-color); }
 
     .payment-detail-row {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .cash-option-mini {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px;
+      padding: 7px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--accent-green);
       width: 100%;
@@ -421,16 +361,16 @@
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
+      gap: 9px;
+      padding: 9px 12px;
       border-radius: var(--radius-md);
       color: var(--text-sub);
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       cursor: pointer;
     }
 
-    .nav-link i { font-size: 1rem; width: 18px; text-align: center; }
+    .nav-link i { font-size: 0.95rem; width: 16px; text-align: center; }
     .nav-link:hover { background: var(--card-glass-hover); color: var(--text-bright); }
     .nav-link.active {
       background: var(--btn-liquid-bg);
@@ -440,9 +380,9 @@
 
     .nav-badge {
       margin-right: auto;
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 0.7rem;
+      padding: 2px 5px;
+      border-radius: 6px;
+      font-size: 0.65rem;
       font-weight: 800;
       background: rgba(0,0,0,0.06);
       border: 1px solid var(--border-glass);
@@ -451,18 +391,16 @@
     .content-area {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      overflow-y: auto;
-      padding-bottom: 16px;
+      gap: 14px;
       width: 100%;
+      max-width: 100%;
+      overflow-x: hidden !important;
     }
-
-    .content-area::-webkit-scrollbar { display: none; }
 
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -471,119 +409,112 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+      gap: 5px;
     }
 
-    .glass-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
-
     .card-icon {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
       color: var(--text-bright);
     }
 
-    .card-value { font-size: 1.6rem; font-weight: 900; line-height: 1; }
-    .card-label { font-size: 0.78rem; color: var(--text-sub); font-weight: 600; }
+    .card-value { font-size: 1.4rem; font-weight: 900; line-height: 1; }
+    .card-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
 
     .data-panel {
       background: var(--panel-glass);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      gap: 12px;
       width: 100%;
       max-width: 100%;
     }
 
-    .panel-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-    .panel-header h2 { font-size: 1.05rem; font-weight: 800; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
+    .panel-header h2 { font-size: 1rem; font-weight: 800; }
 
-    .search-input-wrapper { position: relative; width: 100%; max-width: 260px; }
+    .search-input-wrapper { position: relative; width: 100%; max-width: 240px; }
 
     .search-input-wrapper input {
       width: 100%;
-      padding: 8px 14px 8px 34px;
+      padding: 7px 12px 7px 32px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       outline: none;
     }
 
-    .search-input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.85rem; }
+    .search-input-wrapper i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 0.8rem; }
 
     .items-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
       width: 100%;
+      max-width: 100%;
     }
 
     .item-card-glass {
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-lg);
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       max-width: 100%;
     }
 
-    .item-card-glass:hover {
-      background: var(--card-glass-hover);
-      border-color: var(--border-glow);
-    }
-
-    .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; }
-    .item-name { font-size: 1rem; font-weight: 800; }
-    .item-meta { font-size: 0.78rem; color: var(--text-sub); display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .item-name { font-size: 0.95rem; font-weight: 800; }
+    .item-meta { font-size: 0.75rem; color: var(--text-sub); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
     .details-box-inner {
       background: var(--inner-box-bg);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 8px 10px;
+      padding: 7px 9px;
       display: flex;
       flex-direction: column;
       gap: 4px;
       width: 100%;
     }
 
-    .info-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
+    .info-row { display: flex; justify-content: space-between; font-size: 0.78rem; gap: 6px; }
     .info-lbl { color: var(--text-sub); }
-    .info-val { font-weight: 700; color: var(--text-bright); }
+    .info-val { font-weight: 700; color: var(--text-bright); text-align: left; }
 
     .card-bottom-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 6px;
+      gap: 5px;
       border-top: 1px solid var(--border-glass);
-      padding-top: 6px;
+      padding-top: 5px;
     }
 
     .badge-curved {
-      padding: 3px 10px;
-      border-radius: 16px;
-      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.68rem;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .badge-curved.Active { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
@@ -592,8 +523,8 @@
     .badge-curved.NoSub { background: rgba(148, 163, 184, 0.15); color: var(--text-sub); border: 1px solid rgba(148, 163, 184, 0.3); }
 
     .action-icon-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-glass);
       background: var(--card-glass);
@@ -602,32 +533,25 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
     }
 
-    .action-icon-btn:hover {
-      background: var(--card-glass-hover);
-      border-color: var(--border-glow);
-    }
-
-    .form-group-custom { display: flex; flex-direction: column; gap: 5px; }
-    .form-group-custom label { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
+    .form-group-custom { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+    .form-group-custom label { font-size: 0.78rem; color: var(--text-sub); font-weight: 600; }
 
     .form-group-custom input, .form-group-custom select, .form-group-custom textarea {
-      padding: 10px 12px;
+      padding: 9px 11px;
       border-radius: var(--radius-md);
       background: var(--card-glass);
       border: 1px solid var(--border-glass);
       color: var(--text-bright);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       outline: none;
       width: 100%;
+      max-width: 100%;
     }
 
-    .form-group-custom select {
-      background-color: var(--dropdown-bg) !important;
-      color: var(--text-bright) !important;
-    }
+    .form-group-custom select { background-color: var(--dropdown-bg) !important; color: var(--text-bright) !important; }
 
     .modal-backdrop {
       display: flex;
@@ -638,90 +562,76 @@
       z-index: 3000;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 14px;
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--anim-speed) ease;
     }
 
-    .modal-backdrop.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
 
     .modal-glass-box {
       background: var(--panel-glass);
       border: 1px solid var(--border-glow);
       border-radius: var(--radius-xl);
       width: 100%;
-      max-width: 400px;
-      padding: 20px;
+      max-width: 380px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
       transform: scale(0.94);
       transition: transform var(--anim-speed) ease;
     }
 
-    .modal-backdrop.active .modal-glass-box {
-      transform: scale(1);
-    }
+    .modal-backdrop.active .modal-glass-box { transform: scale(1); }
+    .modal-header-text { font-size: 1.05rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
 
-    .modal-header-text { font-size: 1.1rem; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+    .section-view { display: none; width: 100%; max-width: 100%; }
+    .section-view.active { display: block; }
 
-    .section-view { 
-      display: none; 
-      width: 100%;
-    }
-    
-    .section-view.active { 
-      display: block; 
-    }
+    body:not(.is-admin) #admin-portal-view { display: none !important; }
 
-    /* حماية مطلقة: إخفاء لوحة التحكم إجبارياً إن لم تكن رتبة الكابتن */
-    body:not(.is-admin) #admin-portal-view {
-      display: none !important;
-    }
-
-    /* ================= FIX MOBILE LAYOUT & OVERFLOW ================= */
+    /* حماية تامة ومطلقة ضد انزياح الشاشة يميناً على جميع الهواتف */
     @media (max-width: 900px) {
       html, body {
         width: 100% !important;
-        max-width: 100% !important;
+        max-width: 100vw !important;
         overflow-x: hidden !important;
       }
 
       .app-viewport {
-        padding: 10px;
-        gap: 10px;
+        padding: 8px;
+        gap: 8px;
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
       }
 
       body.is-admin .app-viewport {
-        padding-bottom: calc(var(--nav-height-mobile) + 12px) !important;
+        padding-bottom: calc(var(--nav-height-mobile) + 10px) !important;
       }
 
       header.main-header { 
-        padding: 10px 12px; 
+        padding: 8px 10px; 
         border-radius: var(--radius-lg); 
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100% !important; 
+        max-width: 100% !important; 
       }
 
       .brand-title p { display: none; }
-      .brand-title h1 { font-size: 0.95rem; }
+      .brand-title h1 { font-size: 0.9rem; }
       
-      .btn-liquid { padding: 6px 10px; font-size: 0.78rem; }
-      .theme-toggle-btn, .logout-btn { height: 34px; padding: 0 8px; font-size: 0.8rem; }
+      .btn-liquid { padding: 5px 8px; font-size: 0.75rem; }
+      .theme-toggle-btn, .logout-btn { height: 32px; padding: 0 7px; font-size: 0.78rem; }
 
       body.is-admin .dashboard-layout { 
         display: flex !important; 
         flex-direction: column; 
         gap: 0; 
-        width: 100% !important;
+        width: 100% !important; 
+        max-width: 100% !important; 
       }
 
       body.is-admin aside.sidebar {
@@ -731,34 +641,29 @@
         left: 0;
         right: 0;
         width: 100% !important;
+        max-width: 100vw !important;
         height: var(--nav-height-mobile);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        padding: 4px 8px calc(env(safe-area-inset-bottom) / 2) 8px;
+        padding: 4px 6px calc(env(safe-area-inset-bottom) / 2) 6px;
         z-index: 999;
         background: var(--panel-glass);
         backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
         border-top: 1px solid var(--border-glow);
-        border-left: none; 
-        border-right: none; 
-        border-bottom: none;
+        border-left: none; border-right: none; border-bottom: none;
       }
 
-      body:not(.is-admin) aside.sidebar {
-        display: none !important;
-      }
-
+      body:not(.is-admin) aside.sidebar { display: none !important; }
       .payment-side-box { display: none; }
 
       .nav-link {
         flex: 1;
         flex-direction: column;
-        gap: 2px;
-        padding: 6px 4px;
-        font-size: 0.65rem;
+        gap: 1px;
+        padding: 4px 2px;
+        font-size: 0.6rem;
         border-radius: var(--radius-md);
         justify-content: center;
         align-items: center;
@@ -766,40 +671,40 @@
         position: relative;
       }
 
-      .nav-link i { font-size: 1.1rem; width: auto; margin: 0; }
-      .nav-badge { position: absolute; top: 2px; left: 8px; font-size: 0.58rem; padding: 1px 4px; }
+      .nav-link i { font-size: 1rem; width: auto; margin: 0; }
+      .nav-badge { position: absolute; top: 1px; left: 4px; font-size: 0.55rem; padding: 1px 3px; }
 
-      .stats-row { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; width: 100% !important; }
-      .glass-card { padding: 10px; gap: 2px; width: 100% !important; }
-      .card-value { font-size: 1.35rem; }
-      .card-label { font-size: 0.72rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; width: 100% !important; }
+      .glass-card { padding: 8px; gap: 2px; width: 100% !important; }
+      .card-value { font-size: 1.2rem; }
+      .card-label { font-size: 0.68rem; }
 
-      .data-panel { padding: 14px; border-radius: var(--radius-lg); gap: 10px; width: 100% !important; max-width: 100% !important; }
-      .panel-header { flex-direction: column; align-items: stretch; gap: 8px; width: 100% !important; }
+      .data-panel { padding: 10px; border-radius: var(--radius-lg); gap: 8px; width: 100% !important; max-width: 100% !important; }
+      .panel-header { flex-direction: column; align-items: stretch; gap: 6px; width: 100% !important; }
       .search-input-wrapper { width: 100% !important; max-width: 100% !important; }
 
-      .items-grid { grid-template-columns: 1fr !important; gap: 10px !important; width: 100% !important; }
-      .item-card-glass { padding: 12px; width: 100% !important; max-width: 100% !important; }
+      .items-grid { grid-template-columns: 1fr !important; gap: 8px !important; width: 100% !important; max-width: 100% !important; }
+      .item-card-glass { padding: 10px; width: 100% !important; max-width: 100% !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ================= CUSTOM SYSTEM ALERT & CONFIRM MODAL ================= -->
+  <!-- تنبيهات النظام الموحدة -->
   <div class="modal-backdrop" id="custom-alert-modal">
-    <div class="modal-glass-box" style="max-width: 360px; text-align: center; align-items: center; gap: 12px;">
-      <div id="alert-icon-wrapper" style="font-size: 2.2rem; color: var(--accent-neon); margin-top: 4px;">
+    <div class="modal-glass-box" style="max-width: 340px; text-align: center; align-items: center; gap: 10px;">
+      <div id="alert-icon-wrapper" style="font-size: 2rem; color: var(--accent-neon); margin-top: 2px;">
         <i class="fa-solid fa-circle-info"></i>
       </div>
-      <div id="alert-message-text" style="font-weight: 700; font-size: 0.9rem; color: var(--text-bright); line-height: 1.5;"></div>
-      <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
-        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 9px;">موافق</button>
-        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 90px; height: auto; padding: 9px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
+      <div id="alert-message-text" style="font-weight: 700; font-size: 0.85rem; color: var(--text-bright); line-height: 1.4;"></div>
+      <div style="display: flex; gap: 6px; width: 100%; margin-top: 2px;">
+        <button id="alert-confirm-btn" class="btn-liquid" style="flex: 1; justify-content: center; padding: 8px;">موافق</button>
+        <button id="alert-cancel-btn" class="action-icon-btn" style="width: 80px; height: auto; padding: 8px; display: none; justify-content: center; border-radius: var(--radius-md);">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- ================= LOGIN PORTAL ================= -->
+  <!-- بوابة تسجيل الدخول -->
   <div class="login-wrapper" id="login-portal">
     <div class="login-box">
       <div class="login-header">
@@ -815,8 +720,7 @@
         <button class="login-tab-btn" onclick="switchLoginType('admin')">دخول الكابتن</button>
       </div>
 
-      <!-- Form المشترك -->
-      <form id="member-login-form" onsubmit="handleMemberLogin(event)" style="display: flex; flex-direction: column; gap: 12px;">
+      <form id="member-login-form" onsubmit="handleMemberLogin(event)" style="display: flex; flex-direction: column; gap: 10px;">
         <div class="form-group-custom">
           <label>رقم الهاتف المسجل</label>
           <input type="tel" id="login-phone" required placeholder="مثال: 0791234567">
@@ -825,11 +729,10 @@
           <input type="checkbox" id="remember-member" checked>
           تذكرني دائماً على هذا الجهاز
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">عرض اشتراكي</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 10px;">عرض اشتراكي</button>
       </form>
 
-      <!-- Form الآدمن (الكابتن) -->
-      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none; flex-direction: column; gap: 12px;">
+      <form id="admin-login-form" onsubmit="handleAdminLogin(event)" style="display: none; flex-direction: column; gap: 10px;">
         <div class="form-group-custom">
           <label>الرمز السري للكابتن</label>
           <div class="input-pass-wrapper">
@@ -841,12 +744,12 @@
           <input type="checkbox" id="remember-admin" checked>
           تذكر تسجيل الدخول
         </label>
-        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 11px;">دخول الكابتن</button>
+        <button type="submit" class="btn-liquid" style="justify-content: center; padding: 10px;">دخول الكابتن</button>
       </form>
     </div>
   </div>
 
-  <!-- ================= APPLICATION CONTENT ================= -->
+  <!-- محتوى التطبيق الرئيسي -->
   <div class="app-viewport hidden" id="app-view">
     
     <header class="main-header">
@@ -870,7 +773,7 @@
       </div>
     </header>
 
-    <!-- واجهة المشترك (تظهر للمشترك فقط وبدون أي إحصائيات أو أعضاء آخرين) -->
+    <!-- واجهة المشترك العادي (بدون أي إحصائيات أو أعضاء آخرين نهائياً) -->
     <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
@@ -879,11 +782,11 @@
         <div id="member-personal-card"></div>
       </div>
 
-      <div class="data-panel" style="margin-top: 16px;">
+      <div class="data-panel" style="margin-top: 14px;">
         <div class="panel-header">
           <h2><i class="fa-solid fa-wallet" style="color:var(--accent-green);"></i> طرق الدفع المتاحة للجم</h2>
         </div>
-        <div style="width: 100%; max-width: 320px;">
+        <div style="width: 100%; max-width: 300px;">
           <div class="cliq-card-mini">
             <div class="cliq-badge-header">
               <svg class="cliq-svg-logo" viewBox="0 0 200 65" xmlns="http://www.w3.org/2000/svg">
@@ -972,7 +875,7 @@
       <div class="content-area">
         
         <section id="view-dashboard" class="section-view active">
-          <!-- الإحصائيات (تظهر للآدمن فقط) -->
+          <!-- الإحصائيات (للكابتن فقط) -->
           <div class="stats-row">
             <div class="glass-card">
               <div class="card-icon"><i class="fa-solid fa-users"></i></div>
@@ -996,7 +899,7 @@
             </div>
           </div>
 
-          <div style="height: 6px;"></div>
+          <div style="height: 4px;"></div>
 
           <div class="data-panel">
             <div class="panel-header">
@@ -1045,7 +948,7 @@
           <div class="data-panel">
             <div class="panel-header">
               <h2>الخطط والاشتراكات المتاحة</h2>
-              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 7px 12px; font-size: 0.78rem;">
+              <button class="btn-liquid" onclick="openPlanModal()" style="padding: 6px 10px; font-size: 0.75rem;">
                 + إضافة خطة
               </button>
             </div>
@@ -1088,7 +991,7 @@
           <label>تاريخ البدء</label>
           <input type="date" id="member-start-date">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">حفظ البيانات</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 4px;">حفظ البيانات</button>
       </form>
     </div>
   </div>
@@ -1110,7 +1013,7 @@
           <label>تاريخ البدء</label>
           <input type="date" id="renew-start-date" required>
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">تجديد فوراً</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 4px;">تجديد فوراً</button>
       </form>
     </div>
   </div>
@@ -1135,7 +1038,7 @@
           <label>المدة (أيام)</label>
           <input type="number" id="plan-duration" required value="30">
         </div>
-        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 6px;">حفظ الخطة</button>
+        <button type="submit" class="btn-liquid" style="width: 100%; justify-content: center; margin-top: 4px;">حفظ الخطة</button>
       </form>
     </div>
   </div>
@@ -1147,7 +1050,6 @@
     let globalRecentSubscriptions = [];
     let currentSession = null;
 
-    // ================= CUSTOM SYSTEM MODALS =================
     function showCustomAlert(message, type = 'info') {
       return new Promise((resolve) => {
         const modal = document.getElementById('custom-alert-modal');
@@ -1168,7 +1070,6 @@
         }
 
         modal.classList.add('active');
-
         confirmBtn.onclick = () => {
           modal.classList.remove('active');
           resolve(true);
@@ -1193,7 +1094,6 @@
           modal.classList.remove('active');
           resolve(true);
         };
-
         cancelBtn.onclick = () => {
           modal.classList.remove('active');
           resolve(false);
@@ -1228,18 +1128,14 @@
       buttons[0].classList.toggle('active', type === 'member');
       buttons[1].classList.toggle('active', type === 'admin');
 
-      const memForm = document.getElementById('member-login-form');
-      const admForm = document.getElementById('admin-login-form');
-
-      memForm.style.display = type === 'member' ? 'flex' : 'none';
-      admForm.style.display = type === 'admin' ? 'flex' : 'none';
+      document.getElementById('member-login-form').style.display = type === 'member' ? 'flex' : 'none';
+      document.getElementById('admin-login-form').style.display = type === 'admin' ? 'flex' : 'none';
     }
 
     async function handleMemberLogin(e) {
       e.preventDefault();
       const phoneInput = document.getElementById('login-phone').value.trim();
       const remember = document.getElementById('remember-member').checked;
-
       if (!phoneInput) return;
 
       try {
@@ -1308,7 +1204,6 @@
           document.body.classList.add('is-admin');
           document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
           document.getElementById('admin-add-btn').style.display = 'flex';
-          
           adminPortal.style.setProperty('display', 'grid', 'important');
           document.getElementById('member-portal-view').style.display = 'none';
           document.getElementById('member-portal-view').classList.remove('active');
@@ -1317,7 +1212,6 @@
           document.body.classList.remove('is-admin');
           document.getElementById('role-subtitle').innerText = 'بوابة المشتركين';
           document.getElementById('admin-add-btn').style.display = 'none';
-          
           adminPortal.style.setProperty('display', 'none', 'important');
           const memView = document.getElementById('member-portal-view');
           memView.style.display = 'block';
@@ -1351,16 +1245,16 @@
         const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'تنتهي قريباً' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
 
         container.innerHTML = `
-          <div class="item-card-glass" style="max-width: 480px;">
+          <div class="item-card-glass" style="max-width: 450px;">
             <div class="card-header-flex">
               <div>
-                <div class="item-name" style="font-size: 1.1rem;">${m.full_name || 'مشترك'}</div>
+                <div class="item-name" style="font-size: 1.05rem;">${m.full_name || 'مشترك'}</div>
                 <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone || ''}</div>
               </div>
               <span class="badge-curved ${statusClass}">${statusText}</span>
             </div>
 
-            <div class="details-box-inner" style="gap: 8px; padding: 12px;">
+            <div class="details-box-inner" style="gap: 6px; padding: 10px;">
               <div class="info-row"><span class="info-lbl">الخطة المسجلة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1401,7 +1295,6 @@
         s.classList.remove('active');
         s.style.display = 'none';
       });
-
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
       if (element) element.classList.add('active');
 
@@ -1412,15 +1305,8 @@
       }
     }
 
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) modal.classList.add('active');
-    }
-
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) modal.classList.remove('active');
-    }
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     function getRemainingDays(endDateStr) {
       if (!endDateStr) return null;
@@ -1429,8 +1315,7 @@
       const end = new Date(endDateStr);
       end.setHours(0,0,0,0);
       if (isNaN(end.getTime())) return null;
-      const diffTime = end.getTime() - today.getTime();
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     }
 
     function createMemberCardHtml(m) {
@@ -1486,7 +1371,7 @@
       if (!container) return;
       container.innerHTML = '';
       if (!list || list.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا توجد نتائج تطابق البحث.</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.85rem;">لا توجد نتائج تطابق البحث.</div>';
         return;
       }
       list.forEach(s => {
@@ -1531,11 +1416,8 @@
 
         globalRecentSubscriptions = data.recentSubscriptions || [];
         const searchVal = document.getElementById('recent-search') ? document.getElementById('recent-search').value : '';
-        if (searchVal) {
-          filterRecentSubscriptions();
-        } else {
-          renderRecentSubscriptions(globalRecentSubscriptions);
-        }
+        if (searchVal) filterRecentSubscriptions();
+        else renderRecentSubscriptions(globalRecentSubscriptions);
       } catch (e) { console.error(e); }
     }
 
@@ -1553,7 +1435,7 @@
       if (!container) return;
       container.innerHTML = '';
       if (!list || list.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء.</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.85rem;">لا يوجد أعضاء.</div>';
         return;
       }
       list.forEach(m => container.innerHTML += createMemberCardHtml(m));
@@ -1568,22 +1450,14 @@
 
       const expiringContainer = document.getElementById('expiring-members-list');
       if (expiringContainer) {
-        expiringContainer.innerHTML = '';
-        if (expiringList.length === 0) {
-          expiringContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء ينتهي اشتراكهم خلال 5 أيام.</div>';
-        } else {
-          expiringList.forEach(m => expiringContainer.innerHTML += createMemberCardHtml(m));
-        }
+        expiringContainer.innerHTML = expiringList.length === 0 ? '<div style="color:var(--text-sub); font-size:0.85rem;">لا يوجد أعضاء ينتهي اشتراكهم خلال 5 أيام.</div>' : '';
+        expiringList.forEach(m => expiringContainer.innerHTML += createMemberCardHtml(m));
       }
 
       const expiredContainer = document.getElementById('expired-members-list');
       if (expiredContainer) {
-        expiredContainer.innerHTML = '';
-        if (expiredList.length === 0) {
-          expiredContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد اشتراكات منتهية حالياً.</div>';
-        } else {
-          expiredList.forEach(m => expiredContainer.innerHTML += createMemberCardHtml(m));
-        }
+        expiredContainer.innerHTML = expiredList.length === 0 ? '<div style="color:var(--text-sub); font-size:0.85rem;">لا يوجد اشتراكات منتهية حالياً.</div>' : '';
+        expiredList.forEach(m => expiredContainer.innerHTML += createMemberCardHtml(m));
       }
     }
 
@@ -1614,7 +1488,7 @@
                     <div class="item-name">${p.name}</div>
                     <div class="item-meta"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
                   </div>
-                  <div style="font-weight:900; font-size:1.1rem; color:var(--accent-neon);">${p.price} د.أ</div>
+                  <div style="font-weight:900; font-size:1rem; color:var(--accent-neon);">${p.price} د.أ</div>
                 </div>
                 <div class="card-bottom-actions">
                   <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
@@ -1674,16 +1548,12 @@
         start_date: document.getElementById('member-start-date').value
       };
 
-      const url = id ? '/api/members/' + id : '/api/members';
-      const method = id ? 'PUT' : 'POST';
-
       try {
-        await fetch(url, {
-          method: method,
+        await fetch(id ? '/api/members/' + id : '/api/members', {
+          method: id ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
         closeModal('member-modal');
         await showCustomAlert(id ? 'تم تعديل بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح', 'success');
         await loadAllData();
@@ -1706,7 +1576,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
         closeModal('renew-modal');
         await showCustomAlert('تم تجديد اشتراك العضو بنجاح', 'success');
         await loadAllData();
@@ -1730,7 +1599,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
         closeModal('plan-modal');
         await showCustomAlert('تمت إضافة الخطة الجديدة بنجاح', 'success');
         await loadPlans();
@@ -1740,9 +1608,7 @@
     }
 
     async function deleteMember(id) {
-      const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذا العضو من النظام؟');
-      if (!confirmed) return;
-
+      if (!await showCustomConfirm('هل أنت متأكد من حذف هذا العضو من النظام؟')) return;
       try {
         await fetch('/api/members/' + id, { method: 'DELETE' });
         await showCustomAlert('تم حذف المشترك بنجاح', 'success');
@@ -1752,10 +1618,8 @@
       }
     }
 
-    async function deletePlan(id)  {
-      const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذه الخطة؟');
-      if (!confirmed) return;
-
+    async function deletePlan(id) {
+      if (!await showCustomConfirm('هل أنت متأكد من حذف هذه الخطة؟')) return;
       try {
         await fetch('/api/plans/' + id, { method: 'DELETE' });
         await showCustomAlert('تم حذف الخطة بنجاح', 'success');
