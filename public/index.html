@@ -34,6 +34,7 @@
 
       --btn-liquid-bg: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
       --dropdown-bg: #090a0f;
+      --cliq-logo-color: #ffffff; /* لون أبيض في الدارك مود */
     }
 
     :root[data-theme="light"] {
@@ -58,6 +59,7 @@
 
       --btn-liquid-bg: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       --dropdown-bg: #ffffff;
+      --cliq-logo-color: #0f172a; /* لون أسود في اللايت مود */
     }
 
     :root {
@@ -261,6 +263,16 @@
       height: 28px;
       width: auto;
       display: block;
+    }
+
+    .cliq-element-fill {
+      fill: var(--cliq-logo-color);
+      transition: fill 0.3s ease;
+    }
+
+    .cliq-element-stroke {
+      stroke: var(--cliq-logo-color);
+      transition: stroke 0.3s ease;
     }
 
     .payment-detail-row {
@@ -634,7 +646,7 @@
           <span>الخطط</span>
         </div>
 
-        <!-- بطاقة طرق الدفع بخصائص الـ Theme الداكن والشعار الأبيض بالكامل -->
+        <!-- بطاقة طرق الدفع مع الشعار المتكيف مع النمطين -->
         <div class="payment-side-box">
           <div class="payment-side-title">
             <i class="fa-solid fa-wallet"></i> طرق الدفع
@@ -643,18 +655,18 @@
             <div class="cliq-badge-header">
               <svg class="cliq-svg-logo" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
                 <!-- C -->
-                <path d="M 40 20 C 20 20, 10 32, 10 50 C 10 68, 20 80, 40 80 C 52 80, 60 72, 63 62 L 50 62 C 48 67, 44 70, 40 70 C 28 70, 22 60, 22 50 C 22 40, 28 30, 40 30 C 44 30, 48 33, 50 38 L 63 38 C 60 28, 52 20, 40 20 Z" fill="#ffffff"/>
+                <path class="cliq-element-fill" d="M 40 20 C 20 20, 10 32, 10 50 C 10 68, 20 80, 40 80 C 52 80, 60 72, 63 62 L 50 62 C 48 67, 44 70, 40 70 C 28 70, 22 60, 22 50 C 22 40, 28 30, 40 30 C 44 30, 48 33, 50 38 L 63 38 C 60 28, 52 20, 40 20 Z"/>
                 <!-- l -->
-                <rect x="75" y="20" width="12" height="60" rx="4" fill="#ffffff"/>
+                <rect class="cliq-element-fill" x="75" y="20" width="12" height="60" rx="4"/>
                 <!-- i -->
-                <circle cx="102" cy="25" r="7" fill="#ffffff"/>
-                <rect x="96" y="38" width="12" height="42" rx="4" fill="#ffffff"/>
+                <circle class="cliq-element-fill" cx="102" cy="25" r="7"/>
+                <rect class="cliq-element-fill" x="96" y="38" width="12" height="42" rx="4"/>
                 <!-- Q Circle & Check -->
-                <path d="M 170 15 C 140 15, 120 35, 120 60 C 120 85, 140 105, 170 105 C 182 105, 192 100, 200 92 L 210 102 L 222 90 L 212 80 C 218 72, 220 62, 220 60 C 220 35, 200 15, 170 15 Z M 170 27 C 188 27, 208 40, 208 60 C 208 78, 188 93, 170 93 C 152 93, 132 78, 132 60 C 132 40, 152 27, 170 27 Z" fill="#ffffff" transform="scale(0.7) translate(30, 0)"/>
+                <path class="cliq-element-fill" d="M 170 15 C 140 15, 120 35, 120 60 C 120 85, 140 105, 170 105 C 182 105, 192 100, 200 92 L 210 102 L 222 90 L 212 80 C 218 72, 220 62, 220 60 C 220 35, 200 15, 170 15 Z M 170 27 C 188 27, 208 40, 208 60 C 208 78, 188 93, 170 93 C 152 93, 132 78, 132 60 C 132 40, 152 27, 170 27 Z" transform="scale(0.7) translate(30, 0)"/>
                 <!-- Q Dashes Arc -->
-                <path d="M 175 10 A 38 38 0 0 1 210 42" stroke="#ffffff" stroke-width="6" stroke-dasharray="4 3" fill="none"/>
+                <path class="cliq-element-stroke" d="M 175 10 A 38 38 0 0 1 210 42" stroke-width="6" stroke-dasharray="4 3" fill="none"/>
                 <!-- Inner Checkmark inside Q -->
-                <path d="M 135 42 L 142 49 L 155 35" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <path class="cliq-element-stroke" d="M 135 42 L 142 49 L 155 35" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
               </svg>
             </div>
             <div class="payment-detail-row">
