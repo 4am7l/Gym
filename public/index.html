@@ -1295,7 +1295,7 @@
           document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
           document.getElementById('admin-add-btn').style.display = 'flex';
           
-          adminPortal.style.setProperty('display', 'grid', 'important');
+          adminPortal.style.display = 'grid';
           document.getElementById('member-portal-view').style.display = 'none';
           document.getElementById('member-portal-view').classList.remove('active');
           loadAllData();
