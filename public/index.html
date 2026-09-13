@@ -67,7 +67,7 @@
       --radius-lg: 20px;
       --radius-md: 14px;
       --nav-height-mobile: 68px;
-      --anim-speed: 0.35s;
+      --anim-speed: 0.25s;
     }
 
     * {
@@ -76,7 +76,7 @@
       padding: 0;
       font-family: 'Tajawal', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color var(--anim-speed) ease, border-color var(--anim-speed) ease, color var(--anim-speed) ease, opacity var(--anim-speed) ease, transform var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1);
+      transition: background-color var(--anim-speed) ease, border-color var(--anim-speed) ease, color var(--anim-speed) ease;
     }
 
     html, body {
@@ -93,19 +93,6 @@
       background-image: var(--bg-gradient);
     }
 
-    /* ================= ANIMATIONS & SMOOTH TRANSITIONS ================= */
-    .fade-anim {
-      opacity: 1;
-      transform: scale(1);
-      will-change: opacity, transform;
-    }
-
-    .fade-anim.hidden {
-      opacity: 0;
-      transform: scale(0.96);
-      pointer-events: none;
-    }
-
     /* ================= LOGIN PORTAL STYLING ================= */
     .login-wrapper {
       position: fixed;
@@ -117,7 +104,13 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
+      transition: opacity var(--anim-speed) ease;
+    }
+
+    .login-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none !important;
     }
 
     .login-box {
@@ -225,7 +218,13 @@
       gap: 20px;
       height: 100%;
       overflow: hidden;
-      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
+      transition: opacity var(--anim-speed) ease;
+    }
+
+    .app-viewport.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none !important;
     }
 
     header.main-header {
@@ -647,7 +646,7 @@
       gap: 16px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
       transform: scale(0.92);
-      transition: transform var(--anim-speed) cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform var(--anim-speed) ease;
     }
 
     .modal-backdrop.active .modal-glass-box {
@@ -658,15 +657,10 @@
 
     .section-view { 
       display: none; 
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity var(--anim-speed) ease, transform var(--anim-speed) ease;
     }
     
     .section-view.active { 
       display: block; 
-      opacity: 1;
-      transform: translateY(0);
     }
 
     /* ================= MOBILE VIEWPORT CONFIGURATION ================= */
@@ -747,7 +741,7 @@
   </div>
 
   <!-- ================= LOGIN PORTAL ================= -->
-  <div class="login-wrapper fade-anim" id="login-portal">
+  <div class="login-wrapper" id="login-portal">
     <div class="login-box">
       <div class="login-header">
         <div class="brand-icon"><i class="fa-solid fa-dumbbell"></i></div>
@@ -794,7 +788,7 @@
   </div>
 
   <!-- ================= APPLICATION CONTENT ================= -->
-  <div class="app-viewport fade-anim hidden" id="app-view">
+  <div class="app-viewport hidden" id="app-view">
     
     <header class="main-header">
       <div class="brand-section">
@@ -1093,7 +1087,7 @@
     let globalRecentSubscriptions = [];
     let currentSession = null;
 
-    // ================= CUSTOM SYSTEM MODALS (REPLACING CHROMIUM ALERTS) =================
+    // ================= CUSTOM SYSTEM MODALS =================
     function showCustomAlert(message, type = 'info') {
       return new Promise((resolve) => {
         const modal = document.getElementById('custom-alert-modal');
@@ -1102,7 +1096,7 @@
         const confirmBtn = document.getElementById('alert-confirm-btn');
         const cancelBtn = document.getElementById('alert-cancel-btn');
 
-        textElem.innerText = message;
+        textElem.innerText = message || '';
         cancelBtn.style.display = 'none';
 
         if (type === 'error') {
@@ -1130,7 +1124,7 @@
         const confirmBtn = document.getElementById('alert-confirm-btn');
         const cancelBtn = document.getElementById('alert-cancel-btn');
 
-        textElem.innerText = message;
+        textElem.innerText = message || '';
         iconElem.innerHTML = '<i class="fa-solid fa-circle-question" style="color:var(--accent-amber);"></i>';
         cancelBtn.style.display = 'block';
         modal.classList.add('active');
@@ -1236,8 +1230,8 @@
       setTimeout(() => {
         appView.style.display = 'none';
         loginPortal.style.display = 'flex';
-        setTimeout(() => loginPortal.classList.remove('hidden'), 50);
-      }, 350);
+        loginPortal.classList.remove('hidden');
+      }, 250);
     }
 
     function renderAppForRole() {
@@ -1248,7 +1242,7 @@
       setTimeout(() => {
         loginPortal.style.display = 'none';
         appView.style.display = 'flex';
-        setTimeout(() => appView.classList.remove('hidden'), 50);
+        appView.classList.remove('hidden');
 
         if (currentSession.role === 'admin') {
           document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
@@ -1263,10 +1257,10 @@
           document.getElementById('admin-portal-view').style.display = 'none';
           const memView = document.getElementById('member-portal-view');
           memView.style.display = 'block';
-          setTimeout(() => memView.classList.add('active'), 50);
+          memView.classList.add('active');
           loadMemberPersonalCard(currentSession.phone);
         }
-      }, 350);
+      }, 250);
     }
 
     async function loadMemberPersonalCard(phone) {
@@ -1296,8 +1290,8 @@
           <div class="item-card-glass" style="max-width: 480px;">
             <div class="card-header-flex">
               <div>
-                <div class="item-name" style="font-size: 1.2rem;">${m.full_name}</div>
-                <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
+                <div class="item-name" style="font-size: 1.2rem;">${m.full_name || 'مشترك'}</div>
+                <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone || ''}</div>
               </div>
               <span class="badge-curved ${statusClass}">${statusText}</span>
             </div>
@@ -1339,41 +1333,31 @@
       }
     }
 
+    // ================= SECURE & FIXED SECTION SWITCHING =================
     function switchSection(viewId, element) {
-      const current = document.querySelector('.section-view.active');
-      const target = document.getElementById('view-' + viewId);
-
-      if (current === target) return;
+      document.querySelectorAll('.section-view').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+      });
 
       document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-      element.classList.add('active');
+      if (element) element.classList.add('active');
 
-      if (current) {
-        current.style.opacity = '0';
-        current.style.transform = 'translateY(8px)';
-        setTimeout(() => {
-          current.classList.remove('active');
-          current.style.display = 'none';
-
-          target.style.display = 'block';
-          setTimeout(() => {
-            target.classList.add('active');
-          }, 50);
-        }, 200);
-      } else {
+      const target = document.getElementById('view-' + viewId);
+      if (target) {
         target.style.display = 'block';
-        setTimeout(() => target.classList.add('active'), 50);
+        target.classList.add('active');
       }
     }
 
     function openModal(id) {
       const modal = document.getElementById(id);
-      modal.classList.add('active');
+      if (modal) modal.classList.add('active');
     }
 
     function closeModal(id) {
       const modal = document.getElementById(id);
-      modal.classList.remove('active');
+      if (modal) modal.classList.remove('active');
     }
 
     function getRemainingDays(endDateStr) {
@@ -1382,11 +1366,13 @@
       today.setHours(0,0,0,0);
       const end = new Date(endDateStr);
       end.setHours(0,0,0,0);
+      if (isNaN(end.getTime())) return null;
       const diffTime = end.getTime() - today.getTime();
       return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
     function createMemberCardHtml(m) {
+      if (!m) return '';
       const statusClass = m.status === 'Active' ? 'Active' : (m.status === 'Expiring Soon' ? 'Expiring' : (m.status === 'Expired' ? 'Expired' : 'NoSub'));
       const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'تنتهي قريباً' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
       const daysLeft = getRemainingDays(m.end_date);
@@ -1403,8 +1389,8 @@
         <div class="item-card-glass">
           <div class="card-header-flex">
             <div>
-              <div class="item-name">${m.full_name}</div>
-              <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone}</div>
+              <div class="item-name">${m.full_name || 'بدون اسم'}</div>
+              <div class="item-meta"><i class="fa-solid fa-phone"></i> ${m.phone || 'بدون هاتف'}</div>
             </div>
             <span class="badge-curved ${statusClass}">${statusText}</span>
           </div>
@@ -1435,6 +1421,7 @@
 
     function renderRecentSubscriptions(list) {
       const container = document.getElementById('recent-subscriptions-list');
+      if (!container) return;
       container.innerHTML = '';
       if (!list || list.length === 0) {
         container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا توجد نتائج تطابق البحث.</div>';
@@ -1445,16 +1432,16 @@
           <div class="item-card-glass">
             <div class="card-header-flex">
               <div>
-                <div class="item-name">${s.member_name}</div>
+                <div class="item-name">${s.member_name || 'مشترك'}</div>
                 <div class="item-meta"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
               </div>
-              <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
+              <span class="badge-curved ${s.status || 'Active'}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
             </div>
             <div class="details-box-inner">
-              <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val">${s.plan_name}</span></div>
-              <div class="info-row"><span class="info-lbl">السعر:</span><span class="info-val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
-              <div class="info-row"><span class="info-lbl">بدأ في:</span><span class="info-val">${s.start_date}</span></div>
-              <div class="info-row"><span class="info-lbl">ينتهي في:</span><span class="info-val">${s.end_date}</span></div>
+              <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val">${s.plan_name || 'خطة عامة'}</span></div>
+              <div class="info-row"><span class="info-lbl">السعر:</span><span class="info-val" style="color:var(--accent-green);">${s.price || 0} د.أ</span></div>
+              <div class="info-row"><span class="info-lbl">بدأ في:</span><span class="info-val">${s.start_date || '-'}</span></div>
+              <div class="info-row"><span class="info-lbl">ينتهي في:</span><span class="info-val">${s.end_date || '-'}</span></div>
             </div>
           </div>
         `;
@@ -1501,7 +1488,12 @@
 
     function renderMembers(list) {
       const container = document.getElementById('all-members-list');
+      if (!container) return;
       container.innerHTML = '';
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء.</div>';
+        return;
+      }
       list.forEach(m => container.innerHTML += createMemberCardHtml(m));
     }
 
@@ -1513,25 +1505,29 @@
       document.getElementById('badge-expired-count').innerText = expiredList.length;
 
       const expiringContainer = document.getElementById('expiring-members-list');
-      expiringContainer.innerHTML = '';
-      if (expiringList.length === 0) {
-        expiringContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء ينتهي اشتراكهم خلال 5 أيام.</div>';
-      } else {
-        expiringList.forEach(m => expiringContainer.innerHTML += createMemberCardHtml(m));
+      if (expiringContainer) {
+        expiringContainer.innerHTML = '';
+        if (expiringList.length === 0) {
+          expiringContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء ينتهي اشتراكهم خلال 5 أيام.</div>';
+        } else {
+          expiringList.forEach(m => expiringContainer.innerHTML += createMemberCardHtml(m));
+        }
       }
 
       const expiredContainer = document.getElementById('expired-members-list');
-      expiredContainer.innerHTML = '';
-      if (expiredList.length === 0) {
-        expiredContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد اشتراكات منتهية حالياً.</div>';
-      } else {
-        expiredList.forEach(m => expiredContainer.innerHTML += createMemberCardHtml(m));
+      if (expiredContainer) {
+        expiredContainer.innerHTML = '';
+        if (expiredList.length === 0) {
+          expiredContainer.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد اشتراكات منتهية حالياً.</div>';
+        } else {
+          expiredList.forEach(m => expiredContainer.innerHTML += createMemberCardHtml(m));
+        }
       }
     }
 
     function filterMembers() {
       const q = document.getElementById('member-search').value.toLowerCase();
-      const filtered = globalMembers.filter(m => m.full_name.toLowerCase().includes(q) || m.phone.includes(q));
+      const filtered = globalMembers.filter(m => (m.full_name && m.full_name.toLowerCase().includes(q)) || (m.phone && m.phone.includes(q)));
       renderMembers(filtered);
     }
 
@@ -1543,28 +1539,30 @@
         const select = document.getElementById('member-plan');
         const renewSelect = document.getElementById('renew-plan-id');
         
-        container.innerHTML = '';
-        select.innerHTML = '<option value="">-- اختر الخطة --</option>';
-        renewSelect.innerHTML = '<option value="">-- اختر الخطة --</option>';
+        if (container) container.innerHTML = '';
+        if (select) select.innerHTML = '<option value="">-- اختر الخطة --</option>';
+        if (renewSelect) renewSelect.innerHTML = '<option value="">-- اختر الخطة --</option>';
 
         globalPlans.forEach(p => {
-          container.innerHTML += `
-            <div class="item-card-glass">
-              <div class="card-header-flex">
-                <div>
-                  <div class="item-name">${p.name}</div>
-                  <div class="item-meta"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
+          if (container) {
+            container.innerHTML += `
+              <div class="item-card-glass">
+                <div class="card-header-flex">
+                  <div>
+                    <div class="item-name">${p.name}</div>
+                    <div class="item-meta"><i class="fa-solid fa-calendar-days"></i> ${p.duration_days} يوم</div>
+                  </div>
+                  <div style="font-weight:900; font-size:1.2rem; color:var(--accent-neon);">${p.price} د.أ</div>
                 </div>
-                <div style="font-weight:900; font-size:1.2rem; color:var(--accent-neon);">${p.price} د.أ</div>
+                <div class="card-bottom-actions">
+                  <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
+                </div>
               </div>
-              <div class="card-bottom-actions">
-                <button class="action-icon-btn" onclick="deletePlan(${p.id})" title="حذف الخطة"><i class="fa-solid fa-trash"></i></button>
-              </div>
-            </div>
-          `;
+            `;
+          }
           const opt = `<option value="${p.id}">${p.name} (${p.price} د.أ - ${p.duration_days} يوم)</option>`;
-          select.innerHTML += opt;
-          renewSelect.innerHTML += opt;
+          if (select) select.innerHTML += opt;
+          if (renewSelect) renewSelect.innerHTML += opt;
         });
       } catch (e) { console.error(e); }
     }
@@ -1617,15 +1615,19 @@
       const url = id ? '/api/members/' + id : '/api/members';
       const method = id ? 'PUT' : 'POST';
 
-      await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+      try {
+        await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
 
-      closeModal('member-modal');
-      await showCustomAlert(id ? 'تم تعديل بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح', 'success');
-      loadAllData();
+        closeModal('member-modal');
+        await showCustomAlert(id ? 'تم تعديل بيانات المشترك بنجاح' : 'تم إضافة المشترك بنجاح', 'success');
+        await loadAllData();
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء حفظ المشترك', 'error');
+      }
     }
 
     async function handleRenewSubmit(e) {
@@ -1636,15 +1638,19 @@
         start_date: document.getElementById('renew-start-date').value
       };
 
-      await fetch('/api/subscriptions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+      try {
+        await fetch('/api/subscriptions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
 
-      closeModal('renew-modal');
-      await showCustomAlert('تم تجديد اشتراك العضو بنجاح', 'success');
-      loadAllData();
+        closeModal('renew-modal');
+        await showCustomAlert('تم تجديد اشتراك العضو بنجاح', 'success');
+        await loadAllData();
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء التجديد', 'error');
+      }
     }
 
     async function handlePlanSubmit(e) {
@@ -1656,33 +1662,45 @@
         active: 1
       };
 
-      await fetch('/api/plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+      try {
+        await fetch('/api/plans', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
 
-      closeModal('plan-modal');
-      await showCustomAlert('تمت إضافة الخطة الجديدة بنجاح', 'success');
-      loadPlans();
+        closeModal('plan-modal');
+        await showCustomAlert('تمت إضافة الخطة الجديدة بنجاح', 'success');
+        await loadPlans();
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء حفظ الخطة', 'error');
+      }
     }
 
     async function deleteMember(id) {
       const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذا العضو من النظام؟');
       if (!confirmed) return;
 
-      await fetch('/api/members/' + id, { method: 'DELETE' });
-      await showCustomAlert('تم حذف المشترك بنجاح', 'success');
-      loadAllData();
+      try {
+        await fetch('/api/members/' + id, { method: 'DELETE' });
+        await showCustomAlert('تم حذف المشترك بنجاح', 'success');
+        await loadAllData();
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء حذف المشترك', 'error');
+      }
     }
 
     async function deletePlan(id) {
       const confirmed = await showCustomConfirm('هل أنت متأكد من حذف هذه الخطة؟');
       if (!confirmed) return;
 
-      await fetch('/api/plans/' + id, { method: 'DELETE' });
-      await showCustomAlert('تم حذف الخطة بنجاح', 'success');
-      loadPlans();
+      try {
+        await fetch('/api/plans/' + id, { method: 'DELETE' });
+        await showCustomAlert('تم حذف الخطة بنجاح', 'success');
+        await loadPlans();
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء حذف الخطة', 'error');
+      }
     }
 
     initTheme();
