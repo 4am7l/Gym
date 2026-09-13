@@ -247,7 +247,7 @@
     .cliq-badge-header {
       background: #ffffff;
       padding: 6px 14px;
-      border-radius: 8px;
+      border-radius: 10px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -255,10 +255,21 @@
       margin-bottom: 4px;
     }
 
-    .cliq-logo-img {
-      max-height: 28px;
-      width: auto;
-      object-fit: contain;
+    .cliq-styled-logo {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #0d131a;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .cliq-styled-logo .q-letter {
+      color: #f59e0b;
+      font-size: 1.5rem;
     }
 
     .payment-detail-row {
@@ -632,14 +643,14 @@
           <span>الخطط</span>
         </div>
 
-        <!-- بطاقة طرق الدفع المحدثة بمسار مجلد PICS -->
+        <!-- بطاقة طرق الدفع بوجو مدمج ومصمم محلياً لتجنب مشكلة عدم ظهور الصورة -->
         <div class="payment-side-box">
           <div class="payment-side-title">
             <i class="fa-solid fa-wallet"></i> طرق الدفع
           </div>
           <div class="cliq-card-mini">
             <div class="cliq-badge-header">
-              <img src="PICS/CliQ_logo.png" alt="CliQ Logo" class="cliq-logo-img">
+              <div class="cliq-styled-logo">Cli<span class="q-letter">Q</span></div>
             </div>
             <div class="payment-detail-row">
               <span class="info-lbl">الاسم المستعار:</span>
