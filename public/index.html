@@ -590,6 +590,10 @@
           <div class="data-panel">
             <div class="panel-header">
               <h2>آخر النشاطات والاشتراكات المضافة</h2>
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="recent-search" placeholder="ابحث في الاشتراكات..." oninput="filterRecentSubscriptions()">
+              </div>
             </div>
             <div class="items-grid" id="recent-subscriptions-list"></div>
           </div>
@@ -728,6 +732,7 @@
   <script>
     let globalMembers = [];
     let globalPlans = [];
+    let globalRecentSubscriptions = [];
 
     // إدارة تبديل الوضع النهاري / الليلي (Light Mode / Dark Mode)
     function initTheme() {
@@ -819,6 +824,44 @@
       await loadPlans();
     }
 
+    function renderRecentSubscriptions(list) {
+      const container = document.getElementById('recent-subscriptions-list');
+      container.innerHTML = '';
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا توجد نتائج تطابق البحث.</div>';
+        return;
+      }
+      list.forEach(s => {
+        container.innerHTML += `
+          <div class="item-card-glass">
+            <div class="card-header-flex">
+              <div>
+                <div class="item-name">${s.member_name}</div>
+                <div class="item-meta"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
+              </div>
+              <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
+            </div>
+            <div class="details-box-inner">
+              <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val">${s.plan_name}</span></div>
+              <div class="info-row"><span class="info-lbl">السعر:</span><span class="info-val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
+              <div class="info-row"><span class="info-lbl">بدأ في:</span><span class="info-val">${s.start_date}</span></div>
+              <div class="info-row"><span class="info-lbl">ينتهي في:</span><span class="info-val">${s.end_date}</span></div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterRecentSubscriptions() {
+      const q = document.getElementById('recent-search').value.toLowerCase();
+      const filtered = globalRecentSubscriptions.filter(s => 
+        (s.member_name && s.member_name.toLowerCase().includes(q)) || 
+        (s.phone && s.phone.includes(q)) ||
+        (s.plan_name && s.plan_name.toLowerCase().includes(q))
+      );
+      renderRecentSubscriptions(filtered);
+    }
+
     async function loadDashboard() {
       try {
         const res = await fetch('/api/dashboard/stats');
@@ -828,27 +871,13 @@
         document.getElementById('stat-expiring').innerText = data.totalExpiring || 0;
         document.getElementById('stat-expired').innerText = data.totalExpired || 0;
 
-        const container = document.getElementById('recent-subscriptions-list');
-        container.innerHTML = '';
-        (data.recentSubscriptions || []).forEach(s => {
-          container.innerHTML += `
-            <div class="item-card-glass">
-              <div class="card-header-flex">
-                <div>
-                  <div class="item-name">${s.member_name}</div>
-                  <div class="item-meta"><i class="fa-solid fa-phone"></i> ${s.phone || 'غير مسجل'}</div>
-                </div>
-                <span class="badge-curved ${s.status}">${s.status === 'Active' ? 'نشط' : (s.status === 'Expiring Soon' ? 'قريب الانتهاء' : 'منتهي')}</span>
-              </div>
-              <div class="details-box-inner">
-                <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val">${s.plan_name}</span></div>
-                <div class="info-row"><span class="info-lbl">السعر:</span><span class="info-val" style="color:var(--accent-green);">${s.price} د.أ</span></div>
-                <div class="info-row"><span class="info-lbl">بدأ في:</span><span class="info-val">${s.start_date}</span></div>
-                <div class="info-row"><span class="info-lbl">ينتهي في:</span><span class="info-val">${s.end_date}</span></div>
-              </div>
-            </div>
-          `;
-        });
+        globalRecentSubscriptions = data.recentSubscriptions || [];
+        const searchVal = document.getElementById('recent-search') ? document.getElementById('recent-search').value : '';
+        if (searchVal) {
+          filterRecentSubscriptions();
+        } else {
+          renderRecentSubscriptions(globalRecentSubscriptions);
+        }
       } catch (e) { console.error(e); }
     }
 
