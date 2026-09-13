@@ -675,10 +675,16 @@
     /* ================= FIX MOBILE LAYOUT ONLY ================= */
     @media (max-width: 900px) {
       .app-viewport {
-        padding: 10px 10px calc(var(--nav-height-mobile) + 12px) 10px;
+        padding: 10px;
         gap: 10px;
         width: 100% !important;
         max-width: 100% !important;
+        overflow-y: auto;
+      }
+
+      /* إضافة هامش سفلي للموبايل فقط عند دخول الكابتن */
+      body.is-admin .app-viewport {
+        padding-bottom: calc(var(--nav-height-mobile) + 12px) !important;
       }
 
       header.main-header { 
@@ -700,7 +706,9 @@
         width: 100% !important;
       }
 
-      aside.sidebar {
+      /* شريط الأزرار السفلي يظهر فقط للآدمن/الكابتن بالموبايل */
+      body.is-admin aside.sidebar {
+        display: flex !important;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -720,6 +728,11 @@
         border-left: none; 
         border-right: none; 
         border-bottom: none;
+      }
+
+      /* إخفاء شريط التنقل السفلي نهائياً للمشترك العادي بالموبايل */
+      body:not(.is-admin) aside.sidebar {
+        display: none !important;
       }
 
       .payment-side-box { display: none; }
@@ -841,7 +854,7 @@
       </div>
     </header>
 
-    <!-- واجهة المشترك (Read-Only) -->
+    <!-- واجهة المشترك (تظهر للمشترك فقط ولا تحتوي أي تحويلات للآدمن) -->
     <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
@@ -1207,22 +1220,22 @@
 
     async function handleMemberLogin(e) {
       e.preventDefault();
-      const phone = document.getElementById('login-phone').value.trim();
+      const phoneInput = document.getElementById('login-phone').value.trim();
       const remember = document.getElementById('remember-member').checked;
 
-      if (!phone) return;
+      if (!phoneInput) return;
 
       try {
         const res = await fetch('/api/members');
         const members = await res.json();
-        const found = members.find(m => m.phone === phone);
+        const found = members.find(m => String(m.phone).trim() === String(phoneInput).trim());
 
         if (!found) {
           await showCustomAlert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.', 'error');
           return;
         }
 
-        currentSession = { role: 'member', phone: phone };
+        currentSession = { role: 'member', phone: phoneInput };
         const storage = remember ? localStorage : sessionStorage;
         storage.setItem('gym-user-session', JSON.stringify(currentSession));
         renderAppForRole();
@@ -1250,6 +1263,7 @@
       localStorage.removeItem('gym-user-session');
       sessionStorage.removeItem('gym-user-session');
       currentSession = null;
+      document.body.classList.remove('is-admin');
 
       const appView = document.getElementById('app-view');
       const loginPortal = document.getElementById('login-portal');
@@ -1273,6 +1287,7 @@
         appView.classList.remove('hidden');
 
         if (currentSession.role === 'admin') {
+          document.body.classList.add('is-admin');
           document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
           document.getElementById('admin-add-btn').style.display = 'flex';
           document.getElementById('admin-portal-view').style.display = 'grid';
@@ -1280,6 +1295,7 @@
           document.getElementById('member-portal-view').classList.remove('active');
           loadAllData();
         } else {
+          document.body.classList.remove('is-admin');
           document.getElementById('role-subtitle').innerText = 'بوابة المشتركين';
           document.getElementById('admin-add-btn').style.display = 'none';
           document.getElementById('admin-portal-view').style.display = 'none';
@@ -1295,11 +1311,11 @@
       try {
         const res = await fetch('/api/members');
         const members = await res.json();
-        const m = members.find(x => x.phone === phone);
+        const m = members.find(x => String(x.phone).trim() === String(phone).trim());
         const container = document.getElementById('member-personal-card');
 
         if (!m) {
-          container.innerHTML = '<div style="color:var(--accent-red);">تعذر العثور على بياناتك.</div>';
+          container.innerHTML = '<div style="color:var(--accent-red); padding:10px;">تعذر العثور على بيانات اشتراكك. الرجاء التأكد من رقم الهاتف.</div>';
           return;
         }
 
