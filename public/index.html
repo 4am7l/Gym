@@ -672,6 +672,11 @@
       display: block; 
     }
 
+    /* حماية مطلقة: إخفاء قسم الإدارة إجبارياً إن لم تكن الرتبة الكابتن */
+    body:not(.is-admin) #admin-portal-view {
+      display: none !important;
+    }
+
     /* ================= FIX MOBILE LAYOUT ONLY ================= */
     @media (max-width: 900px) {
       .app-viewport {
@@ -698,7 +703,7 @@
       .btn-liquid { padding: 6px 10px; font-size: 0.78rem; }
       .theme-toggle-btn, .logout-btn { height: 34px; padding: 0 8px; font-size: 0.8rem; }
 
-      .dashboard-layout { 
+      body.is-admin .dashboard-layout { 
         display: flex !important; 
         flex-direction: column; 
         gap: 0; 
@@ -851,7 +856,7 @@
       </div>
     </header>
 
-    <!-- واجهة المشترك (عرض بطاقة المشترك وطرق الدفع فقط بدون أي إحصائيات) -->
+    <!-- واجهة المشترك (تظهر للمشترك فقط) -->
     <div id="member-portal-view" class="section-view">
       <div class="data-panel">
         <div class="panel-header">
@@ -890,8 +895,8 @@
       </div>
     </div>
 
-    <!-- واجهة الكابتن (تضمن الإحصائيات وباقي الخيارات للآدمن فقط) -->
-    <div class="dashboard-layout" id="admin-portal-view" style="display: none;">
+    <!-- واجهة الكابتن (معزولة تماماً ولا تظهر للزائر/المشترك إطلاقاً) -->
+    <div class="dashboard-layout" id="admin-portal-view" style="display: none !important;">
       
       <aside class="sidebar">
         <div class="nav-link active" onclick="switchSection('dashboard', this)">
@@ -953,7 +958,7 @@
       <div class="content-area">
         
         <section id="view-dashboard" class="section-view active">
-          <!-- الإحصائيات معروضة هنا فقط للآدمن -->
+          <!-- الإحصائيات الخاصة بالكابتن فقط -->
           <div class="stats-row">
             <div class="glass-card">
               <div class="card-icon"><i class="fa-solid fa-users"></i></div>
@@ -1277,6 +1282,7 @@
     function renderAppForRole() {
       const loginPortal = document.getElementById('login-portal');
       const appView = document.getElementById('app-view');
+      const adminPortal = document.getElementById('admin-portal-view');
 
       loginPortal.classList.add('hidden');
       setTimeout(() => {
@@ -1288,7 +1294,8 @@
           document.body.classList.add('is-admin');
           document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
           document.getElementById('admin-add-btn').style.display = 'flex';
-          document.getElementById('admin-portal-view').style.display = 'grid';
+          
+          adminPortal.style.setProperty('display', 'grid', 'important');
           document.getElementById('member-portal-view').style.display = 'none';
           document.getElementById('member-portal-view').classList.remove('active');
           loadAllData();
@@ -1296,7 +1303,8 @@
           document.body.classList.remove('is-admin');
           document.getElementById('role-subtitle').innerText = 'بوابة المشتركين';
           document.getElementById('admin-add-btn').style.display = 'none';
-          document.getElementById('admin-portal-view').style.display = 'none';
+          
+          adminPortal.style.setProperty('display', 'none', 'important');
           const memView = document.getElementById('member-portal-view');
           memView.style.display = 'block';
           memView.classList.add('active');
