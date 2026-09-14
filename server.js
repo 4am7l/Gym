@@ -11,17 +11,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// بيانات الاتصال الخاصة بـ Supabase
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://cufcarfhygveznaufruv.supabase.co";
-const SUPABASE_KEY = process.env.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1ZmNhcmZoeWd2ZXpuYXVmcnV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMjMzMjYsImV4cCI6MjEwNDc5OTMyNn0.pKG14BWQeEdsmdUFR39wt5CTEo_SFIn1QsWtgMgnsxA";
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// دالة حساب حالة الاشتراك بناءً على توقيت عمان
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
   
-  // تحويل تاريخ اليوم لتوقيت عمان
   const now = new Date();
   const jordanDateStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Amman' });
   const today = new Date(jordanDateStr);
@@ -38,7 +35,6 @@ function calculateStatus(endDateStr) {
   return 'Active';
 }
 
-// ================= API ENDPOINTS ================= //
 
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
