@@ -1124,7 +1124,6 @@
   </div>
 
   <script>
-    const ADMIN_SECRET = "88573";
     let globalMembers = [];
     let globalPlans = [];
     let globalRecentSubscriptions = [];
@@ -1249,13 +1248,25 @@
       const pass = document.getElementById('login-passcode').value.trim();
       const remember = document.getElementById('remember-admin').checked;
 
-      if (pass === ADMIN_SECRET) {
-        currentSession = { role: 'admin' };
-        const storage = remember ? localStorage : sessionStorage;
-        storage.setItem('gym-user-session', JSON.stringify(currentSession));
-        renderAppForRole();
-      } else {
-        await showCustomAlert('الرمز السري غير صحيح!', 'error');
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ passcode: pass })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          currentSession = { role: 'admin' };
+          const storage = remember ? localStorage : sessionStorage;
+          storage.setItem('gym-user-session', JSON.stringify(currentSession));
+          renderAppForRole();
+        } else {
+          await showCustomAlert(data.error || 'الرمز السري غير صحيح!', 'error');
+        }
+      } catch (err) {
+        await showCustomAlert('حدث خطأ أثناء الاتصال بالسيرفر', 'error');
       }
     }
 
