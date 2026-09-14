@@ -11,11 +11,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// بيانات الاتصال الخاصة بـ Supabase (من متغيرات البيئة)
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// دالة حساب حالة الاشتراك بناءً على توقيت عمان
 function calculateStatus(endDateStr) {
   if (!endDateStr) return 'No Subscription';
   
@@ -35,6 +37,19 @@ function calculateStatus(endDateStr) {
   return 'Active';
 }
 
+// ================= API ENDPOINTS ================= //
+
+// تسجيل دخول الكابتن بدون كشف الرمز في الواجهة
+app.post('/api/admin/login', (req, res) => {
+  const { passcode } = req.body;
+  const adminSecret = process.env.ADMIN_SECRET || "88573";
+
+  if (passcode === adminSecret) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ error: "الرمز السري غير صحيح!" });
+  }
+});
 
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
