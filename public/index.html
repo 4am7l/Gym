@@ -1059,16 +1059,13 @@
           <label>رقم الهاتف</label>
           <input type="tel" id="member-phone" required placeholder="079XXXXXXXX">
         </div>
-        <!-- تم إدراج حقل اختيار طريقة الدفع شاملاً خيار الذمم -->
+        
+        <!-- حقل الذمم الجديد بالضبط مثل حقل الملاحظات -->
         <div class="form-group-custom">
-          <label>طريقة الدفع</label>
-          <select id="member-payment-method">
-            <option value="كاش">كاش (نقدي)</option>
-            <option value="CliQ">CliQ</option>
-            <option value="بطاقة">بطاقة أئتمانية</option>
-            <option value="ذمم">ذمم (آجل / على الحساب)</option>
-          </select>
+          <label style="color: var(--accent-amber); font-weight: 700;">تفاصيل / قيمة الذمم</label>
+          <input type="text" id="member-debt" placeholder="مثال: متبقي 10 د.أ أو لا يوجد">
         </div>
+
         <div class="form-group-custom">
           <label>ملاحظات إضافية</label>
           <textarea id="member-notes" rows="2" placeholder="أية تفاصيل..."></textarea>
@@ -1636,7 +1633,6 @@
     function openMemberModal() {
       document.getElementById('member-id').value = '';
       document.getElementById('member-form').reset();
-      document.getElementById('member-payment-method').value = 'كاش';
       document.getElementById('member-modal-title').innerText = 'إضافة مشترك جديد';
       document.getElementById('plan-select-group').style.display = 'flex';
       document.getElementById('date-select-group').style.display = 'flex';
@@ -1651,19 +1647,22 @@
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
       
-      // استخراج طريقة الدفع إن وجدت من الملاحظات
-      let notes = m.notes || '';
-      if (notes.includes('طريقة الدفع: ذمم') || notes.includes('[ذمم]')) {
-        document.getElementById('member-payment-method').value = 'ذمم';
-      } else if (notes.includes('CliQ')) {
-        document.getElementById('member-payment-method').value = 'CliQ';
-      } else if (notes.includes('بطاقة')) {
-        document.getElementById('member-payment-method').value = 'بطاقة';
-      } else {
-        document.getElementById('member-payment-method').value = 'كاش';
+      let rawNotes = m.notes || '';
+      let debtVal = '';
+      let cleanNotes = rawNotes;
+
+      // استخراج قيمة الذمة إذا كانت محفوظة سابقاً
+      if (rawNotes.includes('[ذمم:')) {
+        const match = rawNotes.match(/\[ذمم:\s*([^\]]+)\]/);
+        if (match) {
+          debtVal = match[1];
+          cleanNotes = rawNotes.replace(/\[ذمم:\s*[^\]]+\]\s*-?\s*/, '');
+        }
       }
 
-      document.getElementById('member-notes').value = notes;
+      document.getElementById('member-debt').value = debtVal;
+      document.getElementById('member-notes').value = cleanNotes;
+
       document.getElementById('member-modal-title').innerText = 'تعديل بيانات العضو';
       document.getElementById('plan-select-group').style.display = 'none';
       document.getElementById('date-select-group').style.display = 'none';
@@ -1684,19 +1683,19 @@
     async function handleMemberSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('member-id').value;
-      const paymentMethod = document.getElementById('member-payment-method').value;
-      let rawNotes = document.getElementById('member-notes').value.trim();
+      const debtValue = document.getElementById('member-debt').value.trim();
+      const rawNotes = document.getElementById('member-notes').value.trim();
 
-      // إلحاق طريقة الدفع ببيانات الملاحظات لحفظها بالسيرفر دون تعديل الهيكل Backend
-      let formattedNotes = rawNotes;
-      if (!rawNotes.includes('طريقة الدفع:')) {
-        formattedNotes = `[طريقة الدفع: ${paymentMethod}]` + (rawNotes ? ` - ${rawNotes}` : '');
+      // دمج حقل الذمة مع حقل الملاحظات ليتم حظه في قاعدة البيانات والسيرفر فوراً
+      let finalNotes = rawNotes;
+      if (debtValue) {
+        finalNotes = `[ذمم: ${debtValue}]` + (rawNotes ? ` - ${rawNotes}` : '');
       }
 
       const body = {
         full_name: document.getElementById('member-name').value,
         phone: document.getElementById('member-phone').value,
-        notes: formattedNotes,
+        notes: finalNotes,
         plan_id: document.getElementById('member-plan').value,
         start_date: document.getElementById('member-start-date').value
       };
