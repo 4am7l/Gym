@@ -229,9 +229,16 @@ app.get('/api/members/:id', async (req, res) => {
 app.post('/api/members', async (req, res) => {
   const { full_name, phone, category, notes, plan_id, start_date } = req.body;
   try {
+    const selectedCategory = category || 'كمال أجسام';
+    
     const { data: newMember, error: memErr } = await supabase
       .from('members')
-      .insert([{ full_name, phone, category: category || 'كمال أجسام', notes: notes || '' }])
+      .insert([{ 
+        full_name, 
+        phone, 
+        category: selectedCategory, 
+        notes: notes || '' 
+      }])
       .select()
       .single();
 
@@ -270,7 +277,12 @@ app.put('/api/members/:id', async (req, res) => {
   try {
     const { error } = await supabase
       .from('members')
-      .update({ full_name, phone, category: category || 'كمال أجسام', notes: notes || '' })
+      .update({ 
+        full_name, 
+        phone, 
+        category: category || 'كمال أجسام', 
+        notes: notes || '' 
+      })
       .eq('id', req.params.id);
 
     if (error) throw error;
