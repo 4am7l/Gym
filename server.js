@@ -57,7 +57,7 @@ app.get('/api/dashboard/stats', async (req, res) => {
       .from('subscriptions')
       .select(`
         id, start_date, end_date, price,
-        members ( full_name, phone ),
+        members ( full_name, phone, category ),
         membership_plans ( name )
       `)
       .order('id', { ascending: false });
@@ -78,6 +78,7 @@ app.get('/api/dashboard/stats', async (req, res) => {
         price: sub.price,
         member_name: sub.members?.full_name || 'غير معروف',
         phone: sub.members?.phone || '',
+        category: sub.members?.category || 'كمال أجسام',
         plan_name: sub.membership_plans?.name || 'غير معروف',
         status
       };
@@ -175,6 +176,7 @@ app.get('/api/members', async (req, res) => {
       const lastSub = (subscriptions || []).find(s => s.member_id === m.id);
       return {
         ...m,
+        category: m.category || 'كمال أجسام',
         subscription_id: lastSub ? lastSub.id : null,
         start_date: lastSub ? lastSub.start_date : null,
         end_date: lastSub ? lastSub.end_date : null,
@@ -215,6 +217,7 @@ app.get('/api/members/:id', async (req, res) => {
 
     res.json({
       ...member,
+      category: member.category || 'كمال أجسام',
       currentSubscription: history[0] || null,
       history
     });
@@ -224,11 +227,11 @@ app.get('/api/members/:id', async (req, res) => {
 });
 
 app.post('/api/members', async (req, res) => {
-  const { full_name, phone, notes, plan_id, start_date } = req.body;
+  const { full_name, phone, category, notes, plan_id, start_date } = req.body;
   try {
     const { data: newMember, error: memErr } = await supabase
       .from('members')
-      .insert([{ full_name, phone, notes: notes || '' }])
+      .insert([{ full_name, phone, category: category || 'كمال أجسام', notes: notes || '' }])
       .select()
       .single();
 
@@ -263,11 +266,11 @@ app.post('/api/members', async (req, res) => {
 });
 
 app.put('/api/members/:id', async (req, res) => {
-  const { full_name, phone, notes } = req.body;
+  const { full_name, phone, category, notes } = req.body;
   try {
     const { error } = await supabase
       .from('members')
-      .update({ full_name, phone, notes: notes || '' })
+      .update({ full_name, phone, category: category || 'كمال أجسام', notes: notes || '' })
       .eq('id', req.params.id);
 
     if (error) throw error;
