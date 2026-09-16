@@ -313,6 +313,23 @@
       box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
     }
 
+    .category-filter-btn {
+      background: var(--card-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-sub);
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .category-filter-btn.active, .category-filter-btn:hover {
+      background: var(--btn-liquid-bg);
+      color: #ffffff;
+      border-color: var(--border-glow);
+    }
+
     .dashboard-layout {
       display: grid;
       grid-template-columns: 250px 1fr;
@@ -1002,6 +1019,15 @@
                 <input type="text" id="member-search" placeholder="ابحث بالإسم أو الهاتف..." oninput="filterMembers()">
               </div>
             </div>
+
+            <!-- أزرار اختيار وتصفية قوائم السجلات -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+              <button class="category-filter-btn active" onclick="filterCategoryTab('الكل', this)">الكل</button>
+              <button class="category-filter-btn" onclick="filterCategoryTab('كمال أجسام', this)">سجل كمال أجسام</button>
+              <button class="category-filter-btn" onclick="filterCategoryTab('ألعاب قتالية', this)">سجل ألعاب قتالية</button>
+              <button class="category-filter-btn" onclick="filterCategoryTab('لياقة بدنية', this)">سجل لياقة بدنية</button>
+            </div>
+
             <div class="items-grid" id="all-members-list"></div>
           </div>
         </section>
@@ -1060,6 +1086,16 @@
           <input type="tel" id="member-phone" required placeholder="079XXXXXXXX">
         </div>
         
+        <!-- اختيار قائمة السجل عند إضافة المشترك -->
+        <div class="form-group-custom">
+          <label style="color: var(--accent-neon); font-weight: 700;">قائمة السجل / نوع الرياضة</label>
+          <select id="member-category" required>
+            <option value="كمال أجسام">كمال أجسام</option>
+            <option value="ألعاب قتالية">ألعاب قتالية</option>
+            <option value="لياقة بدنية">لياقة بدنية</option>
+          </select>
+        </div>
+
         <!-- حقل الذمم الجديد بالضبط مثل حقل الملاحظات -->
         <div class="form-group-custom">
           <label style="color: var(--accent-amber); font-weight: 700;">تفاصيل / قيمة الذمم</label>
@@ -1135,6 +1171,7 @@
     let globalPlans = [];
     let globalRecentSubscriptions = [];
     let currentSession = null;
+    let selectedCategoryFilter = 'الكل';
 
     // ================= CUSTOM SYSTEM MODALS =================
     function showCustomAlert(message, type = 'info') {
@@ -1362,6 +1399,7 @@
             </div>
 
             <div class="details-box-inner" style="gap: 8px; padding: 12px;">
+              <div class="info-row"><span class="info-lbl">السجل / الرياضة:</span><span class="info-val" style="color:var(--accent-amber);">${m.category || 'كمال أجسام'}</span></div>
               <div class="info-row"><span class="info-lbl">الخطة المسجلة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1447,6 +1485,7 @@
       }
 
       const registeredDate = m.created_at ? new Date(m.created_at).toISOString().split('T')[0] : 'غير معروف';
+      const categoryName = m.category || 'كمال أجسام';
 
       return `
         <div class="item-card-glass">
@@ -1459,6 +1498,7 @@
           </div>
 
           <div class="details-box-inner">
+            <div class="info-row"><span class="info-lbl">السجل / القائمة:</span><span class="info-val" style="color:var(--accent-amber);">${categoryName}</span></div>
             <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
             <div class="info-row"><span class="info-lbl">بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
             <div class="info-row"><span class="info-lbl">انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1544,7 +1584,7 @@
       try {
         const res = await fetch('/api/members');
         globalMembers = await res.json();
-        renderMembers(globalMembers);
+        filterMembers();
         renderFilteredLists();
       } catch (e) { console.error(e); }
     }
@@ -1554,10 +1594,17 @@
       if (!container) return;
       container.innerHTML = '';
       if (!list || list.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء.</div>';
+        container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء في هذه القائمة.</div>';
         return;
       }
       list.forEach(m => container.innerHTML += createMemberCardHtml(m));
+    }
+
+    function filterCategoryTab(category, btnElem) {
+      selectedCategoryFilter = category;
+      document.querySelectorAll('.category-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnElem) btnElem.classList.add('active');
+      filterMembers();
     }
 
     function renderFilteredLists() {
@@ -1590,7 +1637,12 @@
 
     function filterMembers() {
       const q = document.getElementById('member-search').value.toLowerCase();
-      const filtered = globalMembers.filter(m => (m.full_name && m.full_name.toLowerCase().includes(q)) || (m.phone && m.phone.includes(q)));
+      const filtered = globalMembers.filter(m => {
+        const matchesQuery = (m.full_name && m.full_name.toLowerCase().includes(q)) || (m.phone && m.phone.includes(q));
+        const memberCat = m.category || 'كمال أجسام';
+        const matchesCat = (selectedCategoryFilter === 'الكل') || (memberCat === selectedCategoryFilter);
+        return matchesQuery && matchesCat;
+      });
       renderMembers(filtered);
     }
 
@@ -1633,6 +1685,7 @@
     function openMemberModal() {
       document.getElementById('member-id').value = '';
       document.getElementById('member-form').reset();
+      document.getElementById('member-category').value = 'كمال أجسام';
       document.getElementById('member-modal-title').innerText = 'إضافة مشترك جديد';
       document.getElementById('plan-select-group').style.display = 'flex';
       document.getElementById('date-select-group').style.display = 'flex';
@@ -1646,6 +1699,7 @@
       document.getElementById('member-id').value = m.id;
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
+      document.getElementById('member-category').value = m.category || 'كمال أجسام';
       
       let rawNotes = m.notes || '';
       let debtVal = '';
@@ -1695,6 +1749,7 @@
       const body = {
         full_name: document.getElementById('member-name').value,
         phone: document.getElementById('member-phone').value,
+        category: document.getElementById('member-category').value,
         notes: finalNotes,
         plan_id: document.getElementById('member-plan').value,
         start_date: document.getElementById('member-start-date').value
