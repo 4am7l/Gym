@@ -1059,6 +1059,16 @@
           <label>رقم الهاتف</label>
           <input type="tel" id="member-phone" required placeholder="079XXXXXXXX">
         </div>
+        <!-- تم إدراج حقل اختيار طريقة الدفع شاملاً خيار الذمم -->
+        <div class="form-group-custom">
+          <label>طريقة الدفع</label>
+          <select id="member-payment-method">
+            <option value="كاش">كاش (نقدي)</option>
+            <option value="CliQ">CliQ</option>
+            <option value="بطاقة">بطاقة أئتمانية</option>
+            <option value="ذمم">ذمم (آجل / على الحساب)</option>
+          </select>
+        </div>
         <div class="form-group-custom">
           <label>ملاحظات إضافية</label>
           <textarea id="member-notes" rows="2" placeholder="أية تفاصيل..."></textarea>
@@ -1626,6 +1636,7 @@
     function openMemberModal() {
       document.getElementById('member-id').value = '';
       document.getElementById('member-form').reset();
+      document.getElementById('member-payment-method').value = 'كاش';
       document.getElementById('member-modal-title').innerText = 'إضافة مشترك جديد';
       document.getElementById('plan-select-group').style.display = 'flex';
       document.getElementById('date-select-group').style.display = 'flex';
@@ -1639,7 +1650,20 @@
       document.getElementById('member-id').value = m.id;
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
-      document.getElementById('member-notes').value = m.notes || '';
+      
+      // استخراج طريقة الدفع إن وجدت من الملاحظات
+      let notes = m.notes || '';
+      if (notes.includes('طريقة الدفع: ذمم') || notes.includes('[ذمم]')) {
+        document.getElementById('member-payment-method').value = 'ذمم';
+      } else if (notes.includes('CliQ')) {
+        document.getElementById('member-payment-method').value = 'CliQ';
+      } else if (notes.includes('بطاقة')) {
+        document.getElementById('member-payment-method').value = 'بطاقة';
+      } else {
+        document.getElementById('member-payment-method').value = 'كاش';
+      }
+
+      document.getElementById('member-notes').value = notes;
       document.getElementById('member-modal-title').innerText = 'تعديل بيانات العضو';
       document.getElementById('plan-select-group').style.display = 'none';
       document.getElementById('date-select-group').style.display = 'none';
@@ -1660,10 +1684,19 @@
     async function handleMemberSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('member-id').value;
+      const paymentMethod = document.getElementById('member-payment-method').value;
+      let rawNotes = document.getElementById('member-notes').value.trim();
+
+      // إلحاق طريقة الدفع ببيانات الملاحظات لحفظها بالسيرفر دون تعديل الهيكل Backend
+      let formattedNotes = rawNotes;
+      if (!rawNotes.includes('طريقة الدفع:')) {
+        formattedNotes = `[طريقة الدفع: ${paymentMethod}]` + (rawNotes ? ` - ${rawNotes}` : '');
+      }
+
       const body = {
         full_name: document.getElementById('member-name').value,
         phone: document.getElementById('member-phone').value,
-        notes: document.getElementById('member-notes').value,
+        notes: formattedNotes,
         plan_id: document.getElementById('member-plan').value,
         start_date: document.getElementById('member-start-date').value
       };
