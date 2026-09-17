@@ -879,6 +879,15 @@
         <div id="member-personal-card"></div>
       </div>
 
+      <!-- واجهة تمارين كمال الأجسام الخاصة بالمشترك -->
+      <div class="data-panel" id="workout-plans-panel" style="margin-top: 16px; display: none;">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-dumbbell" style="color:var(--accent-neon);"></i> تمارين كمال الأجسام المخصصة لك</h2>
+        </div>
+        <div id="workout-month-tabs" style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;"></div>
+        <div id="workout-exercises-container" class="items-grid"></div>
+      </div>
+
       <div class="data-panel" style="margin-top: 16px;">
         <div class="panel-header">
           <h2><i class="fa-solid fa-wallet" style="color:var(--accent-green);"></i> طرق الدفع المتاحة</h2>
@@ -1073,10 +1082,20 @@
         <!-- اختيار قائمة السجل عند إضافة المشترك -->
         <div class="form-group-custom">
           <label style="color: var(--accent-neon); font-weight: 700;">قائمة السجل / نوع الرياضة</label>
-          <select id="member-category" required>
+          <select id="member-category" required onchange="toggleWorkoutMonthField(this.value)">
             <option value="كمال أجسام">كمال أجسام</option>
             <option value="ألعاب قتالية">ألعاب قتالية</option>
             <option value="لياقة بدنية">لياقة بدنية</option>
+          </select>
+        </div>
+
+        <!-- خيار تحديد شهر التمارين لكمال الأجسام -->
+        <div class="form-group-custom" id="workout-month-select-group">
+          <label style="color: var(--accent-neon); font-weight: 700;">مستوى تمارين كمال الأجسام</label>
+          <select id="member-workout-month">
+            <option value="1">الشهر 1 (مبتدئ)</option>
+            <option value="2">الشهر 2 (متوسط)</option>
+            <option value="3">الشهر 3 (متقدم)</option>
           </select>
         </div>
 
@@ -1116,6 +1135,17 @@
           <label>اختر الخطة الرياضية</label>
           <select id="renew-plan-id" required></select>
         </div>
+        
+        <!-- تحديث شهر التمرين عند التجديد -->
+        <div class="form-group-custom" id="renew-workout-month-group">
+          <label style="color: var(--accent-neon); font-weight: 700;">تحديث شهر التمرين (كمال أجسام)</label>
+          <select id="renew-workout-month">
+            <option value="1">الشهر 1 (مبتدئ)</option>
+            <option value="2">الشهر 2 (متوسط)</option>
+            <option value="3">الشهر 3 (متقدم)</option>
+          </select>
+        </div>
+
         <div class="form-group-custom">
           <label>تاريخ البدء</label>
           <input type="date" id="renew-start-date" required>
@@ -1156,6 +1186,7 @@
     let globalRecentSubscriptions = [];
     let currentSession = null;
     let selectedCategoryFilter = 'الكل';
+    let globalWorkoutsData = null;
 
     // ================= CUSTOM SYSTEM MODALS =================
     function showCustomAlert(message, type = 'info') {
@@ -1349,6 +1380,14 @@
       }, 250);
     }
 
+    // إظهار/إخفاء حقل تحديد شهر التمرين بناءً على نوع الرياضة
+    function toggleWorkoutMonthField(catValue) {
+      const group = document.getElementById('workout-month-select-group');
+      if (group) {
+        group.style.display = (catValue === 'كمال أجسام') ? 'flex' : 'none';
+      }
+    }
+
     async function loadMemberPersonalCard(phone) {
       try {
         const res = await fetch('/api/members');
@@ -1372,6 +1411,13 @@
         const statusClass = m.status === 'Active' ? 'Active' : (m.status === 'Expiring Soon' ? 'Expiring' : (m.status === 'Expired' ? 'Expired' : 'NoSub'));
         const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'تنتهي قريباً' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
 
+        // استخراج شهر التمارين من حقل الملاحظات إذا كان مخصصاً
+        let memberWorkoutMonth = 1;
+        if (m.notes && m.notes.includes('[شهر:')) {
+          const mMatch = m.notes.match(/\[شهر:\s*(\d+)\]/);
+          if (mMatch) memberWorkoutMonth = parseInt(mMatch[1]);
+        }
+
         container.innerHTML = `
           <div class="item-card-glass" style="max-width: 480px;">
             <div class="card-header-flex">
@@ -1384,6 +1430,7 @@
 
             <div class="details-box-inner" style="gap: 8px; padding: 12px;">
               <div class="info-row"><span class="info-lbl">السجل / الرياضة:</span><span class="info-val" style="color:var(--accent-amber);">${m.category || 'كمال أجسام'}</span></div>
+              ${(m.category || 'كمال أجسام') === 'كمال أجسام' ? `<div class="info-row"><span class="info-lbl">شهر التمرين المعتمد:</span><span class="info-val" style="color:var(--accent-neon);">الشهر ${memberWorkoutMonth}</span></div>` : ''}
               <div class="info-row"><span class="info-lbl">الخطة المسجلة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
               <div class="info-row"><span class="info-lbl">تاريخ انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1391,8 +1438,80 @@
             </div>
           </div>
         `;
+
+        // إذا كان المشترك لكمال الأجسام، نعرض له قسم التمارين
+        if ((m.category || 'كمال أجسام') === 'كمال أجسام') {
+          document.getElementById('workout-plans-panel').style.display = 'block';
+          await loadMemberWorkouts(memberWorkoutMonth);
+        } else {
+          document.getElementById('workout-plans-panel').style.display = 'none';
+        }
+
       } catch (e) {
         console.error(e);
+      }
+    }
+
+    async function loadMemberWorkouts(allowedMonth) {
+      if (!globalWorkoutsData) {
+        const res = await fetch('/api/workouts/bodybuilding');
+        globalWorkoutsData = await res.json();
+      }
+
+      const tabsContainer = document.getElementById('workout-month-tabs');
+      tabsContainer.innerHTML = '';
+
+      for (let m = 1; m <= 3; m++) {
+        const isUnlocked = m <= allowedMonth;
+        const btn = document.createElement('button');
+        btn.className = `category-filter-btn ${m === allowedMonth ? 'active' : ''}`;
+        btn.style.opacity = isUnlocked ? '1' : '0.5';
+        btn.style.cursor = isUnlocked ? 'pointer' : 'not-allowed';
+        btn.innerHTML = `الشهر ${m} ${isUnlocked ? '' : '🔒'}`;
+
+        if (isUnlocked) {
+          btn.onclick = () => {
+            document.querySelectorAll('#workout-month-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderWorkoutMonthExercises(m);
+          };
+        }
+        tabsContainer.appendChild(btn);
+      }
+
+      renderWorkoutMonthExercises(allowedMonth);
+    }
+
+    function renderWorkoutMonthExercises(monthNum) {
+      const container = document.getElementById('workout-exercises-container');
+      container.innerHTML = '';
+
+      const monthData = globalWorkoutsData[monthNum];
+      if (!monthData) return;
+
+      for (const [bodyPart, exercises] of Object.entries(monthData.exercises)) {
+        let cardHtml = `
+          <div class="item-card-glass">
+            <div class="card-header-flex" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px;">
+              <div class="item-name" style="color: var(--accent-neon);"><i class="fa-solid fa-dumbbell"></i> عضلة ${bodyPart}</div>
+            </div>
+            <div class="details-box-inner" style="gap: 8px; padding-top: 8px;">
+        `;
+
+        exercises.forEach(ex => {
+          cardHtml += `
+            <div style="border-bottom: 1px dashed var(--border-glass); padding-bottom: 4px;">
+              <div style="font-weight: 800; font-size: 0.88rem; color: var(--text-bright);">${ex.name}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-top: 2px;">
+                <span style="color: var(--accent-green); font-weight: 700;">${ex.sets}</span>
+                <span style="color: var(--text-sub);">${ex.notes}</span>
+              </div>
+            </div>
+          `;
+        });
+
+        cardHtml += `</div></div>`;
+        container.innerHTML += cardHtml;
       }
     }
 
@@ -1471,6 +1590,12 @@
       const registeredDate = m.created_at ? new Date(m.created_at).toISOString().split('T')[0] : 'غير معروف';
       const categoryName = m.category || 'كمال أجسام';
 
+      let workoutMonthVal = 1;
+      if (m.notes && m.notes.includes('[شهر:')) {
+        const mMatch = m.notes.match(/\[شهر:\s*(\d+)\]/);
+        if (mMatch) workoutMonthVal = parseInt(mMatch[1]);
+      }
+
       return `
         <div class="item-card-glass">
           <div class="card-header-flex">
@@ -1483,6 +1608,7 @@
 
           <div class="details-box-inner">
             <div class="info-row"><span class="info-lbl">السجل / القائمة:</span><span class="info-val" style="color:var(--accent-amber);">${categoryName}</span></div>
+            ${categoryName === 'كمال أجسام' ? `<div class="info-row"><span class="info-lbl">شهر التمرين:</span><span class="info-val" style="color:var(--accent-neon);">الشهر ${workoutMonthVal}</span></div>` : ''}
             <div class="info-row"><span class="info-lbl">الخطة:</span><span class="info-val" style="color:var(--accent-neon);">${m.plan_name || 'لا يوجد'}</span></div>
             <div class="info-row"><span class="info-lbl">بدء الاشتراك:</span><span class="info-val">${m.start_date || 'غير محدد'}</span></div>
             <div class="info-row"><span class="info-lbl">انتهاء الاشتراك:</span><span class="info-val">${m.end_date || 'غير محدد'}</span></div>
@@ -1670,6 +1796,8 @@
       document.getElementById('member-id').value = '';
       document.getElementById('member-form').reset();
       document.getElementById('member-category').value = 'كمال أجسام';
+      document.getElementById('member-workout-month').value = '1';
+      toggleWorkoutMonthField('كمال أجسام');
       document.getElementById('member-modal-title').innerText = 'إضافة مشترك جديد';
       document.getElementById('plan-select-group').style.display = 'flex';
       document.getElementById('date-select-group').style.display = 'flex';
@@ -1684,20 +1812,31 @@
       document.getElementById('member-name').value = m.full_name;
       document.getElementById('member-phone').value = m.phone;
       document.getElementById('member-category').value = m.category || 'كمال أجسام';
+      toggleWorkoutMonthField(m.category || 'كمال أجسام');
       
       let rawNotes = m.notes || '';
       let debtVal = '';
+      let workoutMonthVal = '1';
       let cleanNotes = rawNotes;
 
-      // استخراج قيمة الذمة إذا كانت محفوظة سابقاً
+      // استخراج قيمة الذمة والشهر
       if (rawNotes.includes('[ذمم:')) {
         const match = rawNotes.match(/\[ذمم:\s*([^\]]+)\]/);
         if (match) {
           debtVal = match[1];
-          cleanNotes = rawNotes.replace(/\[ذمم:\s*[^\]]+\]\s*-?\s*/, '');
+          cleanNotes = cleanNotes.replace(/\[ذمم:\s*[^\]]+\]\s*-?\s*/, '');
         }
       }
 
+      if (rawNotes.includes('[شهر:')) {
+        const match = rawNotes.match(/\[شهر:\s*(\d+)\]/);
+        if (match) {
+          workoutMonthVal = match[1];
+          cleanNotes = cleanNotes.replace(/\[شهر:\s*\d+\]\s*-?\s*/, '');
+        }
+      }
+
+      document.getElementById('member-workout-month').value = workoutMonthVal;
       document.getElementById('member-debt').value = debtVal;
       document.getElementById('member-notes').value = cleanNotes;
 
@@ -1708,8 +1847,24 @@
     }
 
     function openRenewModal(memberId) {
+      const m = globalMembers.find(x => x.id === memberId);
       document.getElementById('renew-member-id').value = memberId;
       document.getElementById('renew-start-date').valueAsDate = new Date();
+
+      let workoutMonthVal = '1';
+      if (m && m.notes && m.notes.includes('[شهر:')) {
+        const match = m.notes.match(/\[شهر:\s*(\d+)\]/);
+        if (match) workoutMonthVal = match[1];
+      }
+      
+      const renewGroup = document.getElementById('renew-workout-month-group');
+      if (m && (m.category || 'كمال أجسام') === 'كمال أجسام') {
+        renewGroup.style.display = 'flex';
+        document.getElementById('renew-workout-month').value = workoutMonthVal;
+      } else {
+        renewGroup.style.display = 'none';
+      }
+
       openModal('renew-modal');
     }
 
@@ -1721,19 +1876,26 @@
     async function handleMemberSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('member-id').value;
+      const category = document.getElementById('member-category').value;
+      const workoutMonth = document.getElementById('member-workout-month').value;
       const debtValue = document.getElementById('member-debt').value.trim();
       const rawNotes = document.getElementById('member-notes').value.trim();
 
-      // دمج حقل الذمة مع حقل الملاحظات ليتم حظه في قاعدة البيانات والسيرفر فوراً
+      // دمج شهر التمرين والذمة مع حقل الملاحظات ليتم حفظهم مع العضو
       let finalNotes = rawNotes;
+
+      if (category === 'كمال أجسام') {
+        finalNotes = `[شهر: ${workoutMonth}]` + (finalNotes ? ` - ${finalNotes}` : '');
+      }
+
       if (debtValue) {
-        finalNotes = `[ذمم: ${debtValue}]` + (rawNotes ? ` - ${rawNotes}` : '');
+        finalNotes = `[ذمم: ${debtValue}]` + (finalNotes ? ` - ${finalNotes}` : '');
       }
 
       const body = {
         full_name: document.getElementById('member-name').value,
         phone: document.getElementById('member-phone').value,
-        category: document.getElementById('member-category').value,
+        category: category,
         notes: finalNotes,
         plan_id: document.getElementById('member-plan').value,
         start_date: document.getElementById('member-start-date').value
@@ -1759,8 +1921,32 @@
 
     async function handleRenewSubmit(e) {
       e.preventDefault();
+      const memberId = document.getElementById('renew-member-id').value;
+      const selectedMonth = document.getElementById('renew-workout-month').value;
+      
+      const m = globalMembers.find(x => x.id == memberId);
+      if (m && (m.category || 'كمال أجسام') === 'كمال أجسام') {
+        let currentNotes = m.notes || '';
+        if (currentNotes.includes('[شهر:')) {
+          currentNotes = currentNotes.replace(/\[شهر:\s*\d+\]/, `[شهر: ${selectedMonth}]`);
+        } else {
+          currentNotes = `[شهر: ${selectedMonth}]` + (currentNotes ? ` - ${currentNotes}` : '');
+        }
+
+        await fetch('/api/members/' + memberId, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            full_name: m.full_name,
+            phone: m.phone,
+            category: m.category,
+            notes: currentNotes
+          })
+        });
+      }
+
       const body = {
-        member_id: document.getElementById('renew-member-id').value,
+        member_id: memberId,
         plan_id: document.getElementById('renew-plan-id').value,
         start_date: document.getElementById('renew-start-date').value
       };
