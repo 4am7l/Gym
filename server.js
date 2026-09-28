@@ -157,8 +157,14 @@ app.get('/api/dashboard/stats', async (req, res) => {
       .order('id', { ascending: false })
       .limit(5);
 
+    const { count: totalMembers, error: countErr } = await supabase
+      .from('members')
+      .select('*', { count: 'exact', head: true });
+
+    if (countErr) throw countErr;
+
     res.json({
-      totalMembers: recentMembers ? recentMembers.length : 0,
+      totalMembers: totalMembers || 0,
       totalActive,
       totalExpiring,
       totalExpired,
@@ -170,7 +176,6 @@ app.get('/api/dashboard/stats', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 app.get('/api/plans', async (req, res) => {
   try {
     const { data, error } = await supabase
