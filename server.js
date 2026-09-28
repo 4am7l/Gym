@@ -131,9 +131,16 @@ app.get('/api/dashboard/stats', async (req, res) => {
 
     if (subErr) throw subErr;
 
-    let totalActive = 0, totalExpiring = 0, totalExpired = 0;
+    // نعتبر أحدث اشتراك فقط لكل عضو هو الاشتراك الحالي.
+    // هذا يمنع الاشتراكات القديمة/المنتهية من احتساب العضو كمنتهي بعد التجديد.
+    const latestByMember = new Map();
+    for (const sub of (subscriptions || [])) {
+      const memberKey = sub.members?.phone || sub.member_id || `sub-${sub.id}`;
+      if (!latestByMember.has(memberKey)) latestByMember.set(memberKey, sub);
+    }
 
-    const subscriptionsWithStatus = (subscriptions || []).map((sub) => {
+    let totalActive = 0, totalExpiring = 0, totalExpired = 0;
+    const subscriptionsWithStatus = Array.from(latestByMember.values()).map((sub) => {
       const status = calculateStatus(sub.end_date);
       if (status === 'Active') totalActive++;
       if (status === 'Expiring Soon') totalExpiring++;
@@ -151,19 +158,18 @@ app.get('/api/dashboard/stats', async (req, res) => {
       };
     });
 
-    const { data: recentMembers } = await supabase
+    const { count: totalMembers, error: countErr } = await supabase
       .from('members')
-      .select('*')
-      .order('id', { ascending: false })
-      .limit(5);
+      .select('*', { count: 'exact', head: true });
+    if (countErr) throw countErr;
 
     res.json({
-      totalMembers: recentMembers ? recentMembers.length : 0,
+      totalMembers: totalMembers || 0,
       totalActive,
       totalExpiring,
       totalExpired,
-      totalSubscriptions: subscriptions ? subscriptions.length : 0,
-      recentMembers: recentMembers || [],
+      totalSubscriptions: subscriptionsWithStatus.length,
+      // واجهة البداية تعرض آخر 5 أعضاء/اشتراكات حالية فقط.
       recentSubscriptions: subscriptionsWithStatus.slice(0, 5)
     });
   } catch (err) {
@@ -385,20 +391,44 @@ app.post('/api/subscriptions', async (req, res) => {
     end.setDate(end.getDate() + plan.duration_days);
     const endDateStr = end.toISOString().split('T')[0];
 
-    const { data: newSub, error: subErr } = await supabase
+    // التجديد يعدّل نفس سجل الاشتراك الحالي بدلاً من إنشاء اشتراك جديد
+    // حتى لا يظهر للعضو اشتراك سابق منتهي بعد كل عملية تجديد.
+    const { data: existingSub, error: existingErr } = await supabase
       .from('subscriptions')
-      .insert([{
-        member_id: parseInt(member_id),
-        plan_id: parseInt(plan_id),
-        price: plan.price,
-        start_date,
-        end_date: endDateStr
-      }])
-      .select()
-      .single();
+      .select('id')
+      .eq('member_id', parseInt(member_id))
+      .order('id', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (existingErr) throw existingErr;
+
+    const subscriptionData = {
+      member_id: parseInt(member_id),
+      plan_id: parseInt(plan_id),
+      price: plan.price,
+      start_date,
+      end_date: endDateStr
+    };
+
+    let savedSub, subErr;
+    if (existingSub) {
+      ({ data: savedSub, error: subErr } = await supabase
+        .from('subscriptions')
+        .update(subscriptionData)
+        .eq('id', existingSub.id)
+        .select()
+        .single());
+    } else {
+      ({ data: savedSub, error: subErr } = await supabase
+        .from('subscriptions')
+        .insert([subscriptionData])
+        .select()
+        .single());
+    }
 
     if (subErr) throw subErr;
-    res.json(newSub);
+    res.json(savedSub);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
