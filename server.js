@@ -109,7 +109,7 @@ function calculateStatus(endDateStr) {
 // تسجيل دخول الكابتن بالرمز السري من ADMIN_PASSWORD في .env
 app.post('/api/admin/login', (req, res) => {
   const { passcode } = req.body;
-  const adminSecret = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || "88573";
+  const adminSecret = process.env.ADMIN_PASSWORD;
 
   if (passcode === adminSecret) {
     res.json({ success: true });
