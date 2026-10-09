@@ -1,1 +1,14 @@
 .gym-ops-bar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:12px 0}.gym-ops-bar button,.gym-phone-result button,.gym-expiry-items button{background:#8882;border:1px solid #8885;border-radius:10px;padding:9px 12px;color:var(--text-bright,#fff);cursor:pointer}.gym-ops-bar button:disabled{opacity:.45;cursor:not-allowed}.gym-ops-bar label{display:flex;align-items:center;gap:7px}.gym-quick-search{display:grid;gap:8px;margin:12px 0}.gym-quick-search input{background:var(--panel-glass);color:var(--text-bright);border:1px solid #8885;border-radius:12px;padding:12px;font-size:16px}.gym-phone-result{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border-bottom:1px solid #8883}.gym-phone-result span{display:grid;gap:3px}.gym-phone-result small{color:var(--text-sub)}.gym-expiry-alerts{padding:15px;border:1px solid #fbbf2455;border-radius:15px;margin-bottom:16px}.gym-expiry-items{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.gym-row-select{width:18px;height:18px;accent-color:var(--accent-neon,#38bdf8)}@media(max-width:700px){.gym-ops-bar button{flex:1 1 42%}.gym-ops-bar label{flex:1 0 100%}.gym-phone-result{align-items:flex-start}.gym-expiry-items{display:grid}.gym-table td[data-label="تحديد"]{justify-content:space-between}}
+.gym-finance-panel{position:fixed;z-index:4500;inset:0 0 0 auto;width:min(100%,480px);background:var(--bg-dark,#101118);color:var(--text-bright,#fff);box-shadow:0 0 40px #0009;overflow-y:auto;padding:20px;direction:rtl;overscroll-behavior:contain}
+.gym-finance-panel[hidden]{display:none!important}
+.gym-finance-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.gym-finance-panel button,.gym-audit-button{border:1px solid #8885;border-radius:9px;padding:10px 13px;background:#8882;color:var(--text-bright,#fff);cursor:pointer}
+.gym-finance-panel form{display:grid;gap:10px;margin:18px 0}
+.gym-finance-panel label{display:grid;gap:6px}
+.gym-finance-panel input{width:100%;border:1px solid #8885;border-radius:9px;padding:10px;background:var(--panel-glass);color:var(--text-bright);font-size:16px}
+.gym-finance-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.gym-finance-stats>div{padding:10px;border:1px solid #8885;border-radius:10px;display:grid;gap:5px;font-size:.8rem}
+.gym-finance-warning{color:#fbbf24}
+.gym-finance-panel h3{margin:20px 0 10px;font-size:1rem}
+.gym-finance-panel p{padding:8px 0;border-bottom:1px solid #8883}
+.gym-audit-button{margin:8px 0}
