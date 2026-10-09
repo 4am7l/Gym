@@ -50,14 +50,20 @@
    if(!await showCustomConfirm('هل تريد حذف '+ids.length+' مشترك نهائيًا؟ لا يمكن التراجع عن الحذف.'))return;
    deleteBtn.disabled=true;
    let deleted=0,failed=0;
-   for(const id of ids){
-     try{
-       const res=await fetch('/api/members/'+encodeURIComponent(id),{method:'DELETE'});
-       if(!res.ok)throw new Error('HTTP '+res.status);
-       selected.delete(id);deleted++;
-     }catch(err){failed++}
+   try {
+     const res=await fetch('/api/members/bulk-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:ids.map(Number)})});
+     const result=await res.json();
+     if(!res.ok)throw new Error(result.error||'تعذر الحذف');
+     const removed=new Set((result.deletedIds||[]).map(String));
+     for(const id of removed)selected.delete(id);
+     deleted=removed.size;
+     failed=ids.length-deleted;
+   }catch(err){
+     failed=ids.length;
+     if(window.gymToast)window.gymToast('تعذر الحذف: '+err.message,'error');
    }
    await loadAllData();
+   deleteBtn.disabled=false;
    syncSelection();
    if(window.gymToast)window.gymToast('تم حذف '+deleted+' مشترك، وفشل حذف '+failed,failed?'error':'success');
  });
