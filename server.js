@@ -368,6 +368,7 @@ app.post('/api/members', async (req, res) => {
         }]);
       }
     }
+    await audit('member_created',newMember.id,{name:newMember.full_name});
     res.json(newMember);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -388,6 +389,7 @@ app.put('/api/members/:id', async (req, res) => {
       .eq('id', req.params.id);
 
     if (error) throw error;
+    await audit('member_updated',Number(req.params.id),{full_name});
     res.json({ updated: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -398,6 +400,7 @@ app.delete('/api/members/:id', async (req, res) => {
   try {
     const { error } = await supabase.from('members').delete().eq('id', req.params.id);
     if (error) throw error;
+    await audit('member_deleted',null,{member_id:Number(req.params.id)});
     res.json({ deleted: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -457,7 +460,10 @@ app.post('/api/subscriptions', async (req, res) => {
     }
 
     if (subErr) throw subErr;
-    res.json(savedSub);
+    const {error:eventError}=await supabase.from('gym_subscription_events').insert([{member_id:Number(member_id),subscription_id:savedSub.id,plan_id:Number(plan_id),price:Number(plan.price),start_date,end_date:endDateStr}]);
+    if(eventError)console.error('Subscription history insert failed:',eventError.message);
+    await audit('subscription_renewed',Number(member_id),{subscription_id:savedSub.id,price:plan.price,history_saved:!eventError});
+    res.json({...savedSub,history_saved:!eventError});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
