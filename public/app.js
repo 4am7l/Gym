@@ -451,6 +451,7 @@ function createMemberCardHtml(m, selectable = false) {
 
       <div class="card-bottom-actions">
         <button class="action-icon-btn" onclick="openRenewModal(${m.id})" title="تجديد"><i class="fa-solid fa-rotate-right"></i></button>
+        ${categoryName === 'لياقة بدنية' ? `<button class="action-icon-btn" onclick="openMeasurementsModal(${m.id})" title="قياسات الجسم"><i class="fa-solid fa-ruler"></i></button>` : ''}
         <button class="action-icon-btn" onclick="editMember(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
 
       </div>
@@ -850,3 +851,28 @@ async function deletePlan(id) {
 
 initTheme();
 checkExistingSession();
+
+// Measurements are kept separate from the member registration form.
+const fitnessMeasurementLabels = { chest:'الصدر (سم)', waist:'الخصر (سم)', arms:'الروس (سم)', hips:'الورك (سم)', calves:'القفة (سم)', thigh:'الفخذ (سم)', weight:'الوزن (كغ)' };
+function openMeasurementsModal(id) {
+  const member = globalMembers.find(m => m.id === id);
+  if (!member || member.category !== 'لياقة بدنية') return;
+  document.getElementById('measurements-member-id').value = id;
+  const values = member.measurements || {};
+  document.getElementById('measurements-fields').innerHTML = Object.entries(fitnessMeasurementLabels).map(([key,label]) => `<div class="form-group-custom"><label>${label}</label><input type="number" min="0" max="1000" step="0.1" id="measure-${key}" value="${values[key] ?? ''}" placeholder="اختياري"></div>`).join('');
+  document.getElementById('measurements-updated-at').value = values.updated_at ? new Date(values.updated_at).toLocaleString('ar-JO') : 'لم يتم تسجيل قياسات بعد';
+  openModal('measurements-modal');
+}
+async function saveMeasurements(event) {
+  event.preventDefault();
+  const id = document.getElementById('measurements-member-id').value;
+  const body = {};
+  for (const key of Object.keys(fitnessMeasurementLabels)) body[key] = document.getElementById('measure-' + key).value;
+  try {
+    const response = await fetch('/api/members/' + id + '/measurements', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if (!response.ok) { const result = await response.json(); throw new Error(result.error || 'تعذر حفظ القياسات'); }
+    closeModal('measurements-modal');
+    await loadAllData();
+    await showCustomAlert('تم حفظ القياسات وتحديث التاريخ بنجاح', 'success');
+  } catch (err) { await showCustomAlert(err.message, 'error'); }
+}
