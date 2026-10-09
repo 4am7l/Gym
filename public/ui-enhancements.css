@@ -28,3 +28,11 @@
 .gym-toast.success{border-color:#34d399}.gym-toast.error{border-color:#fb7185}
 @keyframes gym-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(max-width:700px){.gym-table{min-width:590px}.gym-table th,.gym-table td{padding:12px 9px}.gym-drawer{padding:18px}}
+
+.gym-dashboard-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.gym-dashboard-heading h2{font-size:clamp(1.4rem,3vw,2rem);margin:4px 0;color:var(--text-bright,#fff)}
+.gym-dashboard-heading p{margin:0;color:var(--text-sub,#aaa);font-size:.85rem}
+#view-dashboard .stats-row{gap:16px}
+#view-dashboard .glass-card{position:relative;overflow:hidden;border:1px solid #8883;transition:transform .2s,box-shadow .2s}
+#view-dashboard .glass-card:hover{transform:translateY(-4px);box-shadow:0 14px 35px #0003}
+#view-dashboard .card-value{font-variant-numeric:tabular-nums}
