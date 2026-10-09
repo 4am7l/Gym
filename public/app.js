@@ -344,35 +344,13 @@ function initTheme() {
   updateThemeIcon(savedTheme);
 }
 
-let gymThemeTransitionInProgress = false;
 function toggleTheme() {
-  if (gymThemeTransitionInProgress) return;
+  // Change all theme variables in the same frame. No per-element color animations.
   const root = document.documentElement;
-  const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  const applyTheme = () => {
-    root.setAttribute('data-theme', newTheme);
-    localStorage.setItem('gym-theme', newTheme);
-    updateThemeIcon(newTheme);
-  };
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) { applyTheme(); return; }
-  gymThemeTransitionInProgress = true;
-  if (typeof document.startViewTransition === 'function') {
-    try {
-      const transition = document.startViewTransition(applyTheme);
-      transition.finished.catch(() => {}).finally(() => { gymThemeTransitionInProgress = false; });
-    } catch (error) {
-      applyTheme();
-      gymThemeTransitionInProgress = false;
-    }
-  } else {
-    root.classList.add('gym-theme-animating');
-    applyTheme();
-    window.setTimeout(() => {
-      root.classList.remove('gym-theme-animating');
-      gymThemeTransitionInProgress = false;
-    }, 320);
-  }
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('gym-theme', next);
+  updateThemeIcon(next);
 }
 
 function updateThemeIcon(theme) {
