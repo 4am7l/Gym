@@ -406,7 +406,7 @@ function getRemainingDays(endDateStr) {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-function createMemberCardHtml(m) {
+function createMemberCardHtml(m, selectable = false) {
   if (!m) return '';
   const statusClass = m.status === 'Active' ? 'Active' : (m.status === 'Expiring Soon' ? 'Expiring' : (m.status === 'Expired' ? 'Expired' : 'NoSub'));
   const statusText = m.status === 'Active' ? 'نشط' : (m.status === 'Expiring Soon' ? 'تنتهي قريباً' : (m.status === 'Expired' ? 'منتهي' : 'بدون اشتراك'));
@@ -429,6 +429,7 @@ function createMemberCardHtml(m) {
 
   return `
     <div class="item-card-glass gym-member-card">
+      ${selectable ? `<label class="gym-member-select"><input type="checkbox" class="gym-row-select" data-id="${m.id}" aria-label="تحديد ${m.full_name || 'المشترك'}"> تحديد</label>` : ''}
       <div class="card-header-flex">
         <div>
           <div class="item-name">${m.full_name || 'بدون اسم'}</div>
@@ -538,7 +539,7 @@ function renderMembers(list) {
     container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء في هذه القائمة.</div>';
     return;
   }
-  list.forEach(m => container.innerHTML += createMemberCardHtml(m));
+  list.forEach(m => container.innerHTML += createMemberCardHtml(m, true));
 }
 
 function filterCategoryTab(category, btnElem) {
