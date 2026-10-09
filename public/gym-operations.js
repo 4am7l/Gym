@@ -7,12 +7,12 @@
  if(!membersRoot)return;
  const bar=document.createElement('div');
  bar.className='gym-ops-bar';
- bar.innerHTML='<label><input type="checkbox" id="gym-select-all"> تحديد الظاهر</label><span id="gym-selected-count">0 محدد</span><button type="button" id="gym-bulk-delete" disabled>حذف المحددين</button><button type="button" id="gym-export-members">تصدير الأعضاء CSV</button><button type="button" id="gym-export-subs">تصدير الاشتراكات CSV</button>';
+ bar.innerHTML='<label><input type="checkbox" id="gym-select-all"> تحديد الظاهر</label><span id="gym-selected-count">0 محدد</span><button type="button" id="gym-bulk-delete" disabled>حذف المحددين</button>';
  membersRoot.before(bar);
  const alertBox=document.createElement('div');
  alertBox.className='gym-expiry-alerts';
  const dash=document.getElementById('view-dashboard');
- if(dash)dash.prepend(alertBox);
+ /* expiry alerts intentionally removed from dashboard */
  function csv(name,rows){
    const safe=v=>{let s=String(v??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
    const content='\ufeff'+rows.map(r=>r.map(safe).join(',')).join('\r\n');
@@ -61,8 +61,8 @@
    await loadAllData();updateSelection();
    if(window.gymToast)gymToast('تم حذف '+done+'، تعذر حذف '+failed,failed?'error':'success');
  };
- document.getElementById('gym-export-members').onclick=()=>csv('gym-members.csv',[['ID','الاسم','الهاتف','الرياضة','الحالة','تاريخ الانتهاء','الملاحظات'],...getMembers().map(m=>[m.id,m.full_name,m.phone,m.category,m.status,m.end_date,m.notes])]);
- document.getElementById('gym-export-subs').onclick=()=>csv('gym-current-subscriptions.csv',[['ID','المشترك','الخطة','السعر','البداية','النهاية','الحالة'],...getMembers().map(m=>[m.subscription_id,m.full_name,m.plan_name,m.subscription_price,m.start_date,m.end_date,m.status])]);
+ const exportRows=kind=>kind==='members'?[['ID','الاسم','الهاتف','الرياضة','الحالة','تاريخ الانتهاء','الملاحظات'],...getMembers().map(m=>[m.id,m.full_name,m.phone,m.category,m.status,m.end_date,m.notes])]:[['ID','المشترك','الخطة','السعر','البداية','النهاية','الحالة'],...getMembers().map(m=>[m.subscription_id,m.full_name,m.plan_name,m.subscription_price,m.start_date,m.end_date,m.status])];
+ document.querySelectorAll('[data-gym-export]').forEach(button=>button.addEventListener('click',()=>{const [kind,format]=button.dataset.gymExport.split('-');const rows=exportRows(kind);if(format==='csv')return csv('gym-'+kind+'.csv',rows);const headers=rows[0];const data=rows.slice(1).map(row=>Object.fromEntries(headers.map((h,i)=>[h,row[i]??null])));const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='gym-'+kind+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}));
  function refreshAlerts(){
    const expiring=getMembers().filter(m=>m.status==='Expiring Soon');
    if(!dash)return;
@@ -75,8 +75,8 @@
    alertBox.append(items);
  }
  const previousLoad=window.loadMembers;
- if(typeof previousLoad==='function')window.loadMembers=async function(...args){const result=await previousLoad.apply(this,args);refreshAlerts();return result};
- refreshAlerts();
+ if(typeof previousLoad==='function')window.loadMembers=async function(...args){const result=await previousLoad.apply(this,args);return result};
+ /* no dashboard expiry alert */
 
  const operationsPanel=document.createElement('section');
  operationsPanel.className='gym-finance-panel';
@@ -128,8 +128,8 @@
  const actionObserver=new MutationObserver(()=>{actionObserver.disconnect();addOperationsButtons();actionObserver.observe(membersRoot,{childList:true,subtree:true})});
  actionObserver.observe(membersRoot,{childList:true,subtree:true});addOperationsButtons();
  if(dash){
-   const auditButton=document.createElement('button');auditButton.type='button';auditButton.className='gym-audit-button';auditButton.textContent='عرض سجل العمليات';dash.prepend(auditButton);
-   auditButton.onclick=async()=>{
+   const auditButton=document.getElementById('gym-sidebar-audit');
+   if(auditButton)auditButton.onclick=async()=>{
      operationsPanel.hidden=false;document.getElementById('gym-finance-title').textContent='سجل العمليات';
      const body=document.getElementById('gym-finance-body');body.textContent='جاري التحميل...';
      try{const r=await fetch('/api/ops/activity');const data=await r.json();if(!r.ok)throw Error(data.error);body.replaceChildren();if(!data.length)body.textContent='لا توجد عمليات مسجلة بعد';data.forEach(a=>{const p=document.createElement('p');p.textContent=new Date(a.created_at).toLocaleString('ar-JO')+' — '+a.action+' — '+(a.member_id??'');body.append(p)})}catch(err){body.textContent=err.message}
