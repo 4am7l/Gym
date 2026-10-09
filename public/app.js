@@ -420,7 +420,8 @@ function createMemberCardHtml(m) {
   }
 
   return `
-    <div class="item-card-glass">
+    <div class="item-card-glass gym-member-card">
+      <div class="gym-member-select"><label><input type="checkbox" class="gym-row-select" data-id="${m.id}" aria-label="تحديد ${m.full_name || 'المشترك'}"> تحديد</label></div>
       <div class="card-header-flex">
         <div>
           <div class="item-name">${m.full_name || 'بدون اسم'}</div>
@@ -443,7 +444,7 @@ function createMemberCardHtml(m) {
       <div class="card-bottom-actions">
         <button class="action-icon-btn" onclick="openRenewModal(${m.id})" title="تجديد"><i class="fa-solid fa-rotate-right"></i></button>
         <button class="action-icon-btn" onclick="editMember(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-        <button class="action-icon-btn" onclick="deleteMember(${m.id})" title="حذف"><i class="fa-solid fa-trash"></i></button>
+
       </div>
     </div>
   `;
