@@ -1,0 +1,58 @@
+/* Neon Gym design system — additive visual layer; preserves existing behavior. */
+:root[data-theme="dark"]{
+ --bg-dark:#080d0b;--bg-gradient:radial-gradient(ellipse at 88% 4%,rgba(163,230,53,.12),transparent 42%),radial-gradient(ellipse at 3% 95%,rgba(34,197,94,.075),transparent 45%);
+ --panel-glass:rgba(15,24,19,.94);--card-glass:rgba(25,38,29,.72);--card-glass-hover:rgba(35,53,39,.86);
+ --border-glass:rgba(163,230,53,.13);--border-glow:rgba(163,230,53,.3);--inner-box-bg:rgba(5,12,8,.65);
+ --text-bright:#f3f9f1;--text-sub:#a4b5a6;--text-dim:#738675;
+ --accent-neon:#a3e635;--accent-green:#4ade80;--accent-amber:#fbbf24;--accent-red:#fb7185;
+ --btn-liquid-bg:linear-gradient(130deg,#a3e635,#65a30d);--dropdown-bg:#121d15;
+}
+:root[data-theme="light"]{
+ --bg-dark:#f3f7ef;--bg-gradient:radial-gradient(ellipse at 90% 0%,rgba(132,204,22,.14),transparent 44%);
+ --panel-glass:rgba(255,255,255,.95);--card-glass:#fff;--card-glass-hover:#f4faeb;
+ --border-glass:rgba(53,83,31,.14);--border-glow:rgba(101,163,13,.35);
+ --text-bright:#18251b;--text-sub:#536653;--text-dim:#748575;--accent-neon:#4d7c0f;
+ --btn-liquid-bg:linear-gradient(130deg,#65a30d,#3f6212);
+}
+:root{--radius-xl:22px;--radius-lg:16px;--radius-md:11px}
+body{background-attachment:fixed}
+::selection{background:rgba(163,230,53,.35)}
+:focus-visible{outline:2px solid var(--accent-neon)!important;outline-offset:3px}
+.login-box,.glass-card,.stat-card,.modal-glass-box,.gym-finance-panel{
+ border:1px solid var(--border-glass)!important;
+ box-shadow:0 16px 46px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.035);
+}
+.login-box{max-width:430px;position:relative;overflow:hidden}
+.login-box:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,var(--accent-neon),transparent);pointer-events:none}
+.brand-icon{background:rgba(163,230,53,.1)!important;color:var(--accent-neon)!important;border:1px solid rgba(163,230,53,.3);box-shadow:0 0 28px rgba(163,230,53,.12)}
+.brand-title h1{letter-spacing:.045em;font-weight:900}
+.main-header{border-bottom:1px solid var(--border-glass);background:var(--panel-glass)}
+.btn-liquid{background:var(--btn-liquid-bg)!important;color:var(--bg-dark)!important;border:1px solid rgba(163,230,53,.25)!important;font-weight:800;box-shadow:0 6px 22px rgba(101,163,13,.14)}
+.btn-liquid:hover{filter:brightness(1.07);box-shadow:0 8px 28px rgba(132,204,22,.22)}
+.login-tab-btn.active{color:var(--accent-neon)}
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{accent-color:var(--accent-neon);border-color:var(--border-glass)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-neon)!important;box-shadow:0 0 0 3px rgba(163,230,53,.1)!important}
+.stat-card{position:relative;overflow:hidden}
+.stat-card:after{content:"";position:absolute;inset:auto 16px 0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-neon),transparent);opacity:.6;pointer-events:none}
+.gym-ops-bar{padding:12px;border:1px solid var(--border-glass);border-radius:var(--radius-lg);background:var(--card-glass)}
+.gym-ops-bar button,.gym-expiry-items button{transition:background .2s,border-color .2s,transform .2s}
+.gym-ops-bar button:hover,.gym-expiry-items button:hover{border-color:var(--accent-neon);transform:translateY(-1px)}
+.gym-expiry-alerts{background:linear-gradient(120deg,rgba(163,230,53,.06),transparent);border-color:var(--border-glass)}
+.gym-table{border-collapse:separate;border-spacing:0}
+.gym-table thead{background:rgba(163,230,53,.07)}
+.gym-table tbody tr:hover{background:rgba(163,230,53,.055)}
+.gym-actions-menu{border:1px solid var(--border-glass);box-shadow:0 14px 40px rgba(0,0,0,.24)}
+.modal-backdrop{backdrop-filter:blur(8px)}
+.modal-glass-box{max-height:min(90dvh,850px);overflow-y:auto}
+button{touch-action:manipulation}
+@media(min-width:768px){.stat-card:hover,.glass-card:hover{transform:translateY(-2px)}}
+@media(max-width:700px){
+ .login-wrapper{padding:16px}.login-box{padding:24px 18px}
+ .main-header{padding-inline:12px}
+ .gym-ops-bar{gap:8px}
+ .gym-ops-bar button{min-height:42px}
+ .modal-glass-box{max-width:calc(100vw - 24px)}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
