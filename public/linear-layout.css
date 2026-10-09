@@ -135,3 +135,41 @@ body.is-admin .main-header .header-controls{min-width:0}
  body.is-admin #view-dashboard .glass-card{min-width:0!important;overflow:hidden}
  body.is-admin #view-dashboard .card-value,body.is-admin #view-dashboard .card-label{overflow-wrap:anywhere}
 }
+
+/* Organized members, plans and sidebar tools */
+body.is-admin .gym-sidebar-tools{display:grid;gap:5px;padding:16px 0;margin-top:12px;border-top:1px solid var(--border-glass)}
+body.is-admin .gym-sidebar-caption{padding:0 12px 8px;color:var(--text-dim);font-size:10px;font-weight:800}
+body.is-admin .gym-sidebar-tools button,body.is-admin .gym-export-menu summary{display:flex;align-items:center;gap:10px;width:100%;background:transparent;color:var(--text-sub);border:0;padding:11px 12px;border-radius:7px;font:inherit;font-size:13px;text-align:start;cursor:pointer}
+body.is-admin .gym-sidebar-tools button:hover,body.is-admin .gym-export-menu summary:hover{background:var(--card-glass-hover);color:var(--text-bright)}
+body.is-admin .gym-export-menu summary{list-style:none}
+body.is-admin .gym-export-menu summary::-webkit-details-marker{display:none}
+body.is-admin .gym-export-menu summary i:last-child{margin-inline-start:auto;font-size:10px}
+body.is-admin .gym-export-options{padding-inline-start:18px}
+body.is-admin .gym-members-controls{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 18px;padding:12px;border:1px solid var(--border-glass);border-radius:9px;background:var(--panel-glass)}
+body.is-admin .gym-members-controls label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-sub)}
+body.is-admin .gym-members-controls select{min-height:35px;background:var(--card-glass);color:var(--text-bright);border:1px solid var(--border-glass);border-radius:7px;padding:6px 10px;min-width:135px}
+body.is-admin #view-members .gym-ops-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:12px;border:1px solid var(--border-glass);background:var(--panel-glass);border-radius:8px}
+body.is-admin #view-members .gym-ops-bar button{margin-inline-start:auto}
+body.is-admin #view-members .gym-ops-bar button:disabled{opacity:.4;cursor:not-allowed}
+body.is-admin #all-members-list{grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:12px}
+body.is-admin #all-members-list .gym-member-card{border-radius:10px;padding:15px;gap:12px;min-width:0}
+body.is-admin #all-members-list .gym-member-select{font-size:12px;color:var(--text-sub);padding-bottom:9px;border-bottom:1px solid var(--border-glass)}
+body.is-admin #all-members-list .gym-member-select label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+body.is-admin #all-members-list .details-box-inner{border-radius:7px}
+body.is-admin #all-members-list .card-bottom-actions{justify-content:flex-end}
+body.is-admin .gym-plans-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px}
+body.is-admin .gym-plans-grid .item-card-glass{min-height:160px;border-radius:10px;padding:20px;justify-content:space-between;gap:18px}
+body.is-admin .gym-plans-grid .item-name{font-size:1.06rem;margin-bottom:9px}
+body.is-admin .gym-plans-grid .card-bottom-actions{border-top:1px solid var(--border-glass);padding-top:12px;justify-content:flex-end}
+@media(max-width:900px){
+ body.is-admin .gym-sidebar-tools{position:fixed;bottom:calc(66px + env(safe-area-inset-bottom,0px));inset-inline:10px;z-index:1199;display:flex;gap:5px;padding:6px;background:var(--panel-glass);border:1px solid var(--border-glass);border-radius:9px;box-shadow:0 8px 25px #0006}
+ body.is-admin .gym-sidebar-caption{display:none}
+ body.is-admin .gym-sidebar-tools>button,body.is-admin .gym-sidebar-tools>details{flex:1;min-width:0}
+ body.is-admin .gym-sidebar-tools button,body.is-admin .gym-export-menu summary{justify-content:center;font-size:11px;padding:7px 5px;white-space:nowrap}
+ body.is-admin .gym-export-menu{position:relative}
+ body.is-admin .gym-export-options{position:absolute;bottom:100%;inset-inline-start:0;width:180px;padding:7px;background:var(--panel-glass);border:1px solid var(--border-glass);border-radius:9px}
+ body.is-admin .gym-members-controls{padding:10px;gap:8px}
+ body.is-admin .gym-members-controls label{flex:1 1 140px;flex-wrap:wrap}
+ body.is-admin .gym-members-controls select{width:100%;min-width:0}
+ body.is-admin #view-members .gym-ops-bar{flex-wrap:wrap}
+}
