@@ -9,10 +9,6 @@
  bar.className='gym-ops-bar';
  bar.innerHTML='<label><input type="checkbox" id="gym-select-all"> تحديد الظاهر</label><span id="gym-selected-count">0 محدد</span><button type="button" id="gym-bulk-delete" disabled>حذف المحددين</button><button type="button" id="gym-export-members">تصدير الأعضاء CSV</button><button type="button" id="gym-export-subs">تصدير الاشتراكات CSV</button>';
  membersRoot.before(bar);
- const search=document.createElement('div');
- search.className='gym-quick-search';
- search.innerHTML='<label for="gym-phone-search">بحث سريع برقم الهاتف</label><input id="gym-phone-search" type="tel" inputmode="tel" placeholder="أدخل رقم الهاتف"><div id="gym-phone-results" aria-live="polite"></div>';
- bar.before(search);
  const alertBox=document.createElement('div');
  alertBox.className='gym-expiry-alerts';
  const dash=document.getElementById('view-dashboard');
@@ -67,19 +63,6 @@
  };
  document.getElementById('gym-export-members').onclick=()=>csv('gym-members.csv',[['ID','الاسم','الهاتف','الرياضة','الحالة','تاريخ الانتهاء','الملاحظات'],...getMembers().map(m=>[m.id,m.full_name,m.phone,m.category,m.status,m.end_date,m.notes])]);
  document.getElementById('gym-export-subs').onclick=()=>csv('gym-current-subscriptions.csv',[['ID','المشترك','الخطة','السعر','البداية','النهاية','الحالة'],...getMembers().map(m=>[m.subscription_id,m.full_name,m.plan_name,m.subscription_price,m.start_date,m.end_date,m.status])]);
- const phoneInput=document.getElementById('gym-phone-search'),results=document.getElementById('gym-phone-results');
- phoneInput.addEventListener('input',()=>{
-   const q=phoneInput.value.replace(/\D/g,'');results.replaceChildren();
-   if(q.length<3)return;
-   const found=getMembers().filter(m=>String(m.phone||'').replace(/\D/g,'').includes(q)).slice(0,8);
-   if(!found.length){results.textContent='لا توجد نتائج';return}
-   found.forEach(m=>{
-     const line=document.createElement('div');line.className='gym-phone-result';
-     line.innerHTML='<span><strong>'+escape(m.full_name)+'</strong><small>'+escape(m.phone)+' · '+escape(m.status||'بدون اشتراك')+'</small></span><button type="button">التفاصيل والتجديد</button>';
-     line.querySelector('button').onclick=()=>window.gymOpenMember(m.id);
-     results.append(line);
-   });
- });
  function refreshAlerts(){
    const expiring=getMembers().filter(m=>m.status==='Expiring Soon');
    if(!dash)return;
@@ -92,7 +75,7 @@
    alertBox.append(items);
  }
  const previousLoad=window.loadMembers;
- if(typeof previousLoad==='function')window.loadMembers=async function(...args){const result=await previousLoad.apply(this,args);refreshAlerts();if(phoneInput.value)phoneInput.dispatchEvent(new Event('input'));return result};
+ if(typeof previousLoad==='function')window.loadMembers=async function(...args){const result=await previousLoad.apply(this,args);refreshAlerts();return result};
  refreshAlerts();
 
  const operationsPanel=document.createElement('section');
