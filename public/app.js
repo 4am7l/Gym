@@ -70,11 +70,18 @@ function togglePassVisibility(inputId, iconElem) {
   }
 }
 
-function checkExistingSession() {
+async function checkExistingSession() {
   const savedSession = localStorage.getItem('gym-user-session') || sessionStorage.getItem('gym-user-session');
   if (savedSession) {
-    currentSession = JSON.parse(savedSession);
-    renderAppForRole();
+    try {
+      currentSession = JSON.parse(savedSession);
+      if(currentSession.role==='admin'){
+        const response=await fetch('/api/admin/session');
+        const state=await response.json();
+        if(!state.admin){localStorage.removeItem('gym-user-session');sessionStorage.removeItem('gym-user-session');currentSession=null;}
+      }
+      if(currentSession){renderAppForRole();return;}
+    }catch{currentSession=null;}
   } else {
     document.getElementById('login-portal').classList.remove('hidden');
     document.getElementById('app-view').classList.add('hidden');
@@ -101,9 +108,8 @@ async function handleMemberLogin(e) {
   if (!phoneInput) return;
 
   try {
-    const res = await fetch('/api/members');
-    const members = await res.json();
-    const found = members.find(m => String(m.phone).trim() === String(phoneInput).trim());
+    const res = await fetch('/api/member/lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phoneInput})});
+    const found = res.ok ? await res.json() : null;
 
     if (!found) {
       await showCustomAlert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.', 'error');
@@ -147,6 +153,7 @@ async function handleAdminLogin(e) {
 }
 
 function handleLogout() {
+  fetch('/api/admin/logout',{method:'POST'}).catch(()=>{});
   localStorage.removeItem('gym-user-session');
   sessionStorage.removeItem('gym-user-session');
   currentSession = null;
@@ -207,9 +214,8 @@ function toggleWorkoutMonthField(catValue) {
 
 async function loadMemberPersonalCard(phone) {
   try {
-    const res = await fetch('/api/members');
-    const members = await res.json();
-    const m = members.find(x => String(x.phone).trim() === String(phone).trim());
+    const res = await fetch('/api/member/lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+    const m = res.ok ? await res.json() : null;
     const container = document.getElementById('member-personal-card');
 
     if (!m) {
