@@ -53,13 +53,15 @@
     drawer.querySelector('[data-action="renew"]').onclick=()=>{close();openRenewModal(m.id)};
     backdrop.classList.add('open');drawer.classList.add('open');document.body.style.overflow='hidden';drawer.focus();
   };
+  // Keep the original member cards (same layout as expiring/expired lists).
+  const renderMemberCards = renderMembers;
   renderMembers = function(members) {
     const filtered = (Array.isArray(members)?members:[]).filter(m=>statusFilter==='all'||m.status===statusFilter).slice();
     filtered.sort((a,b)=>sortBy==='name'?String(a.full_name||'').localeCompare(String(b.full_name||''),'ar'):sortBy==='expiry'?String(a.end_date||'9999').localeCompare(String(b.end_date||'9999')):Number(b.id)-Number(a.id));
-    const count=document.getElementById('gym-count');if(count)count.textContent=filtered.length+' مشترك';
-    list.classList.remove('items-grid');
-    if(!filtered.length){list.innerHTML='<p style="padding:20px">لا يوجد مشتركون يطابقون البحث أو الفلاتر.</p>';return}
-    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>المتبقي</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="المتبقي"><strong>'+escapeHTML(remainingText(m.end_date))+'</strong></td><td data-label="الإجراءات"><details class="gym-actions"><summary aria-label="إجراءات المشترك">الإجراءات ⋮</summary><div class="gym-actions-menu"><button type="button" data-action-member="details" data-id="'+escapeHTML(m.id)+'">عرض التفاصيل</button><button type="button" data-action-member="edit" data-id="'+escapeHTML(m.id)+'">تعديل المشترك</button><button type="button" data-action-member="renew" data-id="'+escapeHTML(m.id)+'">تجديد الاشتراك</button><button type="button" class="gym-danger" data-action-member="delete" data-id="'+escapeHTML(m.id)+'">حذف المشترك</button></div></details></td></tr>').join('')+'</tbody></table></div>';
+    const count=document.getElementById('gym-count');
+    if(count)count.textContent=filtered.length+' مشترك';
+    list.classList.add('items-grid');
+    renderMemberCards(filtered);
   };
   list.addEventListener('click',e=>{
     const action=e.target.closest('[data-action-member]');
