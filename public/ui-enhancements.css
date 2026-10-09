@@ -74,3 +74,9 @@ input,textarea,select{font-size:16px!important}
 #all-members-list .gym-table td[data-label="الإجراءات"] .gym-actions{max-width:60%;flex:1}
 #all-members-list .gym-actions-menu{position:static;margin-top:5px;box-shadow:none;min-width:0;width:100%}
 }
+
+/* Keep mobile confirmations unobtrusive and away from bottom controls. */
+@media (max-width:700px) {
+  .gym-toast-stack { top:calc(env(safe-area-inset-top, 0px) + 10px); bottom:auto; left:50%; transform:translateX(-50%); width:max-content; max-width:calc(100vw - 32px); pointer-events:none; }
+  .gym-toast { padding:7px 11px; font-size:12px; line-height:1.35; border-radius:9px; box-shadow:0 3px 12px #0003; text-align:center; }
+}
