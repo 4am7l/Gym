@@ -163,7 +163,7 @@ app.post('/api/member/lookup', async(req,res)=>{
 });
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
-    const { data: subscriptions, error: subErr } = await supabase
+    const subscriptionQuery = supabase
       .from('subscriptions')
       .select(`
         id, start_date, end_date, price,
@@ -172,7 +172,10 @@ app.get('/api/dashboard/stats', async (req, res) => {
       `)
       .order('id', { ascending: false });
 
+    const countQuery = supabase.from('members').select('*', { count: 'exact', head: true });
+    const [{ data: subscriptions, error: subErr }, { count: totalMembers, error: countErr }] = await Promise.all([subscriptionQuery, countQuery]);
     if (subErr) throw subErr;
+    if (countErr) throw countErr;
 
     // نعتبر أحدث اشتراك فقط لكل عضو هو الاشتراك الحالي.
     // هذا يمنع الاشتراكات القديمة/المنتهية من احتساب العضو كمنتهي بعد التجديد.
@@ -200,11 +203,6 @@ app.get('/api/dashboard/stats', async (req, res) => {
         status
       };
     });
-
-    const { count: totalMembers, error: countErr } = await supabase
-      .from('members')
-      .select('*', { count: 'exact', head: true });
-    if (countErr) throw countErr;
 
     res.json({
       totalMembers: totalMembers || 0,
@@ -276,24 +274,26 @@ app.delete('/api/plans/:id', async (req, res) => {
 
 app.get('/api/members', async (req, res) => {
   try {
-    const { data: members, error: memErr } = await supabase
-      .from('members')
-      .select('*')
-      .order('id', { ascending: false });
-
+    const [memberResult, subscriptionResult, measurementResult] = await Promise.all([
+      supabase.from('members').select('*').order('id', { ascending: false }),
+      supabase.from('subscriptions').select('*, membership_plans(name)').order('id', { ascending: false }),
+      supabase.from('fitness_measurements').select('*')
+    ]);
+    const { data: members, error: memErr } = memberResult;
+    const { data: subscriptions, error: subErr } = subscriptionResult;
+    const { data: measurements, error: measurementError } = measurementResult;
     if (memErr) throw memErr;
-
-    const { data: subscriptions } = await supabase
-      .from('subscriptions')
-      .select('*, membership_plans(name)')
-      .order('id', { ascending: false });
-
-    const { data: measurements, error: measurementError } = await supabase.from('fitness_measurements').select('*');
+    if (subErr) throw subErr;
     if (measurementError) throw measurementError;
     const measurementMap = new Map((measurements || []).map(x => [x.member_id, x]));
 
+    const latestSubscriptionByMember = new Map();
+    for (const sub of (subscriptions || [])) {
+      if (!latestSubscriptionByMember.has(sub.member_id)) latestSubscriptionByMember.set(sub.member_id, sub);
+    }
+
     const formattedMembers = (members || []).map(m => {
-      const lastSub = (subscriptions || []).find(s => s.member_id === m.id);
+      const lastSub = latestSubscriptionByMember.get(m.id);
       return {
         ...m,
         measurements: m.category === 'لياقة بدنية' ? (measurementMap.get(m.id) || null) : null,
