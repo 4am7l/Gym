@@ -2,6 +2,18 @@
 (() => {
   'use strict';
   const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const remainingText = endDate => {
+    if (!endDate) return 'بدون اشتراك';
+    const match = String(endDate).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return 'غير محدد';
+    const endUTC = Date.UTC(+match[1], +match[2] - 1, +match[3]);
+    const todayJordan = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Amman',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const parts = todayJordan.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!parts) return 'غير محدد';
+    const todayUTC = Date.UTC(+parts[1], +parts[2] - 1, +parts[3]);
+    const days = Math.round((endUTC - todayUTC) / 86400000);
+    return days < 0 ? 'منتهي منذ ' + Math.abs(days) + ' يوم' : days === 0 ? 'ينتهي اليوم' : 'متبقي ' + days + ' يوم';
+  };
   const statusText = s => s === 'Active' ? 'نشط' : s === 'Expiring Soon' ? 'قريب الانتهاء' : s === 'Expired' ? 'منتهي' : 'بدون اشتراك';
   let statusFilter = 'all', sortBy = 'newest';
   const toastStack = document.createElement('div');
@@ -34,7 +46,7 @@
   window.gymOpenMember = id => {
     const m = globalMembers.find(x=>String(x.id)===String(id));
     if(!m)return;
-    const fields = [['رقم الهاتف',m.phone],['الرياضة',m.category||'كمال أجسام'],['الحالة',statusText(m.status)],['تاريخ البداية',m.start_date],['تاريخ الانتهاء',m.end_date],['ملاحظات',m.notes]];
+    const fields = [['رقم الهاتف',m.phone],['الرياضة',m.category||'كمال أجسام'],['الحالة',statusText(m.status)],['تاريخ البداية',m.start_date],['تاريخ الانتهاء',m.end_date],['الأيام المتبقية',remainingText(m.end_date)],['ملاحظات',m.notes]];
     drawer.innerHTML = '<div class="gym-drawer-head"><h2>'+escapeHTML(m.full_name)+'</h2><button type="button" class="gym-close" data-action="close" aria-label="إغلاق">✕</button></div><dl>'+fields.map(([k,v])=>'<dt>'+k+'</dt><dd>'+escapeHTML(v||'—')+'</dd>').join('')+'</dl><div class="gym-drawer-actions"><button type="button" data-action="edit">تعديل البيانات</button><button type="button" data-action="renew">تجديد الاشتراك</button></div>';
     drawer.querySelector('[data-action="close"]').onclick=close;
     drawer.querySelector('[data-action="edit"]').onclick=()=>{close();editMember(m.id)};
@@ -47,7 +59,7 @@
     const count=document.getElementById('gym-count');if(count)count.textContent=filtered.length+' مشترك';
     list.classList.remove('items-grid');
     if(!filtered.length){list.innerHTML='<p style="padding:20px">لا يوجد مشتركون يطابقون البحث أو الفلاتر.</p>';return}
-    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="الإجراءات"><details class="gym-actions"><summary aria-label="إجراءات المشترك">الإجراءات ⋮</summary><div class="gym-actions-menu"><button type="button" data-action-member="details" data-id="'+escapeHTML(m.id)+'">عرض التفاصيل</button><button type="button" data-action-member="edit" data-id="'+escapeHTML(m.id)+'">تعديل المشترك</button><button type="button" data-action-member="renew" data-id="'+escapeHTML(m.id)+'">تجديد الاشتراك</button><button type="button" class="gym-danger" data-action-member="delete" data-id="'+escapeHTML(m.id)+'">حذف المشترك</button></div></details></td></tr>').join('')+'</tbody></table></div>';
+    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>المتبقي</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="المتبقي"><strong>'+escapeHTML(remainingText(m.end_date))+'</strong></td><td data-label="الإجراءات"><details class="gym-actions"><summary aria-label="إجراءات المشترك">الإجراءات ⋮</summary><div class="gym-actions-menu"><button type="button" data-action-member="details" data-id="'+escapeHTML(m.id)+'">عرض التفاصيل</button><button type="button" data-action-member="edit" data-id="'+escapeHTML(m.id)+'">تعديل المشترك</button><button type="button" data-action-member="renew" data-id="'+escapeHTML(m.id)+'">تجديد الاشتراك</button><button type="button" class="gym-danger" data-action-member="delete" data-id="'+escapeHTML(m.id)+'">حذف المشترك</button></div></details></td></tr>').join('')+'</tbody></table></div>';
   };
   list.addEventListener('click',e=>{
     const action=e.target.closest('[data-action-member]');
