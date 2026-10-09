@@ -96,3 +96,12 @@ body.is-admin .main-header .header-controls{min-width:0}
  @keyframes linear-dialog-enter{from{opacity:.65;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
 }
 @media(prefers-reduced-motion:reduce){body.is-admin .modal-glass-box{animation:none!important}}
+
+/* Center mobile bottom navigation items in both RTL and LTR. */
+@media(max-width:900px){
+ body.is-admin aside.sidebar{direction:rtl;align-items:center!important;justify-content:space-evenly!important}
+ body.is-admin aside.sidebar .nav-link{box-sizing:border-box;display:flex!important;flex:1 1 0!important;width:0!important;max-width:none!important;min-width:0!important;margin:0!important;align-self:stretch!important;align-items:center!important;justify-content:center!important;text-align:center!important;transform:none}
+ body.is-admin aside.sidebar .nav-link>i,body.is-admin aside.sidebar .nav-link>span:not(.nav-badge){display:block!important;flex:none!important;width:100%!important;max-width:100%!important;text-align:center!important;margin:0!important;padding:0!important}
+ body.is-admin aside.sidebar .nav-link>i{line-height:20px}
+ body.is-admin aside.sidebar .nav-link .nav-badge{position:absolute;inset-inline-end:2px;top:1px}
+}
