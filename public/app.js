@@ -429,7 +429,6 @@ function createMemberCardHtml(m) {
 
   return `
     <div class="item-card-glass gym-member-card">
-      <div class="gym-member-select"><label><input type="checkbox" class="gym-row-select" data-id="${m.id}" aria-label="تحديد ${m.full_name || 'المشترك'}"> تحديد</label></div>
       <div class="card-header-flex">
         <div>
           <div class="item-name">${m.full_name || 'بدون اسم'}</div>
