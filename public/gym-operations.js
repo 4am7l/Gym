@@ -15,6 +15,52 @@
    const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
  }
  const getMembers=()=>Array.isArray(globalMembers)?globalMembers:[];
+ const selected = new Set();
+ const bar=document.createElement('div');
+ bar.className='gym-ops-bar';
+ bar.innerHTML='<label><input type="checkbox" id="gym-select-all"> تحديد الكل (الظاهر)</label><span id="gym-selected-count">0 محدد</span><button type="button" id="gym-bulk-delete" disabled>حذف المحددين</button>';
+ membersRoot.before(bar);
+ const allCheck=bar.querySelector('#gym-select-all');
+ const count=bar.querySelector('#gym-selected-count');
+ const deleteBtn=bar.querySelector('#gym-bulk-delete');
+ const visibleChecks=()=>[...membersRoot.querySelectorAll('.gym-row-select')];
+ function syncSelection(){
+   const checks=visibleChecks();
+   checks.forEach(c=>{c.checked=selected.has(c.dataset.id)});
+   allCheck.checked=checks.length>0&&checks.every(c=>c.checked);
+   allCheck.indeterminate=checks.some(c=>c.checked)&&!allCheck.checked;
+   count.textContent=selected.size+' محدد';
+   deleteBtn.disabled=!selected.size;
+ }
+ const selectionObserver=new MutationObserver(()=>{selectionObserver.disconnect();syncSelection();selectionObserver.observe(membersRoot,{childList:true,subtree:true})});
+ selectionObserver.observe(membersRoot,{childList:true,subtree:true});
+ membersRoot.addEventListener('change',e=>{
+   if(!e.target.matches('.gym-row-select'))return;
+   const id=e.target.dataset.id;
+   if(e.target.checked)selected.add(id);else selected.delete(id);
+   syncSelection();
+ });
+ allCheck.addEventListener('change',()=>{
+   visibleChecks().forEach(c=>{if(allCheck.checked)selected.add(c.dataset.id);else selected.delete(c.dataset.id)});
+   syncSelection();
+ });
+ deleteBtn.addEventListener('click',async()=>{
+   const ids=[...selected].filter(id=>getMembers().some(m=>String(m.id)===id));
+   if(!ids.length)return;
+   if(!await showCustomConfirm('هل تريد حذف '+ids.length+' مشترك نهائيًا؟ لا يمكن التراجع عن الحذف.'))return;
+   deleteBtn.disabled=true;
+   let deleted=0,failed=0;
+   for(const id of ids){
+     try{
+       const res=await fetch('/api/members/'+encodeURIComponent(id),{method:'DELETE'});
+       if(!res.ok)throw new Error('HTTP '+res.status);
+       selected.delete(id);deleted++;
+     }catch(err){failed++}
+   }
+   await loadAllData();
+   syncSelection();
+   if(window.gymToast)window.gymToast('تم حذف '+deleted+' مشترك، وفشل حذف '+failed,failed?'error':'success');
+ });
  const exportRows=kind=>kind==='members'?[['ID','الاسم','الهاتف','الرياضة','الحالة','تاريخ الانتهاء','الملاحظات'],...getMembers().map(m=>[m.id,m.full_name,m.phone,m.category,m.status,m.end_date,m.notes])]:[['ID','المشترك','الخطة','السعر','البداية','النهاية','الحالة'],...getMembers().map(m=>[m.subscription_id,m.full_name,m.plan_name,m.subscription_price,m.start_date,m.end_date,m.status])];
  document.querySelectorAll('[data-gym-export]').forEach(button=>button.addEventListener('click',()=>{const [kind,format]=button.dataset.gymExport.split('-');const rows=exportRows(kind);if(format==='csv')return csv('gym-'+kind+'.csv',rows);const headers=rows[0];const data=rows.slice(1).map(row=>Object.fromEntries(headers.map((h,i)=>[h,row[i]??null])));const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='gym-'+kind+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)}));
  function refreshAlerts(){
