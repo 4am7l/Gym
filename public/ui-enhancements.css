@@ -1,0 +1,30 @@
+/* GYM UI refresh: additive, no backend changes */
+#view-dashboard .stat-card,#view-dashboard .glass-card,.stat-card{transition:transform .2s ease,box-shadow .2s ease;border-radius:18px}
+#view-dashboard .stat-card:hover,.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 35px #0002}
+.gym-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
+.gym-toolbar select{background:var(--panel-glass,#171923);color:var(--text-main,#fff);border:1px solid #8885;border-radius:12px;padding:11px;min-height:42px}
+.gym-count{font-size:.85rem;color:var(--text-sub,#aaa);margin-inline-start:auto}
+.gym-table-wrap{overflow:auto;border:1px solid #8883;border-radius:18px;background:var(--panel-glass,#171923)}
+.gym-table{width:100%;border-collapse:collapse;text-align:right;min-width:680px}
+.gym-table th,.gym-table td{padding:15px 13px;border-bottom:1px solid #8882;vertical-align:middle}
+.gym-table th{font-size:.82rem;color:var(--text-sub,#aaa);background:#8881;white-space:nowrap}
+.gym-table tbody tr:hover{background:#8881}
+.gym-table tbody tr:last-child td{border-bottom:0}
+.gym-link{border:0;background:none;color:var(--accent-neon,#54d5ff);cursor:pointer;font:inherit;font-weight:700;text-align:right}
+.gym-pill{display:inline-block;border-radius:99px;padding:5px 10px;font-size:.76rem;font-weight:700;background:#8882}
+.gym-pill.Active{color:#34d399;background:#34d39920}
+.gym-pill.Expired{color:#fb7185;background:#fb718520}
+.gym-pill.Expiring-Soon{color:#fbbf24;background:#fbbf2420}
+.gym-drawer-backdrop{position:fixed;inset:0;background:#0009;z-index:9998;opacity:0;pointer-events:none;transition:opacity .2s}
+.gym-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);z-index:9999;background:var(--bg-dark,#101118);border-left:1px solid #8884;box-shadow:-12px 0 45px #0005;transform:translateX(105%);transition:transform .25s;overflow:auto;padding:24px;color:var(--text-main,#fff)}
+.gym-drawer-backdrop.open{opacity:1;pointer-events:auto}.gym-drawer.open{transform:none}
+.gym-drawer-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.gym-drawer dl{display:grid;grid-template-columns:110px 1fr;gap:14px 10px;margin:24px 0}
+.gym-drawer dt{color:var(--text-sub,#aaa)}.gym-drawer dd{margin:0;overflow-wrap:anywhere}
+.gym-drawer-actions{display:flex;gap:9px;flex-wrap:wrap}
+.gym-drawer-actions button,.gym-close{border:1px solid #8885;background:#8882;color:inherit;border-radius:11px;padding:11px 15px;cursor:pointer}
+.gym-toast-stack{position:fixed;left:20px;bottom:20px;z-index:10050;display:grid;gap:9px;max-width:min(360px,calc(100vw - 40px))}
+.gym-toast{padding:13px 17px;border-radius:13px;color:white;background:#22303b;box-shadow:0 8px 25px #0005;border-right:4px solid #38bdf8;animation:gym-in .2s ease}
+.gym-toast.success{border-color:#34d399}.gym-toast.error{border-color:#fb7185}
+@keyframes gym-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.gym-table{min-width:590px}.gym-table th,.gym-table td{padding:12px 9px}.gym-drawer{padding:18px}}
