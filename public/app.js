@@ -161,6 +161,8 @@ function handleLogout() {
   sessionStorage.removeItem('gym-user-session');
   currentSession = null;
   document.body.classList.remove('is-admin');
+  const tools = document.getElementById('gym-mobile-tools');
+  if (tools) tools.hidden = true;
 
   const appView = document.getElementById('app-view');
   const loginPortal = document.getElementById('login-portal');
@@ -184,6 +186,8 @@ function renderAppForRole() {
     appView.style.display = 'flex';
     appView.classList.remove('hidden');
 
+    const adminTools = document.getElementById('gym-mobile-tools');
+    if (adminTools) adminTools.hidden = currentSession.role !== 'admin';
     if (currentSession.role === 'admin') {
       document.body.classList.add('is-admin');
       document.getElementById('role-subtitle').innerText = 'لوحة التحكم - الكابتن';
