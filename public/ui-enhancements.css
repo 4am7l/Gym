@@ -36,3 +36,25 @@
 #view-dashboard .glass-card{position:relative;overflow:hidden;border:1px solid #8883;transition:transform .2s,box-shadow .2s}
 #view-dashboard .glass-card:hover{transform:translateY(-4px);box-shadow:0 14px 35px #0003}
 #view-dashboard .card-value{font-variant-numeric:tabular-nums}
+
+@media(max-width:700px){
+#all-members-list .gym-table-wrap{overflow:visible;border:0;background:transparent}
+#all-members-list .gym-table{display:block;width:100%;min-width:0}
+#all-members-list .gym-table thead{display:none}
+#all-members-list .gym-table tbody{display:grid;gap:12px}
+#all-members-list .gym-table tr{display:grid;padding:8px 14px;border:1px solid #8884;border-radius:16px;background:var(--panel-glass)}
+#all-members-list .gym-table td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #8882;min-width:0;text-align:left;overflow-wrap:anywhere}
+#all-members-list .gym-table td:last-child{border:0}
+#all-members-list .gym-table td::before{content:attr(data-label);flex:0 0 38%;font-size:.8rem;color:var(--text-sub);text-align:right}
+#all-members-list .gym-table td>*{max-width:60%}
+#all-members-list .gym-toolbar select{min-width:0;flex:1 1 110px}
+#all-members-list .gym-count{flex:1 0 100%;text-align:right}
+}
+@media(max-width:900px){
+html.gym-keyboard-open .login-box,html.gym-keyboard-open header.main-header,html.gym-keyboard-open aside.sidebar,html.gym-keyboard-open .glass-card,html.gym-keyboard-open .data-panel,html.gym-keyboard-open .modal-backdrop,html.gym-keyboard-open .btn-liquid{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transition:none!important;animation:none!important}
+html.gym-keyboard-open .modal-backdrop{align-items:flex-start;overflow-y:auto}
+html.gym-keyboard-open .modal-glass-box{transform:none!important;transition:none!important;margin:auto 0}
+html.gym-keyboard-open .login-wrapper{overflow-y:auto;align-items:flex-start}
+html.gym-keyboard-open .login-box{margin:auto 0}
+input,textarea,select{font-size:16px!important}
+}
