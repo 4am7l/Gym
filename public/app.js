@@ -531,13 +531,7 @@ function renderMembers(list) {
     container.innerHTML = '<div style="color:var(--text-sub); font-size:0.95rem;">لا يوجد أعضاء في هذه القائمة.</div>';
     return;
   }
-  const status=document.getElementById('gym-status-filter')?.value||'all';
-  const sort=document.getElementById('gym-member-sort')?.value||'newest';
-  const visible=list.filter(m=>status==='all'||m.status===status);
-  const date=m=>Date.parse(m.created_at||m.joined_at||m.start_date||'')||0;
-  visible.sort((a,b)=>sort==='name'?String(a.full_name||'').localeCompare(String(b.full_name||''),'ar'):sort==='expiry'?(Date.parse(a.end_date)||Infinity)-(Date.parse(b.end_date)||Infinity):sort==='oldest'?date(a)-date(b):date(b)-date(a));
-  if(!visible.length){container.textContent='لا يوجد أعضاء مطابقون للتصفية.';return;}
-  visible.forEach(m => container.innerHTML += createMemberCardHtml(m));
+  list.forEach(m => container.innerHTML += createMemberCardHtml(m));
 }
 
 function filterCategoryTab(category, btnElem) {
@@ -848,7 +842,3 @@ async function deletePlan(id) {
 
 initTheme();
 checkExistingSession();
-
-/* Member status and order controls */
-document.getElementById('gym-status-filter')?.addEventListener('change',()=>filterMembers());
-document.getElementById('gym-member-sort')?.addEventListener('change',()=>filterMembers());
