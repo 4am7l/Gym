@@ -1,0 +1,52 @@
+/* Linear-inspired structural redesign: flat surfaces, compact navigation, responsive workspace. */
+:root[data-theme="dark"]{--bg-dark:#0f1012;--bg-gradient:none;--panel-glass:#151619;--card-glass:#191a1e;--card-glass-hover:#232429;--border-glass:#292b31;--border-glow:#373941;--inner-box-bg:#111215;--text-bright:#e8e9ec;--text-sub:#a1a3ac;--text-dim:#747782;--accent-neon:#8b87f8;--btn-liquid-bg:#6c67d9;--dropdown-bg:#1a1b20}
+:root[data-theme="light"]{--bg-dark:#f8f8fa;--bg-gradient:none;--panel-glass:#fff;--card-glass:#fff;--card-glass-hover:#f1f1f5;--border-glass:#e5e5eb;--border-glow:#d8d8e0;--accent-neon:#5954c9;--btn-liquid-bg:#6761d4}
+body{background:var(--bg-dark)!important}
+body.is-admin .app-viewport{max-width:none!important;width:100%;height:100dvh;overflow:hidden}
+body.is-admin .main-header{height:58px;min-height:58px;background:var(--panel-glass);border-bottom:1px solid var(--border-glass);box-shadow:none;padding-inline:22px}
+body.is-admin .main-header .brand-icon{width:31px;height:31px;border-radius:9px}
+body.is-admin .main-header .brand-title h1{font-size:1rem;text-transform:uppercase}
+body.is-admin .main-header .brand-title p{font-size:.72rem}
+body.is-admin .dashboard-layout{display:grid;grid-template-columns:238px minmax(0,1fr);height:calc(100dvh - 58px);min-height:0;gap:0}
+body.is-admin aside.sidebar{width:238px!important;min-width:0!important;height:100%;display:flex;flex-direction:column;gap:3px;padding:22px 11px;border-inline-end:1px solid var(--border-glass);background:var(--panel-glass);border-radius:0;overflow-y:auto}
+body.is-admin aside.sidebar:before{content:"WORKSPACE";font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--text-dim);padding:0 12px 12px}
+body.is-admin .nav-link{min-height:39px;display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:7px;font-size:.86rem;font-weight:500;transition:background .12s,color .12s}
+body.is-admin .nav-link.active{background:rgba(139,135,248,.13);color:var(--accent-neon);border:0;box-shadow:none}
+body.is-admin .nav-link i{font-size:14px;width:19px}
+body.is-admin .payment-side-box{margin-top:auto}
+body.is-admin .content-area{min-width:0;min-height:0;width:100%;height:100%;padding:28px clamp(18px,3vw,48px) 48px;overflow:auto;background:var(--bg-dark)}
+body.is-admin .section-view{max-width:1450px;margin-inline:auto}
+body.is-admin .panel-header{padding-bottom:15px;margin-bottom:20px;border-bottom:1px solid var(--border-glass)}
+body.is-admin .panel-header h2{font-size:1.05rem;font-weight:700}
+body.is-admin .data-panel,body.is-admin .glass-card,body.is-admin .stat-card{background:var(--card-glass);border:1px solid var(--border-glass);border-radius:10px;box-shadow:none;backdrop-filter:none}
+body.is-admin .stat-card{padding:20px;min-height:115px}
+body.is-admin .stat-card:after{display:none}
+body.is-admin .stat-card:hover,body.is-admin .glass-card:hover{transform:none;box-shadow:none;border-color:var(--border-glow)}
+body.is-admin .gym-ops-bar{border-radius:9px;background:var(--panel-glass)}
+body.is-admin .gym-table-wrap{border-radius:10px;background:var(--panel-glass)}
+body.is-admin .gym-table thead{background:var(--card-glass-hover)}
+body.is-admin .gym-table tbody tr:hover{background:var(--card-glass-hover)}
+body.is-admin .btn-liquid{background:var(--btn-liquid-bg)!important;color:white!important;border:1px solid transparent!important;border-radius:8px;box-shadow:none;font-weight:700}
+body.is-admin .btn-liquid:hover{filter:brightness(1.1);box-shadow:none}
+body.is-admin .modal-glass-box{border-radius:14px;background:var(--panel-glass);box-shadow:0 25px 75px #0006}
+body.is-admin .main-header .logout-btn{border-radius:8px}
+body.is-admin .linear-workspace-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border-glass)}
+body.is-admin .linear-workspace-heading h2{font-size:1.35rem;font-weight:800}
+body.is-admin .linear-workspace-heading p{font-size:.78rem;color:var(--text-sub);margin-top:5px}
+@media(max-width:767px){
+ body.is-admin .app-viewport{height:100dvh}
+ body.is-admin .main-header{height:54px;min-height:54px;padding-inline:12px}
+ body.is-admin .dashboard-layout{display:block;height:calc(100dvh - 54px);padding-bottom:65px}
+ body.is-admin .content-area{height:100%;padding:18px 12px 96px}
+ body.is-admin aside.sidebar{position:fixed!important;inset:auto 0 0!important;width:100%!important;height:64px!important;min-height:64px!important;z-index:1200;display:flex!important;flex-direction:row;align-items:stretch;justify-content:space-around;gap:0;padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--border-glass);border-inline-end:0;overflow:visible;background:var(--panel-glass)}
+ body.is-admin aside.sidebar:before,body.is-admin aside.sidebar .payment-side-box{display:none!important}
+ body.is-admin aside.sidebar .nav-link{flex:1;min-width:0;min-height:48px;padding:4px 2px;display:flex;flex-direction:column;justify-content:center;gap:3px;text-align:center;font-size:10px;line-height:1.15;border-radius:6px}
+ body.is-admin aside.sidebar .nav-link i{font-size:17px;width:auto}
+ body.is-admin aside.sidebar .nav-badge{position:absolute;top:0;inset-inline-end:5px;font-size:9px}
+ body.is-admin .linear-workspace-heading{margin-bottom:15px}
+ body.is-admin .linear-workspace-heading h2{font-size:1.12rem}
+ body.is-admin .stat-card{padding:14px;min-height:100px}
+ body.is-admin .gym-ops-bar{padding:10px}
+ body.is-admin .main-header .brand-title p{display:none}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
