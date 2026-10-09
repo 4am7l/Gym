@@ -47,10 +47,26 @@
     const count=document.getElementById('gym-count');if(count)count.textContent=filtered.length+' مشترك';
     list.classList.remove('items-grid');
     if(!filtered.length){list.innerHTML='<p style="padding:20px">لا يوجد مشتركون يطابقون البحث أو الفلاتر.</p>';return}
-    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td>'+escapeHTML(m.phone||'—')+'</td><td>'+escapeHTML(m.category||'كمال أجسام')+'</td><td><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td>'+escapeHTML(m.end_date||'—')+'</td><td><button class="gym-link" data-member="'+escapeHTML(m.id)+'">التفاصيل ←</button></td></tr>').join('')+'</tbody></table></div>';
+    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="الإجراءات"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">التفاصيل ←</button></td></tr>').join('')+'</tbody></table></div>';
   };
   list.addEventListener('click',e=>{const b=e.target.closest('[data-member]');if(b)window.gymOpenMember(b.dataset.member)});
   if(typeof filterMembers==='function')filterMembers();
+
+  // Avoid expensive glass-blur repaints while the virtual keyboard animates.
+  let focusTimer;
+  const isTextEntry = el => el && (el.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]'));
+  document.addEventListener('focusin', event => {
+    if (!isTextEntry(event.target)) return;
+    clearTimeout(focusTimer);
+    document.documentElement.classList.add('gym-keyboard-open');
+  });
+  document.addEventListener('focusout', event => {
+    if (!isTextEntry(event.target)) return;
+    clearTimeout(focusTimer);
+    focusTimer = setTimeout(() => {
+      if (!isTextEntry(document.activeElement)) document.documentElement.classList.remove('gym-keyboard-open');
+    }, 150);
+  });
   // Non-invasive feedback: watch successful mutation requests without changing responses.
   const nativeFetch=window.fetch.bind(window);
   window.fetch=async (...args)=>{
