@@ -109,10 +109,13 @@ async function handleMemberLogin(e) {
 
   try {
     const res = await fetch('/api/member/lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phoneInput})});
-    const found = res.ok ? await res.json() : null;
+    const found = await res.json().catch(() => ({}));
 
-    if (!found) {
-      await showCustomAlert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.', 'error');
+    if (!res.ok) {
+      const message = res.status === 404
+        ? 'رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.'
+        : (found.error || 'تعذر التحقق من رقم الهاتف الآن. حاول مرة أخرى.');
+      await showCustomAlert(message, 'error');
       return;
     }
 
