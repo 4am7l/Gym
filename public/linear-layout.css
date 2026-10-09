@@ -193,3 +193,30 @@ body.is-admin .gym-mobile-tools{display:none}
  body.is-admin .main-header .header-controls{gap:5px}
  body.is-admin .gym-plans-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))}
 }
+
+/* Theme changes animate as a single scene, rather than individual cards repainting. */
+@media(prefers-reduced-motion:no-preference){
+  ::view-transition-old(root){animation:240ms ease-in both gym-theme-out}
+  ::view-transition-new(root){animation:300ms ease-out both gym-theme-in}
+  @keyframes gym-theme-out{from{opacity:1}to{opacity:0}}
+  @keyframes gym-theme-in{from{opacity:0}to{opacity:1}}
+  html.gym-theme-animating body,
+  html.gym-theme-animating .app-viewport,
+  html.gym-theme-animating .main-header,
+  html.gym-theme-animating .sidebar,
+  html.gym-theme-animating .content-area,
+  html.gym-theme-animating .glass-card,
+  html.gym-theme-animating .data-panel,
+  html.gym-theme-animating .item-card-glass,
+  html.gym-theme-animating button,
+  html.gym-theme-animating input,
+  html.gym-theme-animating select,
+  html.gym-theme-animating .nav-link{
+    transition-property:background-color,color,border-color,box-shadow,fill!important;
+    transition-duration:280ms!important;
+    transition-timing-function:ease-in-out!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:0.01ms!important}
+}
