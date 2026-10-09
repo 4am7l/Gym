@@ -169,7 +169,7 @@
           <span>الخطط</span>
         </div>
 
-        <div class="payment-side-box">
+        <div class="gym-sidebar-tools"><div class="gym-sidebar-caption">الأدوات</div><button type="button" id="gym-sidebar-audit"><i class="fa-solid fa-clock-rotate-left"></i> سجل العمليات</button><details class="gym-export-menu"><summary><i class="fa-solid fa-file-export"></i> تصدير البيانات <i class="fa-solid fa-chevron-down"></i></summary><div class="gym-export-options"><button type="button" data-gym-export="members-csv">الأعضاء · CSV</button><button type="button" data-gym-export="members-json">الأعضاء · JSON</button><button type="button" data-gym-export="subs-csv">الاشتراكات · CSV</button><button type="button" data-gym-export="subs-json">الاشتراكات · JSON</button></div></details></div><div class="payment-side-box">
           <div class="payment-side-title">
             <i class="fa-solid fa-wallet"></i> طرق الدفع
           </div>
@@ -254,7 +254,7 @@
               <button class="category-filter-btn" onclick="filterCategoryTab('لياقة بدنية', this)">سجل لياقة بدنية</button>
             </div>
 
-            <div class="items-grid" id="all-members-list"></div>
+            <div class="gym-members-controls"><label>حالة الاشتراك <select id="gym-status-filter"><option value="all">جميع الحالات</option><option value="Active">ساري</option><option value="Expiring Soon">ينتهي قريبًا</option><option value="Expired">منتهي</option></select></label><label>الترتيب <select id="gym-member-sort"><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option><option value="expiry">الأقرب انتهاءً</option><option value="name">حسب الاسم</option></select></label></div><div class="items-grid" id="all-members-list"></div>
           </div>
         </section>
 
@@ -284,7 +284,7 @@
                 + إضافة خطة
               </button>
             </div>
-            <div class="items-grid" id="all-plans-list"></div>
+            <div class="items-grid gym-plans-grid" id="all-plans-list"></div>
           </div>
         </section>
 
