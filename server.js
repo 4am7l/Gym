@@ -1,6 +1,7 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
+const crypto = require('crypto');
 
 // تثبيت المنطقة الزمنية للسيرفر على توقيت الأردن (عمان)
 process.env.TZ = 'Asia/Amman';
@@ -10,6 +11,29 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const SESSION_SECRET = process.env.GYM_SESSION_SECRET || process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET;
+function signSession(payload) {
+  const data=Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const signature=crypto.createHmac('sha256',SESSION_SECRET).update(data).digest('base64url');
+  return data+'.'+signature;
+}
+function isAdmin(req) {
+  if(!SESSION_SECRET)return false;
+  const token=(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('gym_admin_session='));
+  if(!token)return false;
+  const [data,signature]=token.slice('gym_admin_session='.length).split('.');
+  if(!data||!signature)return false;
+  const expected=crypto.createHmac('sha256',SESSION_SECRET).update(data).digest();
+  let supplied;try{supplied=Buffer.from(signature,'base64url')}catch{return false}
+  if(supplied.length!==expected.length||!crypto.timingSafeEqual(supplied,expected))return false;
+  try{const p=JSON.parse(Buffer.from(data,'base64url').toString());return p.role==='admin'&&p.exp>Date.now()}catch{return false}
+}
+function adminOnly(req,res,next){if(!isAdmin(req))return res.status(401).json({error:'يلزم تسجيل الدخول كمدير'});next()}
+function audit(action,member_id,details={}) {
+  return supabase.from('gym_activity_log').insert([{action,member_id,details}]).then(({error})=>{if(error)console.error('Audit error:',error.message)}).catch(err=>console.error('Audit error:',err.message));
+}
+
 
 // بيانات الاتصال الخاصة بـ Supabase (من متغيرات البيئة)
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -107,17 +131,22 @@ function calculateStatus(endDateStr) {
 // ================= API ENDPOINTS ================= //
 
 // تسجيل دخول الكابتن بالرمز السري من ADMIN_PASSWORD في .env
-app.post('/api/admin/login', (req, res) => {
-  const { passcode } = req.body;
-  const adminSecret = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || "88573";
-
-  if (passcode === adminSecret) {
-    res.json({ success: true });
-  } else {
-    res.status(401).json({ error: "الرمز السري غير صحيح!" });
-  }
+app.post('/api/admin/login', (req,res)=>{
+  const passcode=String(req.body?.passcode||'');
+  const secret=process.env.ADMIN_PASSWORD||process.env.ADMIN_SECRET;
+  if(!secret||!SESSION_SECRET)return res.status(503).json({error:'يجب ضبط ADMIN_PASSWORD في Render'});
+  const a=Buffer.from(passcode),b=Buffer.from(secret);
+  if(a.length!==b.length||!crypto.timingSafeEqual(a,b))return res.status(401).json({error:'الرمز السري غير صحيح'});
+  const token=signSession({role:'admin',exp:Date.now()+7*24*60*60*1000});
+  res.setHeader('Set-Cookie','gym_admin_session='+token+'; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800'+(req.secure||req.headers['x-forwarded-proto']==='https'?'; Secure':''));
+  res.json({success:true});
 });
-
+app.post('/api/admin/logout',(req,res)=>{res.setHeader('Set-Cookie','gym_admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0');res.json({success:true})});
+app.get('/api/admin/session',(req,res)=>res.json({admin:isAdmin(req)}));
+app.use('/api',(req,res,next)=>{
+  if(req.method==='GET'||req.path==='/admin/login'||req.path==='/admin/logout')return next();
+  return adminOnly(req,res,next);
+});
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
     const { data: subscriptions, error: subErr } = await supabase
@@ -434,6 +463,49 @@ app.post('/api/subscriptions', async (req, res) => {
   }
 });
 
+
+const memberId=req=>Number(req.params.id);
+app.get('/api/ops/member/:id',adminOnly,async(req,res)=>{
+  try{
+    const id=memberId(req);
+    if(!Number.isSafeInteger(id)||id<1)return res.status(400).json({error:'معرّف غير صالح'});
+    const [payments,attendance,events]=await Promise.all([
+      supabase.from('gym_payments').select('*').eq('member_id',id).order('created_at',{ascending:false}),
+      supabase.from('gym_attendance').select('*').eq('member_id',id).order('checked_in_at',{ascending:false}).limit(100),
+      supabase.from('gym_subscription_events').select('*').eq('member_id',id).order('created_at',{ascending:false})
+    ]);
+    for(const result of [payments,attendance,events])if(result.error)throw result.error;
+    const {data:current,error:subError}=await supabase.from('subscriptions').select('price').eq('member_id',id).order('id',{ascending:false}).limit(1).maybeSingle();
+    if(subError)throw subError;
+    const paid=payments.data.reduce((sum,p)=>sum+Number(p.amount||0),0);
+    const due=events.data.length?events.data.reduce((sum,e)=>sum+Number(e.price||0),0):Number(current?.price||0);
+    res.json({payments:payments.data,attendance:attendance.data,events:events.data,financial:{due,paid,balance:due-paid,estimated:events.data.length===0}});
+  }catch(err){res.status(500).json({error:err.message})}
+});
+app.post('/api/ops/member/:id/payments',adminOnly,async(req,res)=>{
+  const id=memberId(req),amount=Number(req.body?.amount);
+  if(!Number.isSafeInteger(id)||id<1||!Number.isFinite(amount)||amount<=0||amount>1000000)return res.status(400).json({error:'بيانات الدفعة غير صالحة'});
+  const note=String(req.body?.note||'').slice(0,500);
+  const {data,error}=await supabase.from('gym_payments').insert([{member_id:id,amount,note}]).select().single();
+  if(error)return res.status(500).json({error:error.message});
+  await audit('payment_created',id,{payment_id:data.id,amount});
+  res.json(data);
+});
+app.post('/api/ops/member/:id/attendance',adminOnly,async(req,res)=>{
+  const id=memberId(req);if(!Number.isSafeInteger(id)||id<1)return res.status(400).json({error:'معرّف غير صالح'});
+  const today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Amman'});
+  const {data:latest,error:readError}=await supabase.from('gym_attendance').select('checked_in_at').eq('member_id',id).order('checked_in_at',{ascending:false}).limit(1);
+  if(readError)return res.status(500).json({error:readError.message});
+  if(latest?.length&&new Date(latest[0].checked_in_at).toLocaleDateString('en-CA',{timeZone:'Asia/Amman'})===today)return res.status(409).json({error:'تم تسجيل حضور المشترك اليوم'});
+  const {data,error}=await supabase.from('gym_attendance').insert([{member_id:id}]).select().single();
+  if(error)return res.status(500).json({error:error.message});
+  await audit('attendance_created',id,{attendance_id:data.id});
+  res.json(data);
+});
+app.get('/api/ops/activity',adminOnly,async(req,res)=>{
+  const {data,error}=await supabase.from('gym_activity_log').select('*').order('created_at',{ascending:false}).limit(100);
+  if(error)return res.status(500).json({error:error.message});res.json(data);
+});
 // Endpoint لجلب تمارين كمال الأجسام الخاصة بكل شهر
 app.get('/api/workouts/bodybuilding', (req, res) => {
   res.json(BODYBUILDING_WORKOUTS);
