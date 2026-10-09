@@ -94,4 +94,62 @@
  const previousLoad=window.loadMembers;
  if(typeof previousLoad==='function')window.loadMembers=async function(...args){const result=await previousLoad.apply(this,args);refreshAlerts();if(phoneInput.value)phoneInput.dispatchEvent(new Event('input'));return result};
  refreshAlerts();
+
+ const operationsPanel=document.createElement('section');
+ operationsPanel.className='gym-finance-panel';
+ operationsPanel.hidden=true;
+ operationsPanel.innerHTML='<div class="gym-finance-head"><strong id="gym-finance-title">عمليات المشترك</strong><button type="button" id="gym-finance-close">إغلاق</button></div><div id="gym-finance-body"></div>';
+ document.body.append(operationsPanel);
+ document.getElementById('gym-finance-close').onclick=()=>operationsPanel.hidden=true;
+ async function openOperations(id){
+   const m=getMembers().find(x=>String(x.id)===String(id));if(!m)return;
+   operationsPanel.hidden=false;
+   document.getElementById('gym-finance-title').textContent='الحضور والدفعات — '+m.full_name;
+   const body=document.getElementById('gym-finance-body');body.textContent='جاري تحميل البيانات...';
+   try{
+     const response=await fetch('/api/ops/member/'+encodeURIComponent(id));
+     const data=await response.json();if(!response.ok)throw Error(data.error||'فشل التحميل');
+     const fmt=n=>Number(n||0).toFixed(2)+' د.أ';
+     body.innerHTML='<div class="gym-finance-stats"><div>المطلوب: <b>'+fmt(data.financial.due)+'</b></div><div>المدفوع: <b>'+fmt(data.financial.paid)+'</b></div><div>المتبقي: <b>'+fmt(data.financial.balance)+'</b></div></div>'+
+       (data.financial.estimated?'<p class="gym-finance-warning">المطلوب تقديري من الاشتراك الحالي؛ التجديدات القديمة غير محفوظة.</p>':'')+
+       '<form id="gym-payment-form"><label>تسجيل دفعة جديدة (د.أ) <input name="amount" type="number" min="0.01" step="0.01" required></label><label>ملاحظة <input name="note" maxlength="500"></label><button>حفظ الدفعة</button></form>'+
+       '<button type="button" id="gym-checkin">تسجيل حضور اليوم</button>'+
+       '<h3>الدفعات</h3><div id="gym-payment-history"></div><h3>سجل التجديدات الجديدة</h3><div id="gym-renewal-history"></div><h3>الحضور الأخير</h3><div id="gym-attendance-history"></div>';
+     const rows=(target,items,render)=>{const node=body.querySelector(target);if(!items.length){node.textContent='لا توجد سجلات بعد';return}items.forEach(item=>{const row=document.createElement('p');row.textContent=render(item);node.append(row)})};
+     rows('#gym-payment-history',data.payments,p=>new Date(p.created_at).toLocaleString('ar-JO')+' — '+fmt(p.amount)+(p.note?' — '+p.note:''));
+     rows('#gym-renewal-history',data.events,e=>(e.start_date||'')+' إلى '+(e.end_date||'')+' — '+fmt(e.price));
+     rows('#gym-attendance-history',data.attendance,a=>new Date(a.checked_in_at).toLocaleString('ar-JO'));
+     body.querySelector('#gym-payment-form').onsubmit=async e=>{
+       e.preventDefault();const form=e.currentTarget,button=form.querySelector('button');button.disabled=true;
+       try{const response=await fetch('/api/ops/member/'+encodeURIComponent(id)+'/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:form.elements.amount.value,note:form.elements.note.value})});const result=await response.json();if(!response.ok)throw Error(result.error);await openOperations(id)}catch(err){alert(err.message)}finally{button.disabled=false}
+     };
+     body.querySelector('#gym-checkin').onclick=async()=>{
+       const response=await fetch('/api/ops/member/'+encodeURIComponent(id)+'/attendance',{method:'POST'});
+       const result=await response.json();if(!response.ok){alert(result.error||'تعذر تسجيل الحضور');return}await openOperations(id);
+     };
+   }catch(err){body.textContent='تعذر تحميل السجلات: '+err.message}
+ }
+ // Add a direct finance and attendance action beside the existing member actions.
+ membersRoot.addEventListener('click',event=>{
+   const trigger=event.target.closest('[data-action-member="operations"]');
+   if(trigger){event.preventDefault();openOperations(trigger.dataset.id)}
+ });
+ const addOperationsButtons=()=>{
+   membersRoot.querySelectorAll('.gym-actions-menu').forEach(menu=>{
+     if(menu.querySelector('[data-action-member="operations"]'))return;
+     const existing=menu.querySelector('[data-action-member="details"]');
+     if(!existing)return;
+     const button=document.createElement('button');button.type='button';button.dataset.actionMember='operations';button.dataset.id=existing.dataset.id;button.textContent='الدفعات والحضور';menu.append(button);
+   });
+ };
+ const actionObserver=new MutationObserver(()=>{actionObserver.disconnect();addOperationsButtons();actionObserver.observe(membersRoot,{childList:true,subtree:true})});
+ actionObserver.observe(membersRoot,{childList:true,subtree:true});addOperationsButtons();
+ if(dash){
+   const auditButton=document.createElement('button');auditButton.type='button';auditButton.className='gym-audit-button';auditButton.textContent='عرض سجل العمليات';dash.prepend(auditButton);
+   auditButton.onclick=async()=>{
+     operationsPanel.hidden=false;document.getElementById('gym-finance-title').textContent='سجل العمليات';
+     const body=document.getElementById('gym-finance-body');body.textContent='جاري التحميل...';
+     try{const r=await fetch('/api/ops/activity');const data=await r.json();if(!r.ok)throw Error(data.error);body.replaceChildren();if(!data.length)body.textContent='لا توجد عمليات مسجلة بعد';data.forEach(a=>{const p=document.createElement('p');p.textContent=new Date(a.created_at).toLocaleString('ar-JO')+' — '+a.action+' — '+(a.member_id??'');body.append(p)})}catch(err){body.textContent=err.message}
+   };
+ }
 })();
