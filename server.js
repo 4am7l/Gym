@@ -288,10 +288,15 @@ app.get('/api/members', async (req, res) => {
       .select('*, membership_plans(name)')
       .order('id', { ascending: false });
 
+    const { data: measurements, error: measurementError } = await supabase.from('fitness_measurements').select('*');
+    if (measurementError) throw measurementError;
+    const measurementMap = new Map((measurements || []).map(x => [x.member_id, x]));
+
     const formattedMembers = (members || []).map(m => {
       const lastSub = (subscriptions || []).find(s => s.member_id === m.id);
       return {
         ...m,
+        measurements: m.category === 'لياقة بدنية' ? (measurementMap.get(m.id) || null) : null,
         category: m.category || 'كمال أجسام',
         subscription_id: lastSub ? lastSub.id : null,
         start_date: lastSub ? lastSub.start_date : null,
@@ -414,6 +419,28 @@ app.put('/api/members/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Body measurements are available only for fitness members.
+const measurementFields = ['chest', 'waist', 'arms', 'hips', 'calves', 'thigh', 'weight'];
+app.put('/api/members/:id/measurements', async (req, res) => {
+  try {
+    const { data: member, error: lookupError } = await supabase.from('members').select('id,category').eq('id', req.params.id).single();
+    if (lookupError || !member) return res.status(404).json({ error: 'العضو غير موجود' });
+    if (member.category !== 'لياقة بدنية') return res.status(403).json({ error: 'القياسات متاحة للياقة البدنية فقط' });
+    const values = {};
+    for (const field of measurementFields) {
+      const raw = req.body[field];
+      if (raw !== undefined && raw !== null && raw !== '') {
+        const num = Number(raw);
+        if (!Number.isFinite(num) || num < 0 || num > 1000) return res.status(400).json({ error: 'قيمة قياس غير صحيحة' });
+        values[field] = num;
+      } else values[field] = null;
+    }
+    const { data, error } = await supabase.from('fitness_measurements').upsert({ member_id: member.id, ...values, updated_at: new Date().toISOString() }, { onConflict: 'member_id' }).select().single();
+    if (error) throw error;
+    res.json(data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.delete('/api/members/:id', async (req, res) => {
