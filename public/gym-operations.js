@@ -129,10 +129,23 @@
  actionObserver.observe(membersRoot,{childList:true,subtree:true});addOperationsButtons();
  if(dash){
    const auditButton=document.getElementById('gym-sidebar-audit');
-   if(auditButton)auditButton.onclick=async()=>{
+   const auditAction=async()=>{
      operationsPanel.hidden=false;document.getElementById('gym-finance-title').textContent='سجل العمليات';
      const body=document.getElementById('gym-finance-body');body.textContent='جاري التحميل...';
      try{const r=await fetch('/api/ops/activity');const data=await r.json();if(!r.ok)throw Error(data.error);body.replaceChildren();if(!data.length)body.textContent='لا توجد عمليات مسجلة بعد';data.forEach(a=>{const p=document.createElement('p');p.textContent=new Date(a.created_at).toLocaleString('ar-JO')+' — '+a.action+' — '+(a.member_id??'');body.append(p)})}catch(err){body.textContent=err.message}
    };
+   if(auditButton)auditButton.onclick=auditAction;
+   const mobileAudit=document.getElementById('gym-mobile-audit');
+   if(mobileAudit)mobileAudit.onclick=auditAction;
+ }
+ const mobileTools=document.getElementById('gym-mobile-tools');
+ const mobileToggle=document.getElementById('gym-mobile-tools-toggle');
+ const mobilePanel=document.getElementById('gym-mobile-tools-panel');
+ if(mobileTools&&mobileToggle&&mobilePanel){
+   const close=()=>{mobilePanel.hidden=true;mobileToggle.setAttribute('aria-expanded','false')};
+   mobileToggle.onclick=e=>{e.stopPropagation();mobilePanel.hidden=!mobilePanel.hidden;mobileToggle.setAttribute('aria-expanded',String(!mobilePanel.hidden))};
+   document.addEventListener('click',e=>{if(!mobileTools.contains(e.target))close()});
+   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+   mobilePanel.addEventListener('click',e=>{if(e.target.closest('button'))close()});
  }
 })();
