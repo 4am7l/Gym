@@ -30,7 +30,7 @@
  }
  function enhanceRows(){
    const table=membersRoot.querySelector('.gym-table');
-   if(!table)return;
+   if(!table){membersRoot.querySelectorAll('.gym-row-select').forEach(c=>c.checked=selected.has(c.dataset.id));updateSelection();return;}
    const head=table.querySelector('thead tr');
    if(head&&!head.querySelector('.gym-select-head'))head.insertAdjacentHTML('afterbegin','<th class="gym-select-head">تحديد</th>');
    table.querySelectorAll('tbody tr').forEach(tr=>{
