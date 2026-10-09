@@ -173,3 +173,23 @@ body.is-admin .gym-plans-grid .card-bottom-actions{border-top:1px solid var(--bo
  body.is-admin .gym-members-controls select{width:100%;min-width:0}
  body.is-admin #view-members .gym-ops-bar{flex-wrap:wrap}
 }
+
+/* Restore original plans appearance and remove intrusive bottom export toolbar. */
+body.is-admin .gym-plans-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+body.is-admin .gym-plans-grid .item-card-glass{min-height:0;border-radius:var(--radius-lg);padding:14px;justify-content:initial;gap:10px}
+body.is-admin .gym-plans-grid .item-name{font-size:1rem;margin-bottom:0}
+body.is-admin .gym-plans-grid .card-bottom-actions{border-top:0;padding-top:0;justify-content:initial}
+body.is-admin .gym-mobile-tools{display:none}
+@media(max-width:900px){
+ body.is-admin .gym-sidebar-tools{display:none!important}
+ body.is-admin .gym-mobile-tools{display:block;position:relative;flex-shrink:0}
+ body.is-admin .gym-mobile-tools>button{height:34px;display:flex;align-items:center;gap:5px;border:1px solid var(--border-glass);border-radius:8px;background:var(--card-glass);color:var(--text-bright);padding:0 9px;font:inherit;font-size:12px;cursor:pointer}
+ body.is-admin .gym-mobile-tools-panel{position:absolute;z-index:2500;top:calc(100% + 8px);inset-inline-end:0;min-width:215px;max-width:min(85vw,280px);padding:8px;background:var(--panel-glass);border:1px solid var(--border-glow);border-radius:11px;box-shadow:0 15px 35px #0007}
+ body.is-admin .gym-mobile-tools-panel[hidden]{display:none!important}
+ body.is-admin .gym-mobile-tools-panel button{display:block;width:100%;text-align:start;background:none;color:var(--text-bright);border:0;border-radius:7px;padding:10px 12px;font:inherit;font-size:12px;cursor:pointer}
+ body.is-admin .gym-mobile-tools-panel button:hover{background:var(--card-glass-hover)}
+ body.is-admin .gym-mobile-tools-caption{font-size:10px;color:var(--text-dim);padding:9px 12px 4px;border-top:1px solid var(--border-glass)}
+ body.is-admin .main-header{overflow:visible;position:relative;z-index:1250}
+ body.is-admin .main-header .header-controls{gap:5px}
+ body.is-admin .gym-plans-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr))}
+}
