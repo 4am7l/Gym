@@ -247,3 +247,7 @@ body.is-admin .gym-plans-grid .item-card-glass{border-radius:var(--radius-lg)!im
 /* Keep the switch itself responsive without animating theme colors independently. */
 body.is-admin .theme-toggle-btn{transition:transform .16s ease!important}
 body.is-admin .theme-toggle-btn:active{transform:scale(.93)}
+
+/* Never expose admin-only export/activity tools in the member portal. */
+#gym-mobile-tools[hidden]{display:none!important}
+body:not(.is-admin) #gym-mobile-tools,body:not(.is-admin) .gym-sidebar-tools{display:none!important}
