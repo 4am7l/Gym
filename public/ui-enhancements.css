@@ -58,3 +58,19 @@ html.gym-keyboard-open .login-wrapper{overflow-y:auto;align-items:flex-start}
 html.gym-keyboard-open .login-box{margin:auto 0}
 input,textarea,select{font-size:16px!important}
 }
+
+/* Accessible per-member quick actions, available in table and mobile cards. */
+.gym-actions{position:relative;display:inline-block;text-align:right;min-width:120px}
+.gym-actions summary{list-style:none;cursor:pointer;user-select:none;border:1px solid #8885;border-radius:10px;padding:9px 12px;background:#8882;font-size:.84rem;font-weight:700;color:var(--text-bright,#fff)}
+.gym-actions summary::-webkit-details-marker{display:none}
+.gym-actions summary:focus-visible,.gym-actions-menu button:focus-visible{outline:2px solid var(--accent-neon,#38bdf8);outline-offset:2px}
+.gym-actions-menu{position:absolute;z-index:30;top:calc(100% + 5px);left:0;min-width:165px;background:var(--bg-dark,#11131c);border:1px solid #8885;border-radius:12px;box-shadow:0 12px 28px #0008;padding:5px;display:grid;gap:2px}
+.gym-actions-menu button{background:transparent;border:0;color:var(--text-bright,#fff);text-align:right;padding:10px;border-radius:7px;cursor:pointer;font:inherit;font-size:.84rem;white-space:nowrap}
+.gym-actions-menu button:hover{background:#8882}
+.gym-actions-menu .gym-danger{color:#fb7185}
+#all-members-list .gym-table-wrap{overflow:visible}
+@media(max-width:700px){
+#all-members-list .gym-table td[data-label="الإجراءات"]{align-items:flex-start}
+#all-members-list .gym-table td[data-label="الإجراءات"] .gym-actions{max-width:60%;flex:1}
+#all-members-list .gym-actions-menu{position:static;margin-top:5px;box-shadow:none;min-width:0;width:100%}
+}
