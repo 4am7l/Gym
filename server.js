@@ -373,13 +373,19 @@ app.post('/api/members', async (req, res) => {
         end.setDate(end.getDate() + plan.duration_days);
         const endDateStr = end.toISOString().split('T')[0];
 
-        await supabase.from('subscriptions').insert([{
+        const {data:initialSub,error:initialError}=await supabase.from('subscriptions').insert([{
           member_id: newMember.id,
           plan_id: plan.id,
           price: plan.price,
           start_date,
           end_date: endDateStr
+        }]).select().single();
+        if(initialError)throw initialError;
+        const {error:eventError}=await supabase.from('gym_subscription_events').insert([{
+          member_id:newMember.id,subscription_id:initialSub.id,plan_id:plan.id,
+          price:Number(plan.price),start_date,end_date:endDateStr
         }]);
+        if(eventError)console.error('Initial subscription history insert failed:',eventError.message);
       }
     }
     await audit('member_created',newMember.id,{name:newMember.full_name});
