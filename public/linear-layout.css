@@ -50,3 +50,38 @@ body.is-admin .linear-workspace-heading p{font-size:.78rem;color:var(--text-sub)
  body.is-admin .main-header .brand-title p{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Layout conflict fixes: old responsive rules begin at 900px, not 767px. */
+body.is-admin .app-viewport{padding:0!important;gap:0!important;overflow:hidden!important}
+body.is-admin .main-header{border:0;border-radius:0;flex-shrink:0}
+body.is-admin #admin-portal-view{display:grid!important;min-height:0}
+body.is-admin .content-area{display:block;overscroll-behavior:contain}
+body.is-admin .content-area .section-view:not(.active){display:none}
+body.is-admin .content-area .section-view.active{display:block}
+body.is-admin .stats-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+body.is-admin .dashboard-layout .sidebar .nav-link{cursor:pointer;user-select:none}
+body.is-admin .dashboard-layout .sidebar .nav-link:focus-visible{outline:2px solid var(--accent-neon);outline-offset:-2px}
+body.is-admin .glass-card,body.is-admin .stat-card,body.is-admin .data-panel{min-width:0}
+body.is-admin .gym-table-wrap{max-width:100%;overflow-x:auto}
+body.is-admin .main-header .header-controls{min-width:0}
+@media(min-width:901px){
+ body.is-admin .dashboard-layout{grid-template-columns:238px minmax(0,1fr)!important}
+ body.is-admin aside.sidebar{position:relative!important;inset:auto!important;width:238px!important;height:100%!important;overflow-y:auto}
+}
+@media(max-width:900px){
+ body.is-admin .app-viewport{height:100dvh!important;padding:0!important}
+ body.is-admin .dashboard-layout{display:block!important;height:calc(100dvh - 58px)!important;overflow:hidden}
+ body.is-admin .content-area{height:100%!important;overflow:auto!important;padding:18px 14px calc(100px + env(safe-area-inset-bottom,0px))!important}
+ body.is-admin aside.sidebar{position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;display:flex!important;flex-direction:row!important;width:100%!important;min-width:0!important;height:calc(65px + env(safe-area-inset-bottom,0px))!important;min-height:0!important;padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px))!important;border-radius:0!important;overflow:visible!important;z-index:1200}
+ body.is-admin aside.sidebar .nav-link{flex:1!important;min-width:0!important;flex-direction:column!important;gap:3px!important;align-items:center!important;justify-content:center!important;padding:5px 2px!important;font-size:10px!important}
+ body.is-admin aside.sidebar .nav-link span:not(.nav-badge){white-space:nowrap}
+ body.is-admin aside.sidebar:before,body.is-admin aside.sidebar .payment-side-box{display:none!important}
+ body.is-admin .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:420px){
+ body.is-admin .header-controls{gap:5px}
+ body.is-admin .main-header .brand-title p{display:none}
+ body.is-admin .main-header .logout-btn{font-size:0;gap:0}
+ body.is-admin .main-header .logout-btn i{font-size:15px}
+ body.is-admin .stats-row{gap:8px}
+}
