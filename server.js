@@ -151,7 +151,7 @@ app.use('/api',(req,res,next)=>{
 // Return only the single member's portal fields, never the entire member directory.
 app.post('/api/member/lookup', async(req,res)=>{
   const phone=String(req.body?.phone||'').trim();
-  if(!/^\+?[0-9 -]{7,20}$/.test(phone))return res.status(400).json({error:'رقم هاتف غير صالح'});
+  if(!/^\+?[0-9 -]{1,20}$/.test(phone) || !/[0-9]/.test(phone))return res.status(400).json({error:'أدخل رقم الهاتف المسجل بشكل صحيح'});
   try{
     const {data:member,error}=await supabase.from('members').select('id,full_name,phone,category,notes').eq('phone',phone).limit(1).maybeSingle();
     if(error)throw error;
