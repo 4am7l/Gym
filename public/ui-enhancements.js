@@ -47,9 +47,27 @@
     const count=document.getElementById('gym-count');if(count)count.textContent=filtered.length+' مشترك';
     list.classList.remove('items-grid');
     if(!filtered.length){list.innerHTML='<p style="padding:20px">لا يوجد مشتركون يطابقون البحث أو الفلاتر.</p>';return}
-    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="الإجراءات"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">التفاصيل ←</button></td></tr>').join('')+'</tbody></table></div>';
+    list.innerHTML='<div class="gym-table-wrap"><table class="gym-table"><thead><tr><th>المشترك</th><th>الهاتف</th><th>الرياضة</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>الإجراءات</th></tr></thead><tbody>'+filtered.map(m=>'<tr><td data-label="المشترك"><button class="gym-link" data-member="'+escapeHTML(m.id)+'">'+escapeHTML(m.full_name)+'</button></td><td data-label="الهاتف">'+escapeHTML(m.phone||'—')+'</td><td data-label="الرياضة">'+escapeHTML(m.category||'كمال أجسام')+'</td><td data-label="الحالة"><span class="gym-pill '+escapeHTML((m.status||'').replaceAll(' ','-'))+'">'+statusText(m.status)+'</span></td><td data-label="انتهاء الاشتراك">'+escapeHTML(m.end_date||'—')+'</td><td data-label="الإجراءات"><details class="gym-actions"><summary aria-label="إجراءات المشترك">الإجراءات ⋮</summary><div class="gym-actions-menu"><button type="button" data-action-member="details" data-id="'+escapeHTML(m.id)+'">عرض التفاصيل</button><button type="button" data-action-member="edit" data-id="'+escapeHTML(m.id)+'">تعديل المشترك</button><button type="button" data-action-member="renew" data-id="'+escapeHTML(m.id)+'">تجديد الاشتراك</button><button type="button" class="gym-danger" data-action-member="delete" data-id="'+escapeHTML(m.id)+'">حذف المشترك</button></div></details></td></tr>').join('')+'</tbody></table></div>';
   };
-  list.addEventListener('click',e=>{const b=e.target.closest('[data-member]');if(b)window.gymOpenMember(b.dataset.member)});
+  list.addEventListener('click',e=>{
+    const action=e.target.closest('[data-action-member]');
+    if(action){
+      const m=globalMembers.find(x=>String(x.id)===String(action.dataset.id));
+      if(!m)return;
+      const op=action.dataset.actionMember;
+      if(op==='details')window.gymOpenMember(m.id);
+      if(op==='edit')editMember(m.id);
+      if(op==='renew')openRenewModal(m.id);
+      if(op==='delete')deleteMember(m.id);
+      action.closest('details')?.removeAttribute('open');
+      return;
+    }
+    const b=e.target.closest('[data-member]');
+    if(b)window.gymOpenMember(b.dataset.member);
+  });
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.gym-actions'))document.querySelectorAll('.gym-actions[open]').forEach(el=>el.removeAttribute('open'));
+  });
   if(typeof filterMembers==='function')filterMembers();
 
   // Avoid expensive glass-blur repaints while the virtual keyboard animates.
