@@ -108,9 +108,8 @@ async function handleMemberLogin(e) {
   if (!phoneInput) return;
 
   try {
-    const res = await fetch('/api/members');
-    const members = await res.json();
-    const found = members.find(m => String(m.phone).trim() === String(phoneInput).trim());
+    const res = await fetch('/api/member/lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:phoneInput})});
+    const found = res.ok ? await res.json() : null;
 
     if (!found) {
       await showCustomAlert('رقم الهاتف هذا غير مسجل في النظام. الرجاء مراجعة الكابتن لإضافتك.', 'error');
@@ -215,9 +214,8 @@ function toggleWorkoutMonthField(catValue) {
 
 async function loadMemberPersonalCard(phone) {
   try {
-    const res = await fetch('/api/members');
-    const members = await res.json();
-    const m = members.find(x => String(x.phone).trim() === String(phone).trim());
+    const res = await fetch('/api/member/lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+    const m = res.ok ? await res.json() : null;
     const container = document.getElementById('member-personal-card');
 
     if (!m) {
