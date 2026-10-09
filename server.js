@@ -443,6 +443,20 @@ app.put('/api/members/:id/measurements', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+app.post('/api/members/bulk-delete', async (req, res) => {
+  try {
+    const ids = req.body?.ids;
+    if (!Array.isArray(ids) || !ids.length || ids.length > 500 || ids.some(id => !Number.isSafeInteger(Number(id)) || Number(id) <= 0))
+      return res.status(400).json({error:'قائمة المشتركين غير صالحة'});
+    const uniqueIds = [...new Set(ids.map(Number))];
+    const {data, error} = await supabase.from('members').delete().in('id', uniqueIds).select('id');
+    if (error) throw error;
+    const deletedIds = (data || []).map(row => row.id);
+    await audit('members_bulk_deleted', null, {member_ids:deletedIds});
+    res.json({deletedIds});
+  } catch (err) { res.status(500).json({error:err.message}); }
+});
+
 app.delete('/api/members/:id', async (req, res) => {
   try {
     const { error } = await supabase.from('members').delete().eq('id', req.params.id);
