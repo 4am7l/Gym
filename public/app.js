@@ -70,11 +70,18 @@ function togglePassVisibility(inputId, iconElem) {
   }
 }
 
-function checkExistingSession() {
+async function checkExistingSession() {
   const savedSession = localStorage.getItem('gym-user-session') || sessionStorage.getItem('gym-user-session');
   if (savedSession) {
-    currentSession = JSON.parse(savedSession);
-    renderAppForRole();
+    try {
+      currentSession = JSON.parse(savedSession);
+      if(currentSession.role==='admin'){
+        const response=await fetch('/api/admin/session');
+        const state=await response.json();
+        if(!state.admin){localStorage.removeItem('gym-user-session');sessionStorage.removeItem('gym-user-session');currentSession=null;}
+      }
+      if(currentSession){renderAppForRole();return;}
+    }catch{currentSession=null;}
   } else {
     document.getElementById('login-portal').classList.remove('hidden');
     document.getElementById('app-view').classList.add('hidden');
@@ -147,6 +154,7 @@ async function handleAdminLogin(e) {
 }
 
 function handleLogout() {
+  fetch('/api/admin/logout',{method:'POST'}).catch(()=>{});
   localStorage.removeItem('gym-user-session');
   sessionStorage.removeItem('gym-user-session');
   currentSession = null;
