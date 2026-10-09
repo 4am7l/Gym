@@ -144,8 +144,22 @@ app.post('/api/admin/login', (req,res)=>{
 app.post('/api/admin/logout',(req,res)=>{res.setHeader('Set-Cookie','gym_admin_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0');res.json({success:true})});
 app.get('/api/admin/session',(req,res)=>res.json({admin:isAdmin(req)}));
 app.use('/api',(req,res,next)=>{
-  if(req.method==='GET'||req.path==='/admin/login'||req.path==='/admin/logout')return next();
+  if(req.path==='/admin/login'||req.path==='/admin/logout'||req.path==='/admin/session'||req.path==='/workouts/bodybuilding'||req.path==='/member/lookup')return next();
   return adminOnly(req,res,next);
+});
+// Compatibility-only member portal lookup. Phone-number login is not strong authentication.
+// Return only the single member's portal fields, never the entire member directory.
+app.post('/api/member/lookup', async(req,res)=>{
+  const phone=String(req.body?.phone||'').trim();
+  if(!/^\\+?[0-9 -]{7,20}$/.test(phone))return res.status(400).json({error:'رقم هاتف غير صالح'});
+  try{
+    const {data:member,error}=await supabase.from('members').select('id,full_name,phone,category,notes').eq('phone',phone).limit(1).maybeSingle();
+    if(error)throw error;
+    if(!member)return res.status(404).json({error:'غير موجود'});
+    const {data:sub,error:subErr}=await supabase.from('subscriptions').select('start_date,end_date,plan_id,membership_plans(name)').eq('member_id',member.id).order('id',{ascending:false}).limit(1).maybeSingle();
+    if(subErr)throw subErr;
+    res.json({...member,start_date:sub?.start_date||null,end_date:sub?.end_date||null,plan_name:sub?.membership_plans?.name||null,status:sub?calculateStatus(sub.end_date):'No Subscription'});
+  }catch(err){res.status(500).json({error:err.message})}
 });
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
