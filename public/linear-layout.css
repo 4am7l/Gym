@@ -85,3 +85,14 @@ body.is-admin .main-header .header-controls{min-width:0}
  body.is-admin .main-header .logout-btn i{font-size:15px}
  body.is-admin .stats-row{gap:8px}
 }
+
+/* Motion: Animate.css library is loaded for opt-in animation classes; interaction effects remain lightweight. */
+@media(prefers-reduced-motion:no-preference){
+ body.is-admin .nav-link{transition:background-color .14s ease,color .14s ease,transform .14s ease!important}
+ body.is-admin .nav-link:active{transform:scale(.97)}
+ body.is-admin .btn-liquid,body.is-admin .gym-ops-bar button{transition:filter .16s ease,transform .16s ease!important}
+ body.is-admin .btn-liquid:active,body.is-admin .gym-ops-bar button:active{transform:scale(.98)}
+ body.is-admin .modal-backdrop:not([style*="display: none"]):not(.hidden) .modal-glass-box{animation:linear-dialog-enter .2s cubic-bezier(.2,.8,.2,1) both}
+ @keyframes linear-dialog-enter{from{opacity:.65;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+}
+@media(prefers-reduced-motion:reduce){body.is-admin .modal-glass-box{animation:none!important}}
