@@ -105,3 +105,33 @@ body.is-admin .main-header .header-controls{min-width:0}
  body.is-admin aside.sidebar .nav-link>i{line-height:20px}
  body.is-admin aside.sidebar .nav-link .nav-badge{position:absolute;inset-inline-end:2px;top:1px}
 }
+
+/* Critical: #admin-portal-view ID selector previously forced desktop grid on mobile,
+   leaving an invisible 238px column and squeezing all dashboard content to the right. */
+@media(max-width:900px){
+ body.is-admin #admin-portal-view{
+   display:block!important;
+   grid-template-columns:none!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   margin:0!important;
+ }
+ body.is-admin #admin-portal-view>.content-area{
+   display:block!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   box-sizing:border-box!important;
+   margin:0!important;
+ }
+ body.is-admin #admin-portal-view>.content-area>.section-view{
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   box-sizing:border-box!important;
+ }
+ body.is-admin #view-dashboard .stats-row{width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ body.is-admin #view-dashboard .glass-card{min-width:0!important;overflow:hidden}
+ body.is-admin #view-dashboard .card-value,body.is-admin #view-dashboard .card-label{overflow-wrap:anywhere}
+}
