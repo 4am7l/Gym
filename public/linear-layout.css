@@ -220,3 +220,30 @@ body.is-admin .gym-mobile-tools{display:none}
 @media(prefers-reduced-motion:reduce){
   ::view-transition-old(root),::view-transition-new(root){animation-duration:0.01ms!important}
 }
+
+/* Google Material-inspired shape system: consistent soft, rounded corners. */
+:root{--radius-md:14px;--radius-lg:20px;--radius-xl:26px}
+body.is-admin .data-panel,
+body.is-admin .glass-card,
+body.is-admin .stat-card,
+body.is-admin .item-card-glass,
+body.is-admin .gym-table-wrap,
+body.is-admin .gym-ops-bar,
+body.is-admin .gym-members-controls,
+body.is-admin .gym-mobile-tools-panel{border-radius:var(--radius-lg)!important}
+body.is-admin .nav-link,
+body.is-admin .btn-liquid,
+body.is-admin .logout-btn,
+body.is-admin .theme-toggle-btn,
+body.is-admin .gym-sidebar-tools button,
+body.is-admin .gym-export-menu summary,
+body.is-admin .gym-members-controls select,
+body.is-admin input,
+body.is-admin select{border-radius:var(--radius-md)!important}
+body.is-admin .modal-glass-box,
+body.is-admin .gym-finance-panel{border-radius:var(--radius-xl)!important}
+body.is-admin .gym-plans-grid .item-card-glass{border-radius:var(--radius-lg)!important}
+@media(max-width:900px){body.is-admin .gym-mobile-tools-panel{border-radius:var(--radius-lg)!important}}
+/* Keep the switch itself responsive without animating theme colors independently. */
+body.is-admin .theme-toggle-btn{transition:transform .16s ease!important}
+body.is-admin .theme-toggle-btn:active{transform:scale(.93)}
